@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button"
+
 
 export default function Home() {
   const navigate = useNavigate();
@@ -7,6 +9,7 @@ export default function Home() {
   };
   return (
     <>
+
       <div>Home</div>
       <button
         onClick={handleButtonClick}
@@ -14,6 +17,8 @@ export default function Home() {
       >
         go to Test
       </button>
+
+      <Button>button Test</Button>
     </>
   );
 }

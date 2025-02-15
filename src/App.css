@@ -73,6 +73,8 @@
   --chart-4: hsl(43 74% 66%);
   --chart-5: hsl(27 87% 67%);
   --radius: 0.6rem;
+  --company-primary: #522E9A;
+  --helper-primary: #275280;
 }
 
 .dark {
@@ -100,6 +102,8 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
+  --company-primary: #522E9A;
+  --helper-primary: #275280;
 }
 
 @theme inline {

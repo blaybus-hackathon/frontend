@@ -15,11 +15,11 @@ export default function SignIn() {
     return (
         <>
 
-
-            <div className="flex flex-col">
+            <div>Sign in</div>
+            <div className="min-h-screen flex flex-col">
 
                 <main className="flex-grow ">
-                    <div className="container mx-auto px-4 py-8">
+                    <div className="container mx-auto px-4 ">
                         <div className="h-[800px] flex items-center justify-center">
                             <AuthForm
                                 type={loginType}

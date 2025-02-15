@@ -23,25 +23,26 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
             <h2 className="text-2xl font-bold text-center mb-6">로그인</h2>
 
             {/* 로그인 타입 선택 */}
-            <div className="grid grid-cols-2 mb-6">
-                <button
+            <div className="grid grid-cols-2 mb-6 gap-4">
+                <Button
                     onClick={() => setLoginType('helper')}
-                    className={`py-3 text-center border-t-2 border-l-2  ${type === 'helper'
-                        ? 'bg-white border-black font-medium border-t-4 border-l-4 border-r-4'
-                        : 'bg-gray-50 border-gray-200 border-b-4 border-b-black'
+                    className={`hover:bg-[#F6F6F6] ${type === 'helper'
+                        ? 'bg-[#522E9A] hover:bg-[#522E9A]'
+                        : ''
                         }`}
                 >
                     helper
-                </button>
-                <button
+                </Button>
+
+                <Button
                     onClick={() => setLoginType('company')}
-                    className={`py-3 text-center border-t-2 border-r-2 ${type === 'company'
-                        ? 'bg-white border-black font-medium border-t-4 border-l-4 border-r-4'
-                        : 'bg-gray-50 border-gray-200 border-b-4 border-b-black'
+                    className={`bg-gray-300 ${type === 'company'
+                        ? '  '
+                        : 'hover:bg-gray-300'
                         }`}
                 >
                     company
-                </button>
+                </Button>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">

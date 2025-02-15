@@ -9,7 +9,6 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  font-family: 'Pretendard Variable', sans-serif;
 }
 
 .card {
@@ -107,6 +106,11 @@
 }
 
 @layer base {
+  html {
+    font-size: 62.5%;
+    font-family: 'Pretendard Variable', sans-serif;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }

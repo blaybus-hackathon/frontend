@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button"
+import SecondStep from "@/components/SignUp/SecondStep";
 export default function SignUp() {
 
     const [agreements, setAgreements] = useState({
@@ -37,6 +38,7 @@ export default function SignUp() {
 
     return (
         <div>
+            <SecondStep></SecondStep>
             <h1>회원가입</h1>
 
             <div className=" flex flex-col">

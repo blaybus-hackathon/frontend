@@ -2,40 +2,55 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-const SecondStep = () => {
+export default function SecondStep({ onNext, onPrev }) {
     const [isVerificationSent, setIsVerificationSent] = useState(false);
 
     const handleSendVerification = () => {
         setIsVerificationSent(true);
     };
 
-    return (
-        <div className="flex flex-col gap-4">
+    const handleNext = () => {
+        onNext();
+    };
 
-                <p className="text-left font-bold">회원가입을 위해<br/>이메일 인증을 진행해주세요.</p>
+    const handlePrev = () => {
+        onPrev();
+    };
+
+    return (
+        <main className="flex flex-col gap-4 max-w-2xl mx-auto">
+
+            <p className="text-left font-bold">회원가입을 위해<br />이메일 인증을 진행해주세요.</p>
 
 
 
             {/* 라벨 영역 */}
-            <div className="flex items-center gap-2 mt-6 mb-2">
+            <div className="flex items-center gap-2 mt-6 ">
                 <span className="font-bold">이메일 입력</span>
                 <span className="text-sm text-red-500">필수</span>
             </div>
 
-            <Input
-                id="email"
-                type="email"
-                placeholder="입력해주세요."
-            />
+            <div className="flex items-center gap-4">
 
-            <Button
-                onClick={handleSendVerification}
-            >
-                인증번호 발송
-            </Button>
-            
+                <Input
+                    id="email"
+                    type="email"
+                    placeholder="입력해주세요."
+                    className='h-12'
+                />
+
+                <Button
+                    onClick={handleSendVerification}
+                    className='h-12 bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white'
+                >
+                    인증번호 발송
+                </Button>
+
+
+            </div>
+
             {/* 인증번호 발송 시 입력로직 */}
-                        {isVerificationSent && (
+            {isVerificationSent && (
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
                         <span className="font-bold">인증번호 입력</span>
@@ -46,23 +61,40 @@ const SecondStep = () => {
                             type="text"
                             placeholder="인증번호를 입력해주세요"
                             maxLength={6}
+                            className='h-12'
                         />
-                        <Button className="whitespace-nowrap">
+
+                        <Button
+                            className='h-12 bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white'
+
+                        >
                             인증확인
                         </Button>
                     </div>
-                    {/* 선택적: 타이머 또는 재발송 버튼 */}
-                    <p className="text-sm text-gray-500">
+                    {/*타이머 또는 재발송 버튼 */}
+                    <p className="text-sm text-gray-500 ">
                         인증번호 유효시간: 3:00
                     </p>
                 </div>
             )}
 
-            <Button>
-                다음
-            </Button>
-        </div>
+            <div className="flex justify-between ">
+                <Button
+                    onClick={handlePrev}
+                    className="bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white"
+                >
+                    이전
+                </Button>
+                <Button
+                    onClick={handleNext}
+                    className="bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white"
+                >
+                    다음
+                </Button>
+
+            </div>
+
+        </main>
     )
 };
 
-export default SecondStep;

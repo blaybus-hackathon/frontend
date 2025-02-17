@@ -44,6 +44,7 @@
   --chart-4: hsl(43 74% 66%);
   --chart-5: hsl(27 87% 67%);
   --radius: 0.6rem;
+
   --company-primary: #522e9a;
   --helper-primary: #275280;
   --header-gray: #191919;
@@ -77,12 +78,14 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
+  
   --company-primary: #522e9a;
   --helper-primary: #275280;
   --header-gray: #191919;
   --required-red: #d43232;
   --button-black: #171d1b;
   --button-inactive: #f6f6f6;
+
 }
 
 @theme inline {

@@ -1,3 +1,13 @@
+
+
 export default function Test() {
-  return <div>Test</div>;
+  return (
+    <div className="max-w-md mx-auto flex flex-col items-center">
+
+
+
+    </div>
+  );
 }
+
+

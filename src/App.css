@@ -7,36 +7,7 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
 }
 
 .card {
@@ -73,8 +44,13 @@
   --chart-4: hsl(43 74% 66%);
   --chart-5: hsl(27 87% 67%);
   --radius: 0.6rem;
-  --company-primary: #522E9A;
+
+  --company-primary: #522e9a;
   --helper-primary: #275280;
+  --header-gray: #191919;
+  --required-red: #d43232;
+  --button-black: #171d1b;
+  --button-inactive: #f6f6f6;
 }
 
 .dark {
@@ -102,8 +78,14 @@
   --chart-3: hsl(30 80% 55%);
   --chart-4: hsl(280 65% 60%);
   --chart-5: hsl(340 75% 55%);
-  --company-primary: #522E9A;
+  
+  --company-primary: #522e9a;
   --helper-primary: #275280;
+  --header-gray: #191919;
+  --required-red: #d43232;
+  --button-black: #171d1b;
+  --button-inactive: #f6f6f6;
+
 }
 
 @theme inline {
@@ -138,10 +120,26 @@
 }
 
 @layer base {
+  html {
+    font-family: 'Pretendard Variable', sans-serif;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.main-title {
+  @apply text-[1.375rem] font-bold text-black tracking-[-0.01375rem] text-start;
+}
+
+.sub-title {
+  @apply text-xl font-semibold text-[var(--button-black)] tracking-[-0.0125rem];
+}
+
+.required-text {
+  @apply text-[1rem] tracking-[-0.01rem] text-[var(--required-red)];
 }

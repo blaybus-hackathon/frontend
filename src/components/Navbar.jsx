@@ -51,8 +51,10 @@ export default function Component() {
                                 Sign in
                             </Button>
                         </Link>
+                        <Link to="/signUp">
+                            <Button size="lg" className="text-white">Sign up</Button>
+                        </Link>
 
-                        <Button size="lg" className="text-white">Sign up</Button>
                     </div>
                 </div>
             </div>

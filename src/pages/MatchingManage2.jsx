@@ -1,13 +1,15 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import patientStore from '@/store/patientStore';
 
 export default function MatchingManage2({ handleMatchingPage }) {
+  const { patientData } = patientStore();
   const [userInfo, setUserInfo] = useState({
-    name: '박순자',
+    name: patientData.name,
     birth: '1654년 1월 1일',
-    gender: '여성',
-    grade: '등급 없음',
+    gender: patientData.gender,
+    grade: patientData.grade,
     weight: '60kg',
     disease: '치매초기, 당뇨병',
     dementia: ['집 밖을 배회', '단기 기억 장애', '가족', '사람', '어린'],
@@ -70,6 +72,7 @@ export default function MatchingManage2({ handleMatchingPage }) {
 
   return (
     <>
+      {console.log(patientData)}
       <div className='mx-auto flex flex-col items-center max-w-2xl'>
         <p className='font-bold text-xl tracking-[-0.1rem] py-8 w-full mx-auto text-center'>
           ({userInfo.name})어르신의 정보를 확인해주세요

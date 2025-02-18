@@ -43,35 +43,39 @@ jobs:
     needs: build
 
     steps:
-      - name: SSH into EC2 and deploy frontend
+      - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
+          envs: GITHUB_SHA
           script: |
             cd /home/ubuntu
-
-            # ✅ 실행 중인 모든 컨테이너 정리
+            # 실행 중인 모든 컨테이너 정리
             echo "🛑 Stopping all running containers..."
             sudo docker rm -f $(docker ps -qa) || true
             
-            # ✅ 최신 이미지 가져오기
+            # 백엔드 이미지 가져오기
+            echo "🚀 Pulling the latest backend Docker image..."
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/blaybus:latest
+            
+            # 프론트엔드 이미지 가져오기
             echo "🚀 Pulling the latest frontend Docker image..."
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
             
-            # ✅ 기존 컨테이너 종료 및 네트워크 정리
+            # 기존 컨테이너 종료 및 네트워크 정리
             echo "🛑 Stopping and removing existing containers..."
             docker-compose down
             
-            # ✅ 최신 이미지 적용 (docker-compose pull 강제 적용)
-            echo "🚀 Updating to the latest frontend image..."
+            # 최신 이미지 적용
+            echo "🚀 Updating to the latest images..."
             docker-compose pull
             
-            # ✅ 컨테이너 실행 (강제 재생성)
-            echo "🚀 Starting the new container..."
+            # 컨테이너 실행
+            echo "🚀 Starting the new containers..."
             docker-compose up -d --build --force-recreate --no-deps
-
-            # ✅ 사용하지 않는 이미지 정리
+            
+            # 사용하지 않는 이미지 정리
             echo "🧹 Cleaning up old images..."
             docker image prune -f

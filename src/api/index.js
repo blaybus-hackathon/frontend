@@ -1,13 +1,13 @@
-import axios from "axios";
+import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://3.37.158.7:8080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://3.37.158.7'; // VITE 환경변수 사용
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
-  withCredentials: true // CORS 관련 쿠키 전송 필요시
+  withCredentials: true,
 });
 
 export const request = async (method, endpoint, data = {}) => {
@@ -19,7 +19,7 @@ export const request = async (method, endpoint, data = {}) => {
     });
     return response.data;
   } catch (error) {
-    console.error("API 요청 오류: ", error);
+    console.error('API 요청 오류: ', error);
     throw error;
   }
 };

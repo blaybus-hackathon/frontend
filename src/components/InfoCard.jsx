@@ -1,10 +1,6 @@
-import { useState } from 'react';
-
 import profInit from '@/assets/images/default-profile.png';
 
-export default function InfoCard({ checkFunc }) {
-  const [isChecked, setIsChecked] = useState(false);
-
+export default function InfoCard({ isChecked, onCheck, showCheck = true }) {
   return (
     // <div className='mx-[1.5rem] flex flex-col items-center'>
     <div className={`w-full mb-2.5`}>
@@ -26,18 +22,14 @@ export default function InfoCard({ checkFunc }) {
             </p>
             <p className='font-normal'>여성/50세</p>
           </div>
-          <div className='absolute top-0 right-0'>
-            {/* <input type='checkbox' className='hidden' onChange={checkFunc} /> */}
+          <div className={`absolute top-0 right-0 ${!showCheck ? 'hidden' : ''}`}>
             <svg
               width='29'
               height='29'
               viewBox='0 0 29 29'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
-              onClick={() => {
-                setIsChecked(!isChecked);
-                isChecked ? checkFunc(1) : checkFunc(-1);
-              }}
+              onClick={onCheck}
             >
               <rect
                 width='29'

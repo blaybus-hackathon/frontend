@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AddressSearch from '@/components/SignUp/AddressSearch';
@@ -112,17 +112,15 @@ export default function SignTest({ onNext, onPrev }) {
       eduYn: formData.dementia === 'yes',
     };
 
+    try {
+      const response = await request('POST', '/sign/up/helper', requestData)
+      console.log('Successfully signed up:', response);
+    } catch (error) {
+      console.error('Error signing up:', error);
+    }
+
     console.log('requestData:', requestData); // requestData 객체 출력
 
-    try {
-      // API 요청 (src/api/index.js의 request 함수 사용)
-      const response = await request('post', '/users/signUp', requestData);
-
-      // ... existing code ...
-    } catch (error) {
-      // ... existing code ...
-    }
-  };
 
   const toggleLicense = (licenseType) => {
     setFormData((prev) => {

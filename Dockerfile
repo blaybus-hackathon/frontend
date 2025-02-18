@@ -1,14 +1,12 @@
-# Dockerfile
-FROM node:22.12.0-alpine AS build
+# Node.js를 사용하여 빌드
+FROM node:18 AS build
 WORKDIR /app
-COPY package*.json ./
+COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
 RUN npm run build
 
-FROM node:22.12.0-alpine
-RUN npm install -g serve
-WORKDIR /app
-COPY --from=build /app/build .
-EXPOSE 3000
-ENTRYPOINT ["serve", "-s", ".", "-l", "3000"]
+# Nginx를 사용하여 정적 파일 제공
+FROM nginx:latest
+COPY --from=build /app/dist /usr/share/nginx/html
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,10 +1,3 @@
-import ApiRequestComponent from "./api/apiRequest";
-
 export default function Test() {
-  return (
-    <div>
-      <ApiRequestComponent />
-    </div>
-  );
+  return <div>테스트 페이지</div>;
 }
-

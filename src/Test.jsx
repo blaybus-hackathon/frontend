@@ -1,3 +1,9 @@
+import ApiRequestComponent from "./api/apiRequest";
+
 export default function Test() {
-  return <div>Test</div>;
+  return (
+    <div>
+      <ApiRequestComponent />
+    </div>
+  );
 }

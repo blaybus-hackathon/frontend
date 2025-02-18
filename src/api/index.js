@@ -9,13 +9,16 @@ const api = axios.create({
   },
 });
 
-// 예제 API 호출 함수
-export const fetchData = async ({ endpoint }) => {
+export const request = async (method, endpoint, data = {}) => {
   try {
-    const response = await api.get(`/api/${endpoint}`);
+    const response = await api({
+      method,
+      url: `/api${endpoint}`,
+      data,
+    });
     return response.data;
   } catch (error) {
-    console.error("API 요청 오류:", error);
+    console.error("API 요청 오류: ", error);
     throw error;
   }
 };

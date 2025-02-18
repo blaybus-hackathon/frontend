@@ -75,11 +75,11 @@ export default function SignTest({ onNext, onPrev }) {
 
   const isFormValid = () => {
     return (
-      formData.name.trim() !== '' &&
-      formData.phone.trim() !== '' &&
-      formData.addressData.postcode.trim() !== '' &&
-      formData.addressData.address.trim() !== '' &&
-      formData.addressData.detailAddress.trim() !== '' &&
+      formData.name?.trim() !== '' &&
+      formData.phone?.trim() !== '' &&
+      formData.addressData.postcode?.trim() !== '' &&
+      formData.addressData.address?.trim() !== '' &&
+      formData.addressData.detailAddress?.trim() !== '' &&
       formData.car !== null &&
       formData.dementia !== null &&
       formData.licenses.length > 0

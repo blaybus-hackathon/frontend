@@ -87,6 +87,8 @@ export default function SignTest({ onNext, onPrev }) {
   };
 
   const handleSubmit = async () => {
+    event.preventDefault();
+
     if (!isFormValid()) {
       return;
     }

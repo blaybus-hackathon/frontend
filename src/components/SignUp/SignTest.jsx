@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import { request } from '@/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AddressSearch from '@/components/SignUp/AddressSearch';
@@ -113,14 +113,14 @@ export default function SignTest({ onNext, onPrev }) {
     };
 
     try {
-      const response = await request('POST', '/sign/up/helper', requestData)
-      console.log('Successfully signed up:', response);
+      const response = await request('post', '/sign/up/helper', requestData);
+      console.log(response);
     } catch (error) {
-      console.error('Error signing up:', error);
+      console.error('API 요청 실패:', error);
     }
 
     console.log('requestData:', requestData); // requestData 객체 출력
-
+  };
 
   const toggleLicense = (licenseType) => {
     setFormData((prev) => {

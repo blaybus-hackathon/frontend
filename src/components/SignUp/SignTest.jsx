@@ -118,10 +118,16 @@ export default function SignTest({ onNext, onPrev }) {
       const response = await request('post', '/sign/up/helper', requestData);
       console.log(response);
     } catch (error) {
-      console.error('API 요청 실패:', error);
+      if (error.response && error.response.data) {
+        // 서버에서 보내준 에러 메시지를 콘솔에 출력
+        console.error(
+          '서버 에러 메시지:',
+          error.response.data.message || '알 수 없는 오류가 발생했습니다.',
+        );
+      } else {
+        console.error('네트워크 오류가 발생했습니다.');
+      }
     }
-
-    console.log('requestData:', requestData); // requestData 객체 출력
   };
 
   const toggleLicense = (licenseType) => {

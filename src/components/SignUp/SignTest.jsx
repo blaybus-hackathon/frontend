@@ -115,7 +115,7 @@ export default function SignTest({ onNext, onPrev }) {
     };
 
     try {
-      const response = await request('post', '/sign/up/helper', requestData);
+      const response = await request('put', '/sign/up/helper', requestData);
       console.log(response);
     } catch (error) {
       if (error.response && error.response.data) {

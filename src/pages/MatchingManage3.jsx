@@ -1,18 +1,21 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import Dropdown from '@/components/ui/dropdown';
 
 export default function MatchingManage3({ handleMatchingPage }) {
   const DAYS = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
   const BENEFIT = [
     '4대보험',
     '교통비 지원',
-    'ㄴㅇㄹㄴㄹ',
-    'ㄴㅇㄹㄴㄹ',
-    'ㄹㄴㅇㄹㅇ',
-    'ㄹㄴㅇㄹㄴㄹㄴ',
-    'ㄹㄴㅇㄹㄴㄹㄹ',
-    'ㄴㅇㄹㄴㄹㄴㅇㄹ',
+    '퇴직급여',
+    '경조사비',
+    '명절선물',
+    '식사(비)지원',
+    '장기근속 장려금',
+    '정부지원금',
+    '중증가산수당',
+    '운전 수당',
   ];
   const [selectedDays, setSelectedDays] = useState({
     0: false,
@@ -86,12 +89,18 @@ export default function MatchingManage3({ handleMatchingPage }) {
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>근무 종류</label>
           <div className='flex w-full gap-4'>
-            <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
+            {/* <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
               방문 요양
             </div>
             <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
               요양원
-            </div>
+            </div> */}
+            <Button className='flex-1 h-16 text-lg bg-[var(--button-inactive)] text-black'>
+              방문 요양
+            </Button>
+            <Button className='flex-1 h-16 text-lg bg-[var(--button-inactive)] text-black'>
+              요양원
+            </Button>
           </div>
         </div>
         <div className='flex flex-col items-start'>
@@ -106,7 +115,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
           </label>
           <div className='w-full grid grid-cols-2 gap-4'>{renderDays()}</div>
         </div>
-        <div className='flex flex-col items-start gap-3'>
+        {/* <div className='flex flex-col items-start gap-3'>
           <label className='font-semibold text-xl mb-4'>구인 시간</label>
           <div className='w-full h-16 flex items-center justify-center text-lg text-[#6C6C6C]'>
             <div className='flex w-3/10 h-full items-center justify-center'>시작 시간</div>
@@ -153,17 +162,25 @@ export default function MatchingManage3({ handleMatchingPage }) {
             </svg>
             협의 가능
           </Button>
-        </div>
+        </div> */}
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl'>급여</label>
           <p className='text-[var(--required-red)]'>시급 기준 최저 13000원 이상</p>
           <div className='flex w-full mb-4.5 gap-4'>
-            <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
+            {/* <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
               s
+            </div> */}
+            <Dropdown />
+            {/* <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'></div> */}
+            <div className='relative flex items-center flex-1'>
+              <Input
+                type='number'
+                className='flex-1 h-16 bg-[var(--button-inactive)] text-lg text-center pr-10'
+                placeholder='입력'
+              />
+              <span className='absolute right-2 text-lg'>원</span>
             </div>
-            <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
-              s
-            </div>
+            {/* <Input className='flex-1 h-16 bg-[var(--button-inactive)] text-lg text-center' /> */}
           </div>
           <Button
             className='bg-white text-black text-xl border border-gray-500 px-2 h-11'

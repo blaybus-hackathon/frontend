@@ -1,22 +1,68 @@
 import { Button } from '@/components/ui/button';
 import InfoCard from '@/components/InfoCard';
 import { useState } from 'react';
+import patientStore from '@/store/patientStore';
 
 export default function MatchingManage({ handleMatchingPage }) {
-  // const [checkCount, setCheckCount] = useState(0);
+  const tempUsers = [
+    {
+      name: '박순자',
+      gender: '여성',
+      age: 50,
+      workType: '병원 동행',
+      address: '서울 강남구 멍멍동',
+      grade: '등급 없음',
+    },
+    {
+      name: '박양자',
+      gender: '남성',
+      age: 80,
+      workType: '병원 동행',
+      address: '서울 강남구 댕댕동',
+      grade: '등급 위험',
+    },
+    {
+      name: '박순자',
+      gender: '여성',
+      age: 50,
+      workType: '병원 동행',
+      address: '서울 강남구 왕왕동',
+      grade: '등급 없음',
+    },
+    {
+      name: '박순자',
+      gender: '여성',
+      age: 50,
+      workType: '병원 동행',
+      address: '서울 강남구 야옹동',
+      grade: '등급 없음',
+    },
+  ];
+
   const [selectedCard, setSelectedCard] = useState(-1);
+  const { setPatientName, setPatient, setPatientGrade, patientData } = patientStore();
 
   const handleCheck = (idx) => {
     setSelectedCard((prev) => (prev === idx ? -1 : idx));
   };
 
+  // const renderInfoCard = () =>
+  //   [...Array(5)].map((_, idx) => (
+  //     <InfoCard
+  //       key={idx}
+  //       isChecked={selectedCard === idx}
+  //       onCheck={() => handleCheck(idx)}
+  //       checkFunc={setSelectedCard}
+  //     />
+  //   ));
   const renderInfoCard = () =>
-    [...Array(5)].map((_, idx) => (
+    tempUsers.map((_, idx) => (
       <InfoCard
         key={idx}
         isChecked={selectedCard === idx}
         onCheck={() => handleCheck(idx)}
         checkFunc={setSelectedCard}
+        user={tempUsers[idx]}
       />
     ));
 
@@ -36,6 +82,9 @@ export default function MatchingManage({ handleMatchingPage }) {
           disabled={selectedCard === -1}
           onClick={() => {
             handleMatchingPage((prev) => {
+              setPatientName(tempUsers[selectedCard].name);
+              // setPatientGrade(tempUsers[selectedCard].grade);
+              setPatient(tempUsers[selectedCard]);
               return prev + 1;
             });
           }}

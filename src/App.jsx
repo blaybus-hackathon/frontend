@@ -8,6 +8,7 @@ import MatchingStatus from './pages/MatchingStatus';
 
 import SignTest from './components/SignUp/SignTest';
 import ModifyInfo from './pages/ModifyInfo';
+import CaregiverInfo from './pages/CaregiverInfo';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path='/matching' element={<Matching />} />
         <Route path='/status' element={<MatchingStatus />} />
         <Route path='/modify' element={<ModifyInfo />} />
+        <Route path='/caredetail' element={<CaregiverInfo />} />
         <Route path='/test' element={<SignTest />} />
         <Route path='/signIn' element={<SignIn />} />
         <Route path='/signUp' element={<SignUp />} />

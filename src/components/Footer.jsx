@@ -1,36 +1,90 @@
+import { Link, useLocation } from 'react-router-dom';
+
 export default function Footer() {
-    const footerItems = [
-        "개인정보 처리방침",
-        "쿠키정책",
-        "이용약관",
-        "고객센터",
-        "문의하기"
+    const location = useLocation();
+
+
+    const isHome = location.pathname === "/";
+    const isMyPage = location.pathname === "/helper/account";
+
+
+    const tabs = [
+        {
+            icon: <HomeIcon size={20} />,
+            label: "홈",
+            path: "/",
+            isActive: isHome
+        },
+        {
+            icon: <ProfileIcon size={20} />,
+            label: "마이",
+            path: "/helper/account",
+            isActive: isMyPage
+        }
     ];
 
+
     return (
-        <footer className="text-black py-8">
-            <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row items-center gap-4">
-                    <p className="text-2xl font-bold">
-                        &copy; 의미없는여덟글자
-                    </p>
-                    {footerItems.map((item, index) => (
-                        <div key={index} className="flex items-center">
-                            <p>・</p>
-                            <p className="ml-4">{item}</p>
+        <div className="pb-[3.375rem]">
+
+
+            <div className="fixed bottom-0 w-full bg-white z-50">
+                <footer className="  flex items-center border-t border-t-[#C8C8C8] max-w-md mx-auto h-[3.375rem]  z-50">
+                    <div className="max-w-md mx-auto px-6">
+                        <div className="flex justify-center items-center w-full gap-10">
+                            {tabs.map(tab => (
+                                <Link
+                                    key={tab.path}
+                                    to={tab.path}
+                                    className={`flex flex-col items-center rounded-full pt-1.5 justify-center w-32 h-full relative  ${tab.isActive
+                                        ? 'bg-[var(--company-primary)] text-white '
+                                        : 'text-[var(--company-primary)] bg-white'
+                                        }`}
+                                >
+                                    {tab.icon}
+                                    <span className="text-xs mt-1">{tab.label}</span>
+
+                                </Link>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                </footer>
             </div>
-            <div className="text-center mt-8 pt-8 border-t border-gray-800">
-                <p className="text-black"   >
-                    &copy;
-                    이 편지는 영국에서 최초로 시작되어 일년에 한바퀴를 돌면서 받는 사람에게 행운을 주었고 지금은 당신에게로 옮겨진 이 편지는 4일 안에 당신 곁을 떠나야 합니다. 이 편지를 포함해서 7통을 행운이 필요한 사람에게 보내 주셔야 합니다. 복사를 해도 좋습니다. 혹 미신이라 하실지 모르지만 사실입니다.
 
-                    영국에서 HGXWCH이라는 사람은 1930년에 이 편지를 받았습니다. 그는 비서에게 복사해서 보내라고 했습니다. 며칠 뒤에 복권이 당첨되어 20억을 받았습니다. 어떤 이는 이 편지를 받았으나 96시간 이내 자신의 손에서 떠나야 한다는 사실을 잊었습니다. 그는 곧 사직되었습니다. 나중에야 이 사실을 알고 7통의 편지를 보냈는데 다시 좋은 직장을 얻었습니다. 미국의 케네디 대통령은 이 편지를 받았지만 그냥 버렸습니다. 결국 9일 후 그는 암살당했습니다. 기억해 주세요. 이 편지를 보내면 7년의 행운이 있을 것이고 그렇지 않으면 3년의 불행이 있을 것입니다. 그리고 이 편지를 버리거나 낙서를 해서는 절대로 안됩니다. 7통입니다. 이 편지를 받은 사람은 행운이 깃들 것입니다. 힘들겠지만 좋은 게 좋다고 생각하세요. 7년의 행운을 빌면서...
+        </div>
+    );
+}
 
-                </p>
-            </div>
-        </footer>
-    )
+function HomeIcon({ isActive }) {
+    return (
+        <svg
+            width="18"
+            height="19"
+            viewBox="0 0 18 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M10.4508 0.53318C9.6128 -0.17382 8.3872 -0.17382 7.5492 0.53318L0.79916 6.22772C0.29241 6.65523 0 7.28447 0 7.94747V17.2526C0 18.2191 0.7835 19.0026 1.75 19.0026H4.75C5.7165 19.0026 6.5 18.2191 6.5 17.2526V13.25C6.5 12.5707 7.0418 12.018 7.7169 12.0004H10.2831C10.9582 12.018 11.5 12.5707 11.5 13.25V17.2526C11.5 18.2191 12.2835 19.0026 13.25 19.0026H16.25C17.2165 19.0026 18 18.2191 18 17.2526V7.94747C18 7.28447 17.7076 6.65523 17.2008 6.22772L10.4508 0.53318Z"
+                fill="currentColor"
+            />
+        </svg>
+    );
+}
+
+function ProfileIcon({ isActive }) {
+    return (
+        <svg
+            width="16"
+            height="20"
+            viewBox="0 0 16 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M13.7545 12.0002C14.9966 12.0002 16.0034 13.007 16.0034 14.2491V15.1675C16.0034 15.7409 15.8242 16.2999 15.4908 16.7664C13.9449 18.9296 11.4206 20.0013 8.0004 20.0013C4.5794 20.0013 2.05643 18.9292 0.514266 16.7648C0.182306 16.2989 0.00390625 15.7411 0.00390625 15.169V14.2491C0.00390625 13.007 1.01076 12.0002 2.25278 12.0002H13.7545ZM8.0004 0.00488281C10.7618 0.00488281 13.0004 2.24346 13.0004 5.00488C13.0004 7.76631 10.7618 10.0049 8.0004 10.0049C5.23894 10.0049 3.00036 7.76631 3.00036 5.00488C3.00036 2.24346 5.23894 0.00488281 8.0004 0.00488281Z"
+                fill="currentColor"
+            />
+        </svg>
+    );
 }

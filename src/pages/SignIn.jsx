@@ -1,15 +1,44 @@
 import { useState } from "react";
-import Navbar from "@/components/Navbar"
-import Footer from "@/components/Footer"
+import { useNavigate } from "react-router-dom";
 import AuthForm from "@/components/Auth/Authform"
+import axios from 'axios';
+import useAuthStore from '@/store/suho/useAuthStore';
+
+
 export default function SignIn() {
 
+    const navigate = useNavigate();
+    const [loginType, setLoginType] = useState('helper');
+    const { setLoginSuccess } = useAuthStore();
 
-    const [loginType, setLoginType] = useState("helper");
+    const handleSubmit = async ({ email, password }) => {
+        try {
+            console.log(email, password);
+            const response = await axios.post(
+                "http://localhost:8080/api/sign/in",
+                {
+                    "userId": email,
+                    "userPw": password
 
-    const handleSubmit = (data) => {
-        console.log('Login data:', data.email, data.password)
-    }
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (response.status === 200) {
+                console.log('로그인 성공 ', response);
+                const accessToken = response.data.accessToken;
+                setLoginSuccess(accessToken);
+                navigate('/');
+            }
+        } catch (error) {
+            console.error('로그인 실패:', error);
+            alert('이메일 또는 비밀번호가 올바르지 않습니다.');
+        }
+    };
 
 
     return (

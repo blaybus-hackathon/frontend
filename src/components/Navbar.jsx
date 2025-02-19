@@ -1,7 +1,10 @@
 
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
+import useAuthStore from "@/store/suho/useAuthStore";
+
 export default function Component() {
+    const { isLoggedIn } = useAuthStore();
     return (
         <nav className="fixed inset-x-0 top-0 z-50 bg-black shadow-sm ">
             <div className="w-full max-w-7xl mx-auto px-4">
@@ -46,14 +49,32 @@ export default function Component() {
                         </Button>
                     </nav>
                     <div className="flex items-center gap-4 ml-auto ">
-                        <Link to="/signIn">
-                            <Button size="lg" className="text-white" >
-                                Sign in
-                            </Button>
-                        </Link>
-                        <Link to="/signUp">
-                            <Button size="lg" className="text-white">Sign up</Button>
-                        </Link>
+
+                        {isLoggedIn ? (
+                            <>
+                                <Link to="/signIn">
+                                    <Button size="lg" className="text-white" >
+                                        로그인
+                                    </Button>
+                                </Link>
+
+                                <Link to="/signUp">
+                                    <Button size="lg" className="text-white">회원가입</Button>
+                                </Link>
+                            </>
+                        ) : (
+                            <Link to="/">
+                                <Button size="lg" className="text-white"
+                                // 작동안함
+                                >
+
+                                    로그아웃
+                                </Button>
+                            </Link>
+
+                        )}
+
+
 
                     </div>
                 </div>

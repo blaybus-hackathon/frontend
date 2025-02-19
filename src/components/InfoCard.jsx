@@ -1,12 +1,10 @@
 import profInit from '@/assets/images/default-profile.png';
-import patientStore from '@/store/patientStore';
 
 export default function InfoCard({ isChecked, onCheck, showCheck = true, user }) {
   return (
     // <div className='mx-[1.5rem] flex flex-col items-center'>
 
     <div className={`w-full mb-2.5`}>
-      {console.log()}
       <div
         className={`bg-[#F6F6F6] flex items-center max-w-2xl rounded-[1rem] flex-col px-4 mx-auto ${
           isChecked ? 'border border-[var(--company-primary)]' : 'border border-transparent'

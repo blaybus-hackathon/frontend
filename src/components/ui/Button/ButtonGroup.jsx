@@ -19,7 +19,7 @@ export default function ButtonGroup({ groupName, options, isMultiSelect = false 
       {options.map((option) => (
         <button
           key={option}
-          className={`h-[4.1875rem] transition text-lg tracking-[-0.0125rem] rounded-[0.625rem] w-full ${
+          className={`h-[4.1875rem] transition text-base tracking-[-0.0125rem] rounded-[0.625rem] w-full ${
             (
               isMultiSelect
                 ? selectedValues[groupName]?.includes(option)
@@ -30,7 +30,11 @@ export default function ButtonGroup({ groupName, options, isMultiSelect = false 
           }`}
           onClick={() => handleSelect(option)}
         >
-          {option}
+          {option.split('<br />').map((line, index) => (
+            <span key={index} style={{ display: 'block' }}>
+              {line}
+            </span>
+          ))}
         </button>
       ))}
     </>

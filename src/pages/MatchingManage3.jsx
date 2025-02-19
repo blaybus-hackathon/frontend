@@ -38,7 +38,6 @@ export default function MatchingManage3({ handleMatchingPage }) {
     8: false,
     9: false,
   });
-  const [timeNego, setTimeNego] = useState(false);
   const [payNego, setPayNego] = useState(false);
 
   const renderDays = () =>

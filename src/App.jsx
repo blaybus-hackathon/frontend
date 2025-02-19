@@ -5,6 +5,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import './App.css';
 import Matching from './pages/Matching';
+import MatchingStatus from './pages/MatchingStatus';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/matching' element={<Matching />} />
+        <Route path='/status' element={<MatchingStatus />} />
         <Route path='/test' element={<Test />} />
         <Route path='/signIn' element={<SignIn />} />
         <Route path='/signUp' element={<SignUp />} />

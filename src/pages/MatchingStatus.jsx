@@ -1,8 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
 import logo from '@/assets/images/logo.png';
 import profInit from '@/assets/images/default-profile.png';
 import { Button } from '@/components/ui/button';
 
 export default function PatientInfo() {
+  const navigate = useNavigate();
+
   const mealHelp = ['스스로 식사 가능', '죽,반찬 등 요리 필요', '경관식 보조'];
 
   const renderMealHelp = () =>
@@ -14,6 +18,10 @@ export default function PatientInfo() {
         {help}
       </div>
     ));
+
+  const gotoModify = () => {
+    navigate('/modify');
+  };
   return (
     <div>
       <header className='bg-[var(--button-inactive)] h-[3.375rem] px-6 flex items-center justify-between'>
@@ -96,7 +104,10 @@ export default function PatientInfo() {
             {renderMealHelp()}
           </div>
         </div>
-        <Button className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'>
+        <Button
+          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
+          onClick={gotoModify}
+        >
           수정하기
         </Button>
       </div>

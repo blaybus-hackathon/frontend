@@ -19,17 +19,17 @@ export default function ButtonGroup({ groupName, options, isMultiSelect = false 
       {options.map((option) => (
         <button
           key={option}
-          className={`h-[4.1875rem] transition text-lg tracking-[-0.0125rem] rounded-[0.625rem] w-full ${
-            (
+          className={`h-[4.1875rem] transition text-lg tracking-[-0.0125rem] rounded-[0.625rem] w-full ${(
               isMultiSelect
                 ? selectedValues[groupName]?.includes(option)
                 : selectedValues[groupName] === option
             )
               ? 'bg-[var(--company-primary)] text-white font-normal' // active
               : 'bg-[var(--button-inactive)] text-[var(--button-black)] font-normal' // inactive
-          }`}
+            }`}
           onClick={() => handleSelect(option)}
         >
+
           {option}
         </button>
       ))}

@@ -41,7 +41,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-
+  
     steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@master
@@ -49,33 +49,43 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          envs: GITHUB_SHA
           script: |
             cd /home/ubuntu
-            # 실행 중인 모든 컨테이너 정리
-            echo "🛑 Stopping all running containers..."
-            sudo docker rm -f $(docker ps -qa) || true
-            
-            # 백엔드 이미지 가져오기
-            echo "🚀 Pulling the latest backend Docker image..."
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/blaybus:latest
-            
-            # 프론트엔드 이미지 가져오기
-            echo "🚀 Pulling the latest frontend Docker image..."
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
-            
-            # 기존 컨테이너 종료 및 네트워크 정리
-            echo "🛑 Stopping and removing existing containers..."
-            docker-compose down
-            
-            # 최신 이미지 적용
-            echo "🚀 Updating to the latest images..."
-            docker-compose pull
-            
-            # 컨테이너 실행
-            echo "🚀 Starting the new containers..."
-            docker-compose up -d --build --force-recreate --no-deps
-            
-            # 사용하지 않는 이미지 정리
-            echo "🧹 Cleaning up old images..."
+  
+            # 현재 어떤 환경이 떠있는지 확인 (Blue가 떠있으면 Green 배포, Green이 떠있으면 Blue 배포)
+            CURRENT_COLOR=$(docker ps --format '{{.Names}}' | grep 'frontend-blue' || true)
+  
+            if [ -n "$CURRENT_COLOR" ]; then
+              echo "=== Detected Blue is running. Deploying to Green. ==="
+              docker-compose -f docker-compose.green.yml pull
+              docker-compose -f docker-compose.green.yml up -d
+  
+              # Health check for Green
+              sleep 10
+              curl -f http://localhost:20080 || (echo "Green health check failed" && exit 1)
+  
+              # Nginx proxy_pass -> 20080
+              sudo sed -i 's/127.0.0.1:10080/127.0.0.1:20080/g' /etc/nginx/conf.d/yourdomain.conf
+              sudo nginx -s reload
+  
+              # Down Blue
+              docker-compose -f docker-compose.blue.yml down
+            else
+              echo "=== Detected Green is running or nothing is running. Deploying to Blue. ==="
+              docker-compose -f docker-compose.blue.yml pull
+              docker-compose -f docker-compose.blue.yml up -d
+  
+              # Health check for Blue
+              sleep 10
+              curl -f http://localhost:10080 || (echo "Blue health check failed" && exit 1)
+  
+              # Nginx proxy_pass -> 10080
+              sudo sed -i 's/127.0.0.1:20080/127.0.0.1:10080/g' /etc/nginx/conf.d/yourdomain.conf
+              sudo nginx -s reload
+  
+              # Down Green
+              docker-compose -f docker-compose.green.yml down
+            fi
+  
+            # Docker prune
             docker image prune -f

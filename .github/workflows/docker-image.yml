@@ -43,56 +43,39 @@ jobs:
     needs: build
 
     steps:
-      - name: Deploy to server (Blue/Green)
+      - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOST }}            # 예: 52.78.xxx.xxx
+          host: ${{ secrets.HOST }}
           username: ubuntu
-          key: ${{ secrets.KEY }}             # SSH Private Key
+          key: ${{ secrets.KEY }}
+          envs: GITHUB_SHA
           script: |
             cd /home/ubuntu
-
-            echo "1) 현재 떠 있는 컨테이너가 Blue인지 Green인지 확인"
-            CURRENT_COLOR=$(docker ps --format '{{.Names}}' | grep 'frontend-blue' || true)
-
-            if [ -n "$CURRENT_COLOR" ]; then
-              echo "===> Blue가 현재 동작 중이므로, Green에 새 버전 배포"
-              # 2) Green 이미지 Pull & 띄우기
-              docker-compose -f docker-compose.green.yml pull
-              docker-compose -f docker-compose.green.yml up -d
-
-              # 3) 헬스체크 (간단히 localhost:20080 접근)
-              echo "===> Health Check for Green"
-              sleep 5
-              curl -f http://blaybus:20080 || (echo "Green health check failed!" && exit 1)
-
-              echo "===> Nginx를 Green(20080)으로 전환"
-              sudo sed -i 's/blaybus:10080/blaybus:20080/g' /etc/nginx/conf.d/myapp.conf
-              sudo nginx -t
-              sudo nginx -s reload
-
-              echo "===> Blue 종료"
-              docker-compose -f docker-compose.blue.yml down
-
-            else
-              echo "===> Green이 현재 동작 중(또는 아무것도 안 떠 있음) -> Blue에 새 버전 배포"
-              # 2) Blue 이미지 Pull & 띄우기
-              docker-compose -f docker-compose.blue.yml pull
-              docker-compose -f docker-compose.blue.yml up -d
-
-              # 3) 헬스체크
-              echo "===> Health Check for Blue"
-              sleep 5
-              curl -f http://localhost:10080 || (echo "Blue health check failed!" && exit 1)
-
-              echo "===> Nginx를 Blue(10080)으로 전환"
-              sudo sed -i 's/blaybus:20080/blaybus:10080/g' /etc/nginx/conf.d/myapp.conf
-              sudo nginx -t
-              sudo nginx -s reload
-
-              echo "===> Green 종료"
-              docker-compose -f docker-compose.green.yml down
-            fi
-
-            echo "===> 불필요한 이미지 정리"
+            # 실행 중인 모든 컨테이너 정리
+            echo "🛑 Stopping all running containers..."
+            sudo docker rm -f $(docker ps -qa) || true
+            
+            # 백엔드 이미지 가져오기
+            echo "🚀 Pulling the latest backend Docker image..."
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/blaybus:latest
+            
+            # 프론트엔드 이미지 가져오기
+            echo "🚀 Pulling the latest frontend Docker image..."
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+            
+            # 기존 컨테이너 종료 및 네트워크 정리
+            echo "🛑 Stopping and removing existing containers..."
+            docker-compose down
+            
+            # 최신 이미지 적용
+            echo "🚀 Updating to the latest images..."
+            docker-compose pull
+            
+            # 컨테이너 실행
+            echo "🚀 Starting the new containers..."
+            docker-compose up -d --build --force-recreate --no-deps
+            
+            # 사용하지 않는 이미지 정리
+            echo "🧹 Cleaning up old images..."
             docker image prune -f

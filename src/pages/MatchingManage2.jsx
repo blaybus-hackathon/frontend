@@ -1,7 +1,9 @@
-import { Input } from '@/components/ui/input';
+// import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import patientStore from '@/store/patientStore';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio';
+// import { Label } from '@/components/ui/label';
 
 export default function MatchingManage2({ handleMatchingPage }) {
   const { patientData } = patientStore();
@@ -21,7 +23,8 @@ export default function MatchingManage2({ handleMatchingPage }) {
   });
 
   const renderDementia = () =>
-    userInfo.dementia.map((item, idx) => (
+    // userInfo.dementia.map((item, idx) => (
+    patientData.dementia.map((item, idx) => (
       <div
         key={idx}
         className='bg-[var(--button-inactive)] rounded-md h-16 flex justify-center items-center px-3 py-1'
@@ -31,7 +34,8 @@ export default function MatchingManage2({ handleMatchingPage }) {
     ));
 
   const renderMeal = () =>
-    userInfo.meal.map((item, idx) => (
+    // userInfo.meal.map((item, idx) => (
+    patientData.meal.map((item, idx) => (
       <div
         key={idx}
         className='bg-[var(--button-inactive)] rounded-md h-16 flex justify-center items-center px-3 py-1'
@@ -41,7 +45,8 @@ export default function MatchingManage2({ handleMatchingPage }) {
     ));
 
   const renderPoop = () =>
-    userInfo.poop.map((item, idx) => (
+    // userInfo.poop.map((item, idx) => (
+    patientData.toilet.map((item, idx) => (
       <div
         key={idx}
         className='bg-[var(--button-inactive)] rounded-md h-16 flex justify-center items-center px-3 py-1'
@@ -51,7 +56,8 @@ export default function MatchingManage2({ handleMatchingPage }) {
     ));
 
   const renderMobile = () =>
-    userInfo.mobile.map((item, idx) => (
+    // userInfo.mobile.map((item, idx) => (
+    patientData.mobile.map((item, idx) => (
       <div
         key={idx}
         className='bg-[var(--button-inactive)] rounded-md h-16 flex justify-center items-center px-3 py-1'
@@ -61,7 +67,8 @@ export default function MatchingManage2({ handleMatchingPage }) {
     ));
 
   const renderDaily = () =>
-    userInfo.daily.map((item, idx) => (
+    // userInfo.daily.map((item, idx) => (
+    patientData.daily.map((item, idx) => (
       <div
         key={idx}
         className='bg-[var(--button-inactive)] rounded-md h-16 flex justify-center items-center px-3 py-1'
@@ -69,6 +76,10 @@ export default function MatchingManage2({ handleMatchingPage }) {
         {item}
       </div>
     ));
+
+  const radioChange = (val) => {
+    console.log(val);
+  };
 
   return (
     <>
@@ -81,46 +92,62 @@ export default function MatchingManage2({ handleMatchingPage }) {
       <div className='px-[1.5rem] mx-auto flex flex-col gap-5 max-w-2xl mb-40'>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>이름</label>
-          <Input
+          <div className='h-16 bg-[var(--button-inactive)] rounded-md flex text-lg w-full font-medium items-center px-3'>
+            {patientData.name}
+          </div>
+          {/* <Input
             className='h-16 bg-[var(--button-inactive)] font-medium text-lg'
             value={userInfo.name}
             onChange={(e) => {
               setUserInfo((prev) => ({ ...prev, name: e.target.value }));
             }}
-          />
+          /> */}
         </div>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>생년월일</label>
-          <Input
+          {/* <Input
             className='h-16 bg-[var(--button-inactive)] font-medium text-lg'
             value={userInfo.birth}
             onChange={(e) => {
               setUserInfo((prev) => ({ ...prev, birth: e.target.value }));
             }}
-          />
+          /> */}
+          <div className='h-16 bg-[var(--button-inactive)] rounded-md flex text-lg w-full font-medium items-center px-3'>
+            {patientData.birth}
+          </div>
         </div>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>성별</label>
-          <div className='w-1/2 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
-            {userInfo.gender}
+          {/* <div className='w-1/2 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
+            {patientData.gender}
+          </div> */}
+          <RadioGroup defaultValue='입주' onValueChange={(value) => radioChange(value)}>
+            <RadioGroupItem>방문요양</RadioGroupItem>
+            <RadioGroupItem value='입주'>입주요양</RadioGroupItem>
+            <RadioGroupItem>행복</RadioGroupItem>
+            <RadioGroupItem>나눔</RadioGroupItem>
+            <RadioGroupItem>키움</RadioGroupItem>
+          </RadioGroup>
+          <div>
+            <RadioGroup />
           </div>
         </div>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>장기요양등급</label>
           <div className='w-1/2 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
-            {userInfo.grade}
+            {patientData.grade}
           </div>
         </div>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>몸무게</label>
           <div className='w-1/2 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
-            {userInfo.weight}
+            {patientData.weight}kg
           </div>
         </div>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>보유 질병/질환</label>
           <div className='w-full h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-start pl-3 font-medium text-lg'>
-            {userInfo.disease}
+            {patientData.disease}
           </div>
         </div>
         <div className='flex flex-col items-start'>
@@ -132,7 +159,7 @@ export default function MatchingManage2({ handleMatchingPage }) {
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>동거인 여부</label>
           <div className='w-full h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
-            {userInfo.with}
+            {patientData.with}
           </div>
         </div>
         <div className='flex flex-col items-start'>

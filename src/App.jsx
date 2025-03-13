@@ -1,15 +1,15 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
+import Home from "./pages/suho/Home";
 import Test from "./Test";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import Account from "./pages/Account";
-import AccountEdit from "./pages/AccountEdit";
-import HelperLocation from "./pages/HelperLocation";
-import HelperLocationDetail from "./pages/HelperLocationDetail";
-import AccountSchedule from "./pages/AccountSchedule";
-import AccountPay from "./pages/AccountPay";
-import AccountCareType from "./pages/AccountCareType";
+import SignIn from "./pages/suho/SignIn";
+import SignUp from "./pages/suho/SignUp";
+import Account from "./pages/suho/Account";
+import AccountEdit from "./pages/suho/AccountEdit";
+import HelperLocation from "./pages/suho/HelperLocation";
+import HelperLocationDetail from "./pages/suho/HelperLocationDetail";
+import AccountSchedule from "./pages/suho/AccountSchedule";
+import AccountPay from "./pages/suho/AccountPay";
+import AccountCareType from "./pages/suho/AccountCareType";
 
 import "./App.css";
 

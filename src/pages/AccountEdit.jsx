@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
+
+import { Input } from '@/components/ui/Components/input'
 import { TextAreaInput } from "@/components/ui/TextAreaInput"
 
 import Header from '@/components/Header';
@@ -159,6 +161,9 @@ export default function AccountEdit() {
                 </div>
 
                 <div className="space-y-2">
+
+
+
                     <Input
                         value={editedProfile?.name || ''}           // profile -> editedProfile
                         onChange={(e) => handleBasicInfoChange('name', e.target.value)}

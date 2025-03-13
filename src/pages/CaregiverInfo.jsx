@@ -1,6 +1,5 @@
 import Header from '@/components/Header';
 
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 import profInit from '@/assets/images/default-profile.png';

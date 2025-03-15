@@ -44,7 +44,7 @@ export default function SignIn() {
     return (
         <>
 
-            <div>Sign in</div>
+            
             <div className="min-h-screen flex flex-col">
 
                 <main className="flex-grow ">

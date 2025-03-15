@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 
-const Radio = ({ className, children, onValueChange, cols, ...props }) => {
-  const [checkedItems, setCheckedItems] = useState([]);
+const Radio = ({ className, children, onValueChange, cols, multiple = false, ...props }) => {
+  const [checkedItems, setCheckedItems] = useState(multiple ? [] : null);
   const handleChecked = (val) => {
-    setCheckedItems((prev) => {
-      const _checkedItems = prev.includes(val) ? prev.filter((x) => x !== val) : [...prev, val];
-      onValueChange?.(_checkedItems);
-      return _checkedItems;
-    });
-    console.log(checkedItems);
+    if (multiple) {
+      setCheckedItems((prev) => {
+        const _checkedItems = prev.includes(val) ? prev.filter((x) => x !== val) : [...prev, val];
+        onValueChange?.(_checkedItems);
+
+        return _checkedItems;
+      });
+    } else {
+      setCheckedItems(val);
+      onValueChange?.(val);
+    }
   };
 
   return (
@@ -26,7 +31,7 @@ const Radio = ({ className, children, onValueChange, cols, ...props }) => {
               onClick: () => {
                 handleChecked(value);
               },
-              checked: checkedItems.includes(value),
+              checked: multiple ? checkedItems.includes(value) : checkedItems === value,
             })
           : null;
       })}

@@ -2,7 +2,6 @@
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import patientStore from '@/store/patientStore';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio';
 import { Radio, RadioItem } from '@/components/ui/multiRadio';
 // import { Label } from '@/components/ui/label';
 
@@ -122,30 +121,12 @@ export default function MatchingManage2({ handleMatchingPage }) {
           <div className='w-1/2 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
             {patientData.gender}
           </div>
-          {/* <RadioGroup defaultValue='입주' onValueChange={(value) => radioChange(value)}>
-            <RadioGroupItem>방문요양</RadioGroupItem>
-            <RadioGroupItem value='입주'>입주요양</RadioGroupItem>
-            <RadioGroupItem>행복</RadioGroupItem>
-            <RadioGroupItem>나눔</RadioGroupItem>
-            <RadioGroupItem>키움</RadioGroupItem>
-          </RadioGroup> */}
         </div>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>장기요양등급</label>
           <div className='w-1/2 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
             {patientData.grade}
           </div>
-          {/* <Radio
-            onValueChange={(value) => {
-              radioChange(value);
-            }}
-            cols={2}
-          >
-            <RadioItem>Hello</RadioItem>
-            <RadioItem>Bye</RadioItem>
-            <RadioItem>장기요양</RadioItem>
-            <RadioItem>방문요양</RadioItem>
-          </Radio> */}
         </div>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>몸무게</label>

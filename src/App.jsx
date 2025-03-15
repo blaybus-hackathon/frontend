@@ -1,6 +1,6 @@
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/suho/Home";
-import Test from "./Test";
+// import Home from "./pages/suho/Home";
 import SignIn from "./pages/suho/SignIn";
 import SignUp from "./pages/suho/SignUp";
 import Account from "./pages/suho/Account";
@@ -13,12 +13,21 @@ import AccountCareType from "./pages/suho/AccountCareType";
 
 import "./App.css";
 
+import Home from './pages/Home';
+import Test from './Test';
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
+import Matching from './pages/Matching';
+import MatchingStatus from './pages/MatchingStatus';
+
+
+import SignTest from './components/SignUp/SignTest';
+
 function App() {
-
   return (
-
     <Router>
       <Routes>
+
         <Route path="/" element={<Home />} />
         <Route path="/test" element={<Test />} />
 
@@ -27,7 +36,7 @@ function App() {
         <Route path="/signIn" element={<SignIn />} />
 
         {/* Helper */}
-        <Route path="/signUp" element={<SignUp />} />
+//         <Route path="/signUp" element={<SignUp />} />
         <Route path="/helper/account" element={<Account />} />
         <Route path="/helper/account/edit" element={<AccountEdit />} />
         <Route path="/helper/account/schedule" element={<AccountSchedule />} />
@@ -38,10 +47,14 @@ function App() {
 
 
 
+
+        <Route path='/matching' element={<Matching />} />
+        <Route path='/status' element={<MatchingStatus />} />
+        <Route path='/test' element={<SignTest />} />
+        <Route path='/signIn' element={<SignIn />} />
+        <Route path='/signUp' element={<SignUp />} />
       </Routes>
     </Router>
-
-
   );
 }
 

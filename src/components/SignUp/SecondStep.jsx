@@ -1,12 +1,71 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-export default function SecondStep({ onNext, onPrev }) {
-    const [isVerificationSent, setIsVerificationSent] = useState(false);
 
-    const handleSendVerification = () => {
-        setIsVerificationSent(true);
+import useAuthStore from '@/store/suho/useAuthStore';
+import axios from 'axios';
+
+export default function SecondStep({ onNext, onPrev }) {
+
+    const [inputEmail, setInputEmail] = useState('');
+    const [inputAuthNumber, setInputAuthNumber] = useState('');
+    const [isVerificationSent, setIsVerificationSent] = useState(false);
+    const [authNumber, setAuthNumber] = useState(null);
+
+    const { email, isVerified, setEmail, setIsVerified } = useAuthStore();
+
+    useEffect(() => {
+        if (isVerified && email) {
+            setInputEmail(email);
+            setIsVerificationSent(true);
+        }
+    }, []);
+
+
+    const handleSendVerification = async () => {
+        try {
+            const response = await axios.post(
+                'http://localhost:8080/api/sign/authentication-mail',
+                { email: inputEmail }  // 로컬 상태의 이메일 사용
+            );
+
+            if (response.status === 200 && response.data) {
+
+                setAuthNumber(Number(response.data.mailSeq));
+                setIsVerificationSent(true);
+            }
+        } catch (error) {
+            console.error('이메일 인증 요청 실패:', error);
+        }
+    };
+
+    const handleVerifyNumber = async () => {
+        try {
+
+            const response = await axios.post(
+                'http://localhost:8080/api/sign/check-code',
+                {
+                    amSeq: authNumber,  // 서버에서 받은 인증번호 시퀀스
+                    email: inputEmail,   // 입력한 이메일
+                    code: inputAuthNumber // 입력한 인증번호
+                }
+            );
+
+
+            // 서버 응답에 따른 처리
+            if (response.status === 200 && response.data) {
+                setIsVerified(true);
+                setEmail(inputEmail);  // 인증 성공 시에만 zustand에 이메일 저장
+
+            } else {  // 인증 실패
+                setIsVerified(false);
+            }
+        } catch (error) {
+            console.error('인증번호 확인 실패:', error);
+            setIsVerified(false);
+            alert('인증 확인 중 오류가 발생했습니다.');
+        }
     };
 
     const handleNext = () => {
@@ -36,6 +95,8 @@ export default function SecondStep({ onNext, onPrev }) {
                     id="email"
                     type="email"
                     placeholder="입력해주세요."
+                    value={inputEmail}
+                    onChange={(e) => setInputEmail(e.target.value)}
                     className='h-12'
                 />
 
@@ -59,22 +120,22 @@ export default function SecondStep({ onNext, onPrev }) {
                     <div className="flex gap-2">
                         <Input
                             type="text"
+                            value={inputAuthNumber}
+                            onChange={(e) => setInputAuthNumber(e.target.value)}
                             placeholder="인증번호를 입력해주세요"
-                            maxLength={6}
+                            maxLength={5}
                             className='h-12'
                         />
 
                         <Button
+                            onClick={handleVerifyNumber}
+                            disabled={!inputAuthNumber}  // 인증번호가 없으면 비활성화
                             className='h-12 bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white'
 
                         >
                             인증확인
                         </Button>
                     </div>
-                    {/*타이머 또는 재발송 버튼 */}
-                    <p className="text-sm text-gray-500 ">
-                        인증번호 유효시간: 3:00
-                    </p>
                 </div>
             )}
 
@@ -87,7 +148,12 @@ export default function SecondStep({ onNext, onPrev }) {
                 </Button>
                 <Button
                     onClick={handleNext}
-                    className="bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white"
+                    disabled={!isVerified}
+
+                    className={`${isVerified
+                        ? 'bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90'
+                        : 'bg-gray-300'
+                        } text-white`}
                 >
                     다음
                 </Button>

@@ -9,7 +9,7 @@ export default function MatchingManage({ handleMatchingPage }) {
       name: '박순자',
       gender: '여성',
       age: 50,
-      workType: '병원 동행',
+      workType: '방문 요양',
       address: '서울 강남구 멍멍동',
       grade: '등급 없음',
     },
@@ -22,18 +22,18 @@ export default function MatchingManage({ handleMatchingPage }) {
       grade: '등급 위험',
     },
     {
-      name: '박순자',
+      name: '박군자',
       gender: '여성',
-      age: 50,
-      workType: '병원 동행',
+      age: 90,
+      workType: '주야긴 보호',
       address: '서울 강남구 왕왕동',
       grade: '등급 없음',
     },
     {
-      name: '박순자',
+      name: '박임자',
       gender: '여성',
-      age: 50,
-      workType: '병원 동행',
+      age: 102,
+      workType: '입주 요양',
       address: '서울 강남구 야옹동',
       grade: '등급 없음',
     },
@@ -68,7 +68,7 @@ export default function MatchingManage({ handleMatchingPage }) {
 
   return (
     <>
-      <div className='mx-auto px-[1.5rem] flex flex-col items-center max-w-2xl'>
+      <div className='mx-auto px-[1.5rem] flex flex-col items-center max-w-2xl mb-40'>
         <p className='font-bold text-xl tracking-[-0.1rem] py-8 w-full mx-auto text-center'>
           매칭이 필요한 어르신을 선택해주세요!
         </p>

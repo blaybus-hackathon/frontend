@@ -1,499 +1,483 @@
-import { useState } from 'react';
+import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import AddressSearch from '@/components/SignUp/AddressSearch';
+import useAuthStore from '@/store/suho/useAuthStore';
+import axios from 'axios';
+
 
 export default function ThirdStep({ onNext, onPrev }) {
-  // TODO : 상태 저장에 대해서는 여유보고 추가할 것
 
-  const [formData, setFormData] = useState({
-    email: '',
-    name: '',
-    phone: '',
-    password: '',
-    addressData: {
-      postcode: '',
-      address: '',
-      detailAddress: '',
-      extraAddress: '',
-    },
-    car: null,
-    dementia: null,
-    licenses: [],
-    licenseDetails: {
-      license1: '',
-      license2: '',
-      license3: '',
-      license4: '',
-      license5: '',
-    },
-  });
+        const navigate = useNavigate();  // 추가
+        const [newOtherCert, setNewOtherCert] = useState('');
+        const handleAddOtherCert = () => {
+                if (newOtherCert.trim()) {
+                        addHelperOtherCert(newOtherCert.trim());
+                        setNewOtherCert('');  // 입력 필드 초기화
+                }
+        };
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-  };
+        const [certToggles, setCertToggles] = useState({
+                essential: false,
+                care: false,
+                nurse: false,
+                postPartum: false,
+                other: false
+        });
 
-  const handleNext = () => {
-    // 필수가 선택되었는지 체크할 필요가 있음
-    onNext();
-  };
+        const toggleCert = (certType) => {
+                setCertToggles(prev => {
+                        const newValue = !prev[certType];
 
-  const handlePrev = () => {
-    onPrev();
-  };
+                        // 토글이 꺼질 때 해당 자격증 데이터 초기화
+                        if (!newValue) {
+                                switch (certType) {
+                                        case 'essential':
+                                                setEssentialCertNo('');
+                                                break;
+                                        case 'care':
+                                                setCareCertNo('');
+                                                break;
+                                        case 'nurse':
+                                                setNurseCertNo('');
+                                                break;
+                                        case 'postPartum':
+                                                setPostPartumCertNo('');
+                                                break;
+                                        case 'other':
+                                                setHelperOtherCerts([]); // 기타 자격증 목록 초기화
+                                                setNewOtherCert(''); // 입력 필드도 초기화
+                                                break;
+                                }
+                        }
 
-  const handleCarSelection = (value) => {
-    setFormData((prev) => ({
-      ...prev,
-      car: value,
-    }));
-  };
+                        return {
+                                ...prev,
+                                [certType]: newValue
+                        };
+                });
+        };
 
-  const handleDementiaSelection = (value) => {
-    setFormData((prev) => ({
-      ...prev,
-      dementia: value,
-    }));
-  };
+        const store = useAuthStore();
 
-  const handleAddressChange = (addressData) => {
-    setFormData((prev) => ({
-      ...prev,
-      addressData: {
-        postcode: addressData.postcode,
-        address: addressData.address,
-        detailAddress: addressData.detailAddress,
-        extraAddress: addressData.extraAddress,
-      },
-    }));
-  };
 
-  const isFormValid = () => {
-    return (
-      // formData.name.trim() !== '' &&
-      // formData.phone.trim() !== '' &&
-      // formData.addressData.postcode.trim() !== '' &&
-      // formData.addressData.address.trim() !== '' &&
-      // formData.addressData.detailAddress.trim() !== '' &&
-      formData.car !== null && formData.dementia !== null && formData.licenses.length > 0
-    );
-  };
+        const {
+                email,
+                password,
+                name,
+                phone,
+                addressDetail,
+                carOwnYn,
+                eduYn,
 
-  const handleSubmit = () => {
-    // 유효성 검사 통과 후 처리
-    handleNext();
-  };
+                essentialCertNo,
+                careCertNo,
+                nurseCertNo,
+                postPartumCertNo,
+                helperOtherCerts,
 
-  const toggleLicense = (licenseType) => {
-    setFormData((prev) => {
-      const updatedLicenses = prev.licenses.includes(licenseType)
-        ? prev.licenses.filter((item) => item !== licenseType)
-        : [...prev.licenses, licenseType];
+                setPassword,
+                setName,
+                setPhone,
+                setAddressDetail,
+                setCarOwnYn,
+                setEduYn,
 
-      // 자격증이 해제되면 해당 상세 정보도 초기화
-      const updatedDetails = { ...prev.licenseDetails };
-      if (!updatedLicenses.includes(licenseType)) {
-        updatedDetails[licenseType] = '';
-      }
+                setHelperOtherCerts,
+                setEssentialCertNo,
+                setCareCertNo,
+                setNurseCertNo,
+                setPostPartumCertNo,
 
-      return {
-        ...prev,
-        licenses: updatedLicenses,
-        licenseDetails: updatedDetails,
-      };
-    });
-  };
+                addHelperOtherCert,
 
-  const handleLicenseDetail = (licenseType, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      licenseDetails: {
-        ...prev.licenseDetails,
-        [licenseType]: value,
-      },
-    }));
-  };
+                removeHelperOtherCert,
 
-  return (
-    <main className='flex flex-col gap-4 max-w-2xl mx-auto'>
-      <div className='flex flex-col gap-4'>
-        <p className='text-left font-bold'>
-          회원가입을 위해
-          <br />
-          개인정보를 입력해주세요!
-        </p>
-        <div className='flex items-center gap-2 mt-4 '>
-          <span className='font-bold'>이메일</span>
-        </div>
-        <Input
-          id='email'
-          type='text'
-          value={formData.email}
-          onChange={handleChange}
-          placeholder='이메일을 입력해주세요.'
-          className='h-12'
-        />
+                clearAll
+        } = useAuthStore();
 
-        <div className='flex items-center gap-2 mt-4 '>
-          <span className='font-bold'>비밀번호</span>
-          <span className='text-sm text-red-500'>필수</span>
-        </div>
-        <Input
-          id='password'
-          type='password'
-          value={formData.password}
-          onChange={handleChange}
-          placeholder='비밀번호를 입력해주세요.'
-          className='h-12'
-        />
+        const handleDebug = () => {
+                console.log('Current Store State:', store);
+        };
 
-        <div className='flex items-center gap-2 mt-4 '>
-          <span className='font-bold'>이름</span>
-          <span className='text-sm text-red-500'>필수</span>
-        </div>
-        <Input
-          id='name'
-          type='text'
-          value={formData.name}
-          onChange={handleChange}
-          placeholder='예) 홍길동'
-          className='h-12'
-        />
+        const handleSignUp = async () => {
+                try {
+                        const signUpData = {
+                                "email": email,
+                                "password": password,
+                                "roleType": "MEMBER",
+                                "name": name,
+                                "phone": phone,
+                                "addressDetail": addressDetail,
+                                "carOwnYn": carOwnYn,
+                                "eduYn": eduYn,
+                                "essentialCertNo": essentialCertNo,
+                                "careCertNo": careCertNo,
+                                "nurseCertNo": nurseCertNo,
+                                "postPartumCertNo": postPartumCertNo,
+                                "helperOtherCerts": helperOtherCerts
+                        };
 
-        <div className='flex items-center gap-2 mt-4 '>
-          <span className='font-bold'>전화번호</span>
-          <span className='text-sm text-red-500'>필수</span>
-        </div>
-        <Input
-          id='phone'
-          type='text'
-          value={formData.phone}
-          onChange={handleChange}
-          placeholder='예) 010-0000-0000'
-          className='h-12'
-        />
+                        const response = await axios.put(
+                                'http://localhost:8080/api/sign/up/helper',
+                                signUpData,
+                                {
+                                        headers: {
+                                                'Content-Type': 'application/json'
+                                        }
+                                }
+                        );
 
-        <div className='flex items-center gap-2 mt-4 '>
-          <span className='font-bold'>주소</span>
-          <span className='text-sm text-red-500'>필수</span>
-        </div>
-        <AddressSearch onAddressSelect={handleAddressChange} selectedAddress={formData.address} />
+                        if (response.status === 200) {
+                                console.log('회원가입 성공');
+                                console.log(response.data);
+                                clearAll();
+                                navigate('/');  // 홈페이지로 이동
 
-        <div className='flex items-center gap-2 mt-4 '>
-          <span className='font-bold'>차량소유여부</span>
-          <span className='text-sm text-red-500'>필수</span>
-        </div>
-        <div className='flex gap-6 items-center justify-center'>
-          <Button
-            className='flex gap-2 bg-white hover:bg-white text-black border border-gray-300'
-            onClick={() => handleCarSelection('yes')}
-          >
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                width='29'
-                height='29'
-                rx='14.5'
-                fill={formData.car === 'yes' ? 'var(--helper-primary)' : '#B6B6B6'}
-              />
-              <path
-                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                fill='white'
-              />
-            </svg>
-            예
-          </Button>
-          <Button
-            className='flex gap-2 bg-white hover:bg-white text-black border border-gray-300'
-            onClick={() => handleCarSelection('no')}
-          >
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                width='29'
-                height='29'
-                rx='14.5'
-                fill={formData.car === 'no' ? 'var(--helper-primary)' : '#B6B6B6'}
-              />
-              <path
-                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                fill='white'
-              />
-            </svg>
-            아니요
-          </Button>
-        </div>
 
-        <div className='flex items-center gap-2 mt-4 '>
-          <span className='font-bold'>치매교육 이수 여부</span>
-          <span className='text-sm text-red-500'>필수</span>
-        </div>
-        <div className='flex gap-6 justify-center'>
-          <Button
-            className='flex gap-2 bg-white hover:bg-white text-black border border-gray-300'
-            onClick={() => handleDementiaSelection('yes')}
-          >
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                width='29'
-                height='29'
-                rx='14.5'
-                fill={formData.dementia === 'yes' ? 'var(--helper-primary)' : '#B6B6B6'}
-              />
-              <path
-                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                fill='white'
-              />
-            </svg>
-            예
-          </Button>
-          <Button
-            className='flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300'
-            onClick={() => handleDementiaSelection('no')}
-          >
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                width='29'
-                height='29'
-                rx='14.5'
-                fill={formData.dementia === 'no' ? 'var(--helper-primary)' : '#B6B6B6'}
-              />
-              <path
-                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                fill='white'
-              />
-            </svg>
-            아니요
-          </Button>
-        </div>
+                        }
+                } catch (error) {
+                        console.error('회원가입 실패:', error);
+                        alert('회원가입 중 오류가 발생했습니다.');
+                }
+        };
 
-        <div className='flex items-center gap-2 mt-4 '>
-          <span className='font-bold'>자격증 등록</span>
-          <span className='text-sm text-red-500'>필수</span>
-        </div>
-        <div className='flex flex-col gap-6'>
-          <Button
-            className='flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300'
-            onClick={() => toggleLicense('license1')}
-          >
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                width='29'
-                height='29'
-                rx='14.5'
-                fill={formData.licenses.includes('license1') ? 'var(--helper-primary)' : '#B6B6B6'}
-              />
-              <path
-                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                fill='white'
-              />
-            </svg>
-            요양보호사
-          </Button>
-          {formData.licenses.includes('license1') && (
-            <div className='mt-2'>
-              <Input
-                type='text'
-                placeholder='자격증번호를 입력해주세요'
-                value={formData.licenseDetails.license1}
-                onChange={(e) => handleLicenseDetail('license1', e.target.value)}
-                className='w-full'
-              />
-            </div>
-          )}
-          <Button
-            className='flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300'
-            onClick={() => toggleLicense('license2')}
-          >
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                width='29'
-                height='29'
-                rx='14.5'
-                fill={formData.licenses.includes('license2') ? 'var(--helper-primary)' : '#B6B6B6'}
-              />
-              <path
-                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                fill='white'
-              />
-            </svg>
-            간병사
-          </Button>
-          {formData.licenses.includes('license2') && (
-            <div className='mt-2'>
-              <Input
-                type='text'
-                placeholder='자격증번호를 입력해주세요'
-                value={formData.licenseDetails.license2}
-                onChange={(e) => handleLicenseDetail('license2', e.target.value)}
-                className='w-full'
-              />
-            </div>
-          )}
-          <Button
-            className='flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300'
-            onClick={() => toggleLicense('license3')}
-          >
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                width='29'
-                height='29'
-                rx='14.5'
-                fill={formData.licenses.includes('license3') ? 'var(--helper-primary)' : '#B6B6B6'}
-              />
-              <path
-                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                fill='white'
-              />
-            </svg>
-            병원동행매니저
-          </Button>
-          {formData.licenses.includes('license3') && (
-            <div className='mt-2'>
-              <Input
-                type='text'
-                placeholder='자격증번호를 입력해주세요'
-                value={formData.licenseDetails.license3}
-                onChange={(e) => handleLicenseDetail('license3', e.target.value)}
-                className='w-full'
-              />
-            </div>
-          )}
-          <Button
-            className='flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300'
-            onClick={() => toggleLicense('license4')}
-          >
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                width='29'
-                height='29'
-                rx='14.5'
-                fill={formData.licenses.includes('license4') ? 'var(--helper-primary)' : '#B6B6B6'}
-              />
-              <path
-                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                fill='white'
-              />
-            </svg>
-            산후관리사
-          </Button>
-          {formData.licenses.includes('license4') && (
-            <div className='mt-2'>
-              <Input
-                type='text'
-                placeholder='자격증번호를 입력해주세요'
-                value={formData.licenseDetails.license4}
-                onChange={(e) => handleLicenseDetail('license4', e.target.value)}
-                className='w-full'
-              />
-            </div>
-          )}
-          <Button
-            className='flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300'
-            onClick={() => toggleLicense('license5')}
-          >
-            <svg
-              width='29'
-              height='29'
-              viewBox='0 0 29 29'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <rect
-                width='29'
-                height='29'
-                rx='14.5'
-                fill={formData.licenses.includes('license5') ? 'var(--helper-primary)' : '#B6B6B6'}
-              />
-              <path
-                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                fill='white'
-              />
-            </svg>
-            기타
-          </Button>
 
-          {formData.licenses.includes('license5') && (
-            <div className='mt-2'>
-              <Input
-                type='text'
-                placeholder='자격증번호를 입력해주세요'
-                value={formData.licenseDetails.license5}
-                onChange={(e) => handleLicenseDetail('license5', e.target.value)}
-                className='w-full '
-              />
-            </div>
-          )}
-        </div>
+        const handleNext = () => {
+                // 필수가 선택되었는지 체크할 필요가 있음
+                onNext();
+        };
 
-        <div className='flex justify-between '>
-          <Button
-            onClick={handlePrev}
-            className='bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white'
-          >
-            이전
-          </Button>
+        // 자격증 입력 유효성 검사
+        const isLicenseValid = () => {
+                // 최소 하나의 자격증 번호가 입력되어 있어야 함
+                return essentialCertNo || careCertNo || nurseCertNo || postPartumCertNo || helperOtherCerts.length > 0;
+        };
 
-          <Button
-            className='bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white'
-            onClick={handleSubmit}
-            disabled={!isFormValid()}
-          >
-            가입하기
-          </Button>
-        </div>
-      </div>
-    </main>
-  );
+        const handlePrev = () => {
+                onPrev();
+        };
+
+
+
+        return (
+                <main className="flex flex-col gap-1 max-w-2xl mx-auto">
+
+
+                        <p className="text-left font-bold">회원가입을 위해<br />개인정보를 입력해주세요!</p>
+
+                        {/* 이메일 표시 영역 */}
+                        <div className="flex items-center gap-2 mt-6">
+                                <span className="font-bold">이메일</span>
+                        </div>
+                        <Input
+                                value={email}
+                                readOnly  // 읽기 전용으로 설정
+                                className="h-12 bg-gray-100"  // 배경색으로 비활성화 표시
+                        />
+
+                        {/* 비밀번호 */}
+                        <div className="flex items-center gap-2 mt-4 ">
+                                <span className="font-bold">비밀번호</span>
+                                <span className="text-sm text-red-500">필수</span>
+                        </div>
+                        <Input
+                                id="password"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="비밀번호를 입력해주세요."
+                                className="h-12"
+                        />
+
+                        <div className="flex items-center gap-2 mt-4 ">
+                                <span className="font-bold">이름</span>
+                                <span className="text-sm text-red-500">필수</span>
+                        </div>
+
+                        {/* 이름 */}
+                        <Input
+                                id="name"
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="예) 홍길동"
+                                className="h-12"
+                        />
+
+                        <div className="flex items-center gap-2 mt-4 ">
+                                <span className="font-bold">전화번호</span>
+                                <span className="text-sm text-red-500">필수</span>
+                        </div>
+
+                        {/* 전화번호 */}
+                        <Input
+                                id="phone"
+                                type="text"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                placeholder="예) 010-0000-0000"
+                                className="h-12"
+                        />
+
+                        <div className="flex items-center gap-2 mt-4 ">
+                                <span className="font-bold">주소</span>
+                                <span className="text-sm text-red-500">필수</span>
+                        </div>
+
+                        {/* 주소 */}
+                        <Input
+                                id="address"
+                                type="text"
+                                value={addressDetail}
+                                onChange={(e) => setAddressDetail(e.target.value)}
+                                placeholder="예) 서울특별시 강남구 테헤란로 14길 6 남도빌딩 3층"
+                                className="h-12"
+                        />
+
+
+
+
+                        {/* 차량소유여부 */}
+                        <div className="flex items-center gap-2 mt-4 ">
+                                <span className="font-bold">차량소유여부</span>
+                                <span className="text-sm text-red-500">필수</span>
+                        </div>
+                        <div className="flex gap-6 items-center justify-center">
+                                <Button
+                                        className="flex gap-2 bg-white hover:bg-white text-black border border-gray-300"
+                                        onClick={() => setCarOwnYn(true)}
+                                >
+                                        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="29" height="29" rx="14.5" fill={carOwnYn === true ? "var(--helper-primary)" : "#B6B6B6"} />
+                                                <path d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z" fill="white" />
+                                        </svg>
+                                        예
+                                </Button>
+                                <Button
+                                        className="flex gap-2 bg-white hover:bg-white text-black border border-gray-300"
+                                        onClick={() => setCarOwnYn(false)}
+                                >
+                                        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="29" height="29" rx="14.5" fill={carOwnYn === false ? "var(--helper-primary)" : "#B6B6B6"} />
+                                                <path d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z" fill="white" />
+                                        </svg>
+                                        아니요
+                                </Button>
+                        </div>
+
+                        {/* 치매교육 이수 여부 */}
+                        <div className="flex items-center gap-2 mt-4 ">
+                                <span className="font-bold">치매교육 이수 여부</span>
+                                <span className="text-sm text-red-500">필수</span>
+                        </div>
+                        <div className="flex gap-6 justify-center">
+                                <Button
+                                        className="flex gap-2 bg-white hover:bg-white text-black border border-gray-300"
+                                        onClick={() => setEduYn(true)}
+                                >
+                                        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="29" height="29" rx="14.5" fill={eduYn === true ? "var(--helper-primary)" : "#B6B6B6"} />
+                                                <path d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z" fill="white" />
+                                        </svg>
+                                        예
+                                </Button>
+                                <Button
+                                        className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
+                                        onClick={() => setEduYn(false)}
+                                >
+                                        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="29" height="29" rx="14.5" fill={eduYn === false ? "var(--helper-primary)" : "#B6B6B6"} />
+                                                <path d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z" fill="white" />
+                                        </svg>
+                                        아니요
+                                </Button>
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-4 ">
+                                <span className="font-bold">자격증 등록</span>
+                                <span className="text-sm text-red-500">필수</span>
+                        </div>
+
+                        <div className="flex flex-col gap-3">
+                                {/* 요양보호사 */}
+                                <Button
+                                        className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
+                                        onClick={() => toggleCert('essential')}
+                                >
+                                        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="29" height="29" rx="14.5" fill={certToggles.essential ? "var(--helper-primary)" : "#B6B6B6"} />
+                                                <path d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z" fill="white" />
+                                        </svg>
+                                        요양보호사
+                                </Button>
+                                {certToggles.essential && (
+                                        <div className="mt-2">
+                                                <Input
+                                                        type="text"
+                                                        placeholder="자격증번호를 입력해주세요"
+                                                        value={essentialCertNo}
+                                                        onChange={(e) => setEssentialCertNo(e.target.value)}
+                                                        className="w-full"
+                                                />
+                                        </div>
+                                )}
+
+                                {/* 간병사 */}
+                                <Button
+                                        className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
+                                        onClick={() => toggleCert('care')}
+                                >
+                                        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="29" height="29" rx="14.5" fill={certToggles.care ? "var(--helper-primary)" : "#B6B6B6"} />
+                                                <path d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z" fill="white" />
+                                        </svg>
+                                        간병사
+                                </Button>
+                                {certToggles.care && (
+                                        <div className="mt-2">
+                                                <Input
+                                                        type="text"
+                                                        placeholder="자격증번호를 입력해주세요"
+                                                        value={careCertNo}
+                                                        onChange={(e) => setCareCertNo(e.target.value)}
+                                                        className="w-full"
+                                                />
+                                        </div>
+                                )}
+
+                                {/* 병원동행매니저 */}
+                                <Button
+                                        className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
+                                        onClick={() => toggleCert('nurse')}
+                                >
+                                        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="29" height="29" rx="14.5" fill={certToggles.nurse ? "var(--helper-primary)" : "#B6B6B6"} />
+                                                <path d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z" fill="white" />
+                                        </svg>
+                                        병원동행매니저
+                                </Button>
+                                {certToggles.nurse && (
+                                        <div className="mt-2">
+                                                <Input
+                                                        type="text"
+                                                        placeholder="자격증번호를 입력해주세요"
+                                                        value={nurseCertNo}
+                                                        onChange={(e) => setNurseCertNo(e.target.value)}
+                                                        className="w-full"
+                                                />
+                                        </div>
+                                )}
+
+                                {/* 산후관리사 */}
+                                <Button
+                                        className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
+                                        onClick={() => toggleCert('postPartum')}
+                                >
+                                        <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="29" height="29" rx="14.5" fill={certToggles.postPartum ? "var(--helper-primary)" : "#B6B6B6"} />
+                                                <path d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z" fill="white" />
+                                        </svg>
+                                        산후관리사
+                                </Button>
+                                {certToggles.postPartum && (
+                                        <div className="mt-2">
+                                                <Input
+                                                        type="text"
+                                                        placeholder="자격증번호를 입력해주세요"
+                                                        value={postPartumCertNo}
+                                                        onChange={(e) => setPostPartumCertNo(e.target.value)}
+                                                        className="w-full"
+                                                />
+                                        </div>
+                                )}
+
+                                {/* 기타 자격증 */}
+                                <div className="flex flex-col gap-2">
+                                        <Button
+                                                className="flex items-center gap-2 bg-white hover:bg-white text-black border border-gray-300"
+                                                onClick={() => toggleCert('other')}
+                                        >
+                                                <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <rect width="29" height="29" rx="14.5" fill={certToggles.other ? "var(--helper-primary)" : "#B6B6B6"} />
+                                                        <path d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z" fill="white" />
+                                                </svg>
+                                                기타 자격증
+                                        </Button>
+                                        {certToggles.other && (
+                                                <div className="mt-2 flex flex-col gap-2">
+                                                        {/* 기존 기타 자격증 목록 */}
+                                                        {helperOtherCerts.map((cert, index) => (
+                                                                <div key={index} className="flex items-center gap-2">
+                                                                        <Input
+                                                                                type="text"
+                                                                                value={cert}
+                                                                                readOnly
+                                                                                className="flex-1"
+                                                                        />
+                                                                        <Button
+                                                                                onClick={() => removeHelperOtherCert(index)}
+                                                                                className="bg-red-500 hover:bg-red-600 text-white"
+                                                                        >
+                                                                                삭제
+                                                                        </Button>
+                                                                </div>
+                                                        ))}
+
+                                                        {/* 새로운 기타 자격증 입력 */}
+                                                        <div className="flex items-center gap-2">
+                                                                <Input
+                                                                        type="text"
+                                                                        placeholder="기타 자격증을 입력해주세요"
+                                                                        value={newOtherCert}
+                                                                        onChange={(e) => setNewOtherCert(e.target.value)}
+                                                                        className="flex-1"
+                                                                        onKeyPress={(e) => {
+                                                                                if (e.key === 'Enter') {
+                                                                                        handleAddOtherCert();
+                                                                                }
+                                                                        }}
+                                                                />
+                                                                <Button
+                                                                        onClick={handleAddOtherCert}
+                                                                        className="bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white"
+                                                                >
+                                                                        추가
+                                                                </Button>
+                                                        </div>
+                                                </div>
+                                        )}
+                                </div>
+
+
+
+
+
+
+                        </div>
+
+
+                        <div className="flex justify-between mt-4 ">
+                                <Button
+                                        onClick={handlePrev}
+                                        className="bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white"
+                                >
+                                        이전
+                                </Button>
+
+                                <Button
+                                        className="bg-[var(--helper-primary)] hover:bg-[var(--helper-primary)]/90 text-white"
+                                        onClick={handleSignUp}
+                                        disabled={!password || !name || !phone || !addressDetail || carOwnYn === null || eduYn === null || !isLicenseValid()}
+                                >
+                                        가입하기
+                                </Button>
+
+
+                        </div>
+
+
+                </main>
+        )
 }

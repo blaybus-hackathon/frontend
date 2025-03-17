@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { request } from '@/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import AddressSearch from '@/components/SignUp/AddressSearch';
+import AddressSearch from '@/components/Auth/SignUp/AddressSearch';
 
 export default function SignTest({ onNext, onPrev }) {
   // TODO : 상태 저장에 대해서는 여유보고 추가할 것

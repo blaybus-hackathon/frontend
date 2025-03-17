@@ -1,4 +1,4 @@
-import InfoCard from '@/components/InfoCard';
+import InfoCard from '@/components/ui/temp/InfoCard';
 import patientStore from '@/store/patientStore';
 
 import { Button } from '@/components/ui/button';

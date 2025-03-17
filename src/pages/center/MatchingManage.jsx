@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import InfoCard from '@/components/InfoCard';
+import InfoCard from '@/components/ui/temp/InfoCard';
 import { useState } from 'react';
 import patientStore from '@/store/patientStore';
 

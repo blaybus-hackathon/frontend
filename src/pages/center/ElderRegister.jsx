@@ -1,5 +1,5 @@
-import CareRequirements from '@/components/ElderRegistration/CareRequirements';
-import Header from '@/components/Header';
+import CareRequirements from '@/components/Center/ElderRegistration/CareRequirements';
+import Header from '@/components/ui/temp/Header';
 
 export default function ElderRegister() {
   return (

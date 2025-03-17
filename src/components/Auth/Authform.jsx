@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
@@ -78,11 +79,13 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
             type === "helper"
               ? "bg-[#275280] hover:bg-[#275280]/90"
               : "bg-[#522E9A] hover:bg-[#522E9A]/90"
+
           } text-white`}
         >
           로그인
         </Button>
       </form>
+
 
       <Button
         className={`mt-2 w-full bg-white hover:bg-white/90 rounded-xs border-1 border-[#522E9A]
@@ -104,6 +107,7 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
 };
 
 AuthForm.propTypes = {
+
   type: PropTypes.oneOf(["helper", "company"]).isRequired,
   onSubmit: PropTypes.func.isRequired,
   setLoginType: PropTypes.func.isRequired,
@@ -113,6 +117,7 @@ function NavigationIcon(prop) {
   return (
     <svg
       {...prop}
+
       width="24"
       height="24"
       viewBox="0 0 24 24"
@@ -131,6 +136,7 @@ function HomeControlsIcon(prop) {
   return (
     <svg
       {...prop}
+
       width="24"
       height="24"
       viewBox="0 0 24 24"

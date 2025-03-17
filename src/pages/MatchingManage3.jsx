@@ -2,8 +2,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import Dropdown from '@/components/ui/dropdown';
+import patientStore from '@/store/patientStore';
+import { request } from '@/api';
 
 export default function MatchingManage3({ handleMatchingPage }) {
+  const { patientData } = patientStore();
   const DAYS = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
   const BENEFIT = [
     '4대보험',
@@ -38,7 +41,45 @@ export default function MatchingManage3({ handleMatchingPage }) {
     8: false,
     9: false,
   });
+
+  // 날짜, 급여, 협의가능, 복리후생
+  const [ptDateBit, setPtDateBit] = useState(0);
+  const [wage, setWage] = useState(0);
   const [payNego, setPayNego] = useState(false);
+  const [ptBeneBit, setPtBeneBit] = useState(0);
+
+  const [recruit, setRecruit] = useState({
+    afSeq: 9007199254740991,
+    asSeq: 9007199254740991,
+    atSeq: 9007199254740991,
+    careLevel: 1073741824,
+    inmateState: 1073741824,
+    workType: 1073741824,
+    gender: 1073741824,
+    dementiaSymptom: 1073741824,
+    serviceMeal: 1073741824,
+    serviceToilet: 1073741824,
+    serviceMobility: 1073741824,
+    serviceDaily: 1073741824,
+    name: 'string',
+    birthDate: 'string',
+    weight: 0.1,
+    diseases: 'string',
+    timeNegotiation: true,
+    requestContents: 'string',
+    timeList: [
+      {
+        ptDate: 0,
+        ptStartTime: 'string',
+        ptEndTime: 'string',
+      },
+    ],
+    patientSeq: 9007199254740991,
+    welfare: 1073741824,
+    wageNegotiation: false,
+    wageState: 1073741824,
+    wage: 1073741824,
+  });
 
   const renderDays = () =>
     DAYS.map((day, idx) => (
@@ -50,6 +91,32 @@ export default function MatchingManage3({ handleMatchingPage }) {
             : 'bg-[var(--button-inactive)] text-black'
         }`}
         onClick={() => {
+          if (selectedDays[idx] === false) {
+            setRecruit((prev) => ({
+              ...prev,
+              timeList: prev.timeList.map((timeListObj, objIdx) =>
+                objIdx === 0
+                  ? { ...timeListObj, ptDate: timeListObj.ptDate + idx + 1 }
+                  : timeListObj,
+              ),
+            }));
+            console.log(recruit.timeList[0]);
+            // console.log(ptDateBit);
+            setPtDateBit((prev) => prev + idx + 1);
+          } else {
+            setRecruit((prev) => ({
+              ...prev,
+              timeList: prev.timeList.map((timeListObj, objIdx) =>
+                objIdx === 0
+                  ? { ...timeListObj, ptDate: timeListObj.ptDate - idx - 1 }
+                  : timeListObj,
+              ),
+            }));
+            console.log(recruit.timeList[0]);
+            // console.log(ptDateBit);
+            setPtDateBit((prev) => prev - idx - 1);
+          }
+
           setSelectedDays((prev) => ({ ...prev, [idx]: !prev[idx] }));
         }}
       >
@@ -67,12 +134,30 @@ export default function MatchingManage3({ handleMatchingPage }) {
             : 'bg-[var(--button-inactive)] text-black'
         }`}
         onClick={() => {
+          if (selectedBenefits[idx] === false) {
+            setRecruit((prev) => ({ ...prev, welfare: ptBeneBit + idx + 1 }));
+            setPtBeneBit((prev) => prev + idx + 1);
+          } else {
+            setRecruit((prev) => ({ ...prev, welfare: ptBeneBit - idx - 1 }));
+            setPtBeneBit((prev) => prev - idx - 1);
+          }
+          console.log(recruit.welfare);
           setSelectedBenefits((prev) => ({ ...prev, [idx]: !prev[idx] }));
         }}
       >
         {benefit}
       </Button>
     ));
+
+  const postRecruit = async () => {
+    try {
+      console.log(recruit);
+      const response = await request('post', '/patient/save', recruit);
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -88,25 +173,29 @@ export default function MatchingManage3({ handleMatchingPage }) {
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>근무 종류</label>
           <div className='flex w-full gap-4'>
-            {/* <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
-              방문 요양
-            </div>
             <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
+              {patientData.workType}
+            </div>
+            {/* <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
               요양원
             </div> */}
-            <Button className='flex-1 h-16 text-lg bg-[var(--button-inactive)] text-black'>
+            {/* <Button className='flex-1 h-16 text-lg bg-[var(--button-inactive)] text-black'>
               방문 요양
             </Button>
             <Button className='flex-1 h-16 text-lg bg-[var(--button-inactive)] text-black'>
               요양원
-            </Button>
+            </Button> */}
           </div>
         </div>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>
-            근무지 주소<span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+            근무지 주소
+            {/* <span className='text-[var(--required-red)] text-sm ml-2'>필수</span> */}
           </label>
-          <Input className='h-16 bg-[var(--button-inactive)] font-medium text-lg' />
+          {/* <Input className='h-16 bg-[var(--button-inactive)] font-medium text-lg' /> */}
+          <div className='w-full h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
+            {patientData.address}
+          </div>
         </div>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>
@@ -169,13 +258,17 @@ export default function MatchingManage3({ handleMatchingPage }) {
             {/* <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'>
               s
             </div> */}
-            <Dropdown />
+            <Dropdown changeRecruit={setRecruit} />
             {/* <div className='flex-1 h-16 bg-[var(--button-inactive)] rounded-md flex items-center justify-center font-medium text-lg'></div> */}
             <div className='relative flex items-center flex-1'>
               <Input
                 type='number'
                 className='flex-1 h-16 bg-[var(--button-inactive)] text-lg text-center pr-10'
                 placeholder='입력'
+                onChange={(e) => {
+                  setWage(e.target.value);
+                  setRecruit((prev) => ({ ...prev, wage: e.target.value }));
+                }}
               />
               <span className='absolute right-2 text-lg'>원</span>
             </div>
@@ -184,6 +277,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
           <Button
             className='bg-white text-black text-xl border border-gray-500 px-2 h-11'
             onClick={() => {
+              setRecruit((prev) => ({ ...prev, wageNegotiation: !payNego }));
               setPayNego((prev) => !prev);
             }}
           >
@@ -218,7 +312,18 @@ export default function MatchingManage3({ handleMatchingPage }) {
         </div>
         <Button
           className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
+          disabled={ptDateBit === 0 || wage === 0}
           onClick={() => {
+            // setRecruit((prev) => ({
+            //   ...prev,
+            //   timeList: prev.timeList.map((timeListObj, idx) =>
+            //     idx === 0 ? { ...timeListObj, ptDate: ptDateBit } : timeListObj,
+            //   ),
+            //   wage: wage,
+            //   wageNegotiation: payNego,
+            //   welfare: ptBeneBit,
+            // }));
+            postRecruit();
             handleMatchingPage((prev) => {
               return prev + 1;
             });

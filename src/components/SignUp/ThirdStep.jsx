@@ -481,4 +481,3 @@ export default function ThirdStep({ onNext, onPrev }) {
                 </main>
         )
 }
-

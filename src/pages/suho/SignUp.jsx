@@ -6,13 +6,13 @@ import SecondStep from "@/components/SignUp/SecondStep";
 import ThirdStep from "@/components/SignUp/ThirdStep";
 export default function SignUp() {
 
-    const [currentStep, setCurrentStep] = useState(() => {
-        return parseInt(localStorage.getItem('currentStep')) || 1;
-    });
+    const [currentStep, setCurrentStep] = useState(1);
+
+
 
     useEffect(() => {
-        localStorage.setItem('currentStep', currentStep);
-    }, [currentStep]);
+        setCurrentStep(1);
+    }, []);
 
     const handleNext = () => {
         setCurrentStep(prev => prev + 1);

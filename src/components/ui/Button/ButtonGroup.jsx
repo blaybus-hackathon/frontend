@@ -27,14 +27,16 @@ export default function ButtonGroup({ groupName, options, isMultiSelect = false 
             )
               ? 'bg-[var(--company-primary)] text-white font-normal' // active
               : 'bg-[var(--button-inactive)] text-[var(--button-black)] font-normal' // inactive
-          }`}
+            }`}
           onClick={() => handleSelect(option)}
         >
+
           {option.split('<br />').map((line, index) => (
             <span key={index} style={{ display: 'block' }}>
               {line}
             </span>
           ))}
+
         </button>
       ))}
     </>

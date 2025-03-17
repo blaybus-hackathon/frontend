@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import Header from '@/components/Header';
+import Header from '@/components/ui/temp/Header';
 import MatchingManage from './MatchingManage';
 import MatchingManage2 from './MatchingManage2';
 import MatchingManage3 from './MatchingManage3';

@@ -1,7 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import Dropdown from '@/components/ui/dropdown';
 import patientStore from '@/store/patientStore';
 import { request } from '@/api';
 

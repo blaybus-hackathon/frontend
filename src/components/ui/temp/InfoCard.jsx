@@ -6,8 +6,10 @@ export default function InfoCard({ isChecked, onCheck, showCheck = true, user })
 
     <div className={`w-full mb-2.5`}>
       <div
-        className={`bg-[#F6F6F6] flex items-center max-w-2xl rounded-[1rem] flex-col px-4 mx-auto ${
-          isChecked ? 'border border-[var(--company-primary)]' : 'border border-transparent'
+        className={`flex items-center max-w-2xl rounded-[1rem] flex-col px-4 mx-auto ${
+          isChecked
+            ? 'border-2 border-[var(--company-primary)]'
+            : 'border-2 border-[var(--outline)]'
         }`}
       >
         <div className='flex mx-[1rem] w-full my-5 relative'>
@@ -15,13 +17,8 @@ export default function InfoCard({ isChecked, onCheck, showCheck = true, user })
             <img src={profInit} className='items-center size-5' />
           </div>
           <div className='flex flex-col items-start gap-1 py-2'>
-            <p className='font-semibold'>
-              {user && user.name}
-              <span className='bg-black rounded-3xl text-xs text-white py-1 px-1.5 ml-1.5'>
-                어르신
-              </span>
-            </p>
-            <p className='font-normal'>{user && `${user.gender}/${user.age}`}</p>
+            <p className='font-semibold'>{user && user.name} 어르신</p>
+            <p className='font-normal'>{user && `${user.gender} / ${user.age}`}세</p>
           </div>
           <div className={`absolute top-0 right-0 ${!showCheck ? 'hidden' : ''}`}>
             <svg
@@ -45,15 +42,19 @@ export default function InfoCard({ isChecked, onCheck, showCheck = true, user })
             </svg>
           </div>
         </div>
-        <div className='bg-white mx-auto mb-5 w-full rounded-[1rem] font-bold'>
-          <p>
-            <span className='text-sm font-normal'>근무 종류</span> {user && user.workType}
+        <hr className='h-[2px] w-full bg-[var(--outline)]' />
+        <div className='bg-white mx-auto mt-7 mb-5 w-full rounded-[1rem] font-bold'>
+          <p className='text-start pl-2'>
+            <span className='w-2/5 inline-block'>근무종류</span>
+            <span className='font-normal'>{user && user.workType}</span>
           </p>
-          <p>
-            <span className='text-sm font-normal'>주소지</span> {user && user.address}
+          <p className='text-start pl-2'>
+            <span className='w-2/5 inline-block'>주소지</span>
+            <span className='font-normal'>{user && user.address}</span>
           </p>
-          <p>
-            <span className='text-sm font-normal'>장기요양등급</span> {user && user.grade}
+          <p className='text-start pl-2'>
+            <span className='w-2/5 inline-block'>장기요양등급</span>
+            <span className='font-normal'>{user && user.grade}</span>
           </p>
         </div>
       </div>

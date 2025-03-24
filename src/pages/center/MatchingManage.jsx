@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/custom/Button';
 import InfoCard from '@/components/ui/temp/InfoCard';
 import { useState } from 'react';
 import patientStore from '@/store/patientStore';
@@ -40,7 +40,7 @@ export default function MatchingManage({ handleMatchingPage }) {
   ];
 
   const [selectedCard, setSelectedCard] = useState(-1);
-  const { setPatientName, setPatient, setPatientGrade, patientData } = patientStore();
+  const { setPatientName, setPatient } = patientStore();
 
   const handleCheck = (idx) => {
     setSelectedCard((prev) => (prev === idx ? -1 : idx));
@@ -69,7 +69,7 @@ export default function MatchingManage({ handleMatchingPage }) {
   return (
     <>
       <div className='mx-auto px-[1.5rem] flex flex-col items-center max-w-2xl mb-40'>
-        <p className='font-bold text-xl tracking-[-0.1rem] py-8 w-full mx-auto text-center'>
+        <p className='font-bold text-xl tracking-[-0.1rem] py-8 w-full mx-auto text-start pl-1'>
           매칭이 필요한 어르신을 선택해주세요!
         </p>
         {renderInfoCard()}
@@ -83,8 +83,8 @@ export default function MatchingManage({ handleMatchingPage }) {
           onClick={() => {
             handleMatchingPage((prev) => {
               setPatientName(tempUsers[selectedCard].name);
-              // setPatientGrade(tempUsers[selectedCard].grade);
               setPatient(tempUsers[selectedCard]);
+              window.scrollTo(0, 0);
               return prev + 1;
             });
           }}

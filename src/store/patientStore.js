@@ -28,13 +28,13 @@ const patientStore = create(
       weight: 56,
       disease: '치매 초기, 중풍',
       dementia: ['집 밖을 배회', '가족을 알아보지 못함', '어린아이 같은 행동'],
-      with: '다른 가족과 동거, 돌봄 시간 중 집에 있음',
-      meal: ['스스로 식사 가능', '경관식 보조'],
+      with: '다른가족과 동거 (돌봄 중 집에 있음)',
+      meal: '스스로 식사 가능',
       toilet: ['스스로 배변 가능'],
       mobile: ['거동 불가'],
       daily: ['목욕 보조', '병원 동행'],
     },
-    recruitData: {
+    recruitReq: {
       day: ['토요일', '일요일'],
       wageType: '시급',
       wage: '13000',

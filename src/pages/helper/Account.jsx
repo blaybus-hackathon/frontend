@@ -2,11 +2,15 @@ import { useNavigate } from 'react-router-dom';
 
 import Header from '@/components/ui/temp/Header';
 import { Button } from '@/components/ui/button';
-import useAccountStore from '@/store/suho/useAccountStore';
 
+import { TextAreaInput } from '@/components/ui/TextAreaInput';
+import useAccountStore from '@/store/suho/useAccountStore';
 import { CARE_TYPES } from '@/store/suho/useCareTypeStore'; // 레이블 변환용으로만 사용
 
 import Footer from '@/components/ui/temp/Footer';
+
+// img
+import location from '@/assets/images/location.png';
 
 export default function Account() {
   const navigate = useNavigate();
@@ -32,40 +36,89 @@ export default function Account() {
     });
   };
 
+  //TODO 시멘틱코드 의식할것. 
+  //TODO 프리티어 설정에서 tailwind 플러그인 도입할것것
   return (
     <>
       <main className='max-w-md mx-auto flex flex-col gap-4 p-4'>
         <Header title='프로필' />
 
         {/* 기본 정보 */}
-        <section className='space-y-4'>
+        <profile className='space-y-4'>
           {/* 프로필 이미지 */}
-          <div className='flex items-center'>
-            <div className='flex flex-row justify-between items-center gap-12 w-24 h-24'>
+          <section className='flex items-center'>
+            <div className='flex flex-row justify-between items-center gap-12  h-auto pr-6 pl-6'>
               <img
                 src='/defaultProfile.png'
                 alt='프로필 이미지'
-                className='w-full h-full rounded-full object-cover'
+                className='w-24 h-24 rounded-full '
               />
-              <div className='flex flex-col items-center gap-2'>
-                <span>{profile.name || '미설정'}</span>
+              <div className='flex flex-col justify-center gap-2 text-left'>
+                <span>{profile.name || '홍길동'}</span>
 
-                <p>지역</p>
+                <p>서울특별시 용산구 거주</p>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div className='space-y-2'>
-            <p>
+
+{/* 자기 소개 섹션 */}
+          <section className='space-y-2-'>
+
+            <div className='flex flex-col pr-6 pl-6 gap-2'>
+              <span className='text-left font-bold'>자기소개</span>
+              {/* 내용은 zustand에저장한 내용 가져올 것 */}
+              <p className='border-1 rounded-2xl text-left p-4'> 한 사람,한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다</p>
+              
+            </div>
+          </section>
+
+{/* 간병 경력 섹션 */}
+          <section className='space-y-2-'>
+
+<div className='flex flex-col pr-6 pl-6 gap-2'>
+  <span className='text-left font-bold'>간병경력</span>
+<p className='border-2 rounded-2xl text-center p-3'>신입</p>
+  
+</div>
+</section>
+
+{/* 선호 지역 섹션 */}
+<section className='space-y-2-'>
+
+<div className='flex flex-col pr-6 pl-6 gap-2'>
+  <span className='text-left font-bold'>선호지역</span>
+  <div className='flex flex-row border-2 rounded-2xl items-center p-3 gap-2' >
+    <img className='w-[24px] h-[24px] ' src={location} alt="" />
+    <p className='text-left'>서울 > 서울 전체</p>
+    </div>
+  
+</div>
+</section>
+
+{/* 나의 근무 가능 일정 섹션션 */}
+{/* 피그마 아이콘 변경 요청 */}
+
+<section className='space-y-2-'>
+
+<div className='flex flex-col pr-6 pl-6 gap-2'>
+  <span className='text-left font-bold'>나의 근무 가능 일정</span>
+  <div className='flex flex-row border-2 rounded-2xl items-center p-3 gap-2' >
+    <img className='w-[24px] h-[24px] ' src={location} alt="" />
+    <p className='text-left'>서울 > 서울 전체</p>
+    </div>
+  
+</div>
+</section>
+
+
+          <section className='space-y-2'>
+          <p>
               <span className='text-gray-500'>연락처: </span>
               {profile.phone || '미설정'}
             </p>
-            <p>
-              <span className='text-gray-500'>자기소개: </span>
-              {profile.introduction || '미설정'}
-            </p>
-          </div>
-        </section>
+          </section>
+        </profile>
 
         {/* 희망 급여 섹션 */}
         <section className='space-y-4'>
@@ -85,6 +138,8 @@ export default function Account() {
             )}
           </div>
         </section>
+
+        
 
         {/* 돌봄 유형 섹션 */}
         <section className='space-y-4'>

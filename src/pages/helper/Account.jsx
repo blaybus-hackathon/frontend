@@ -1,13 +1,24 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+
 
 import Header from '@/components/ui/temp/Header';
-import { Button } from '@/components/ui/button';
 
 import { TextAreaInput } from '@/components/ui/TextAreaInput';
 import useAccountStore from '@/store/suho/useAccountStore';
 import { CARE_TYPES } from '@/store/suho/useCareTypeStore'; // 레이블 변환용으로만 사용
 
-import Footer from '@/components/ui/temp/Footer';
+import Header from "@/components/ui/temp/Header";
+import { Button } from "@/components/ui/custom/Button";
+import { SectionTitle } from "@/components/ui/custom/SectionTitle";
+import { Input } from "@/components/ui/custom/input";
+import { Radio, RadioItem } from "@/components/ui/custom/multiRadio";
+import useAccountStore from "@/store/suho/useAccountStore";
+
+import { CARE_TYPES } from "@/store/suho/useCareTypeStore"; // 레이블 변환용으로만 사용
+
+
+import Footer from "@/components/ui/temp/Footer";
+import { TextAreaInput } from "@/components/ui/TextAreaInput";
 
 // img
 import location from '@/assets/images/location.png';
@@ -17,22 +28,24 @@ export default function Account() {
   const profile = useAccountStore((state) => state.profile);
 
   const getCareTypeLabel = (category) => {
-    if (category === 'workTypes') {
+    if (category === "workTypes") {
       return (
         profile.careTypes?.workTypes
-          ?.map((type) => CARE_TYPES.workTypes.find((t) => t.id === type)?.label)
-          .join(', ') || '미설정'
+          ?.map(
+            (type) => CARE_TYPES.workTypes.find((t) => t.id === type)?.label
+          )
+          .join(", ") || "미설정"
       );
     }
     const selected = CARE_TYPES[category]?.find(
-      (item) => item.id === profile.careTypes?.[category],
+      (item) => item.id === profile.careTypes?.[category]
     );
-    return selected?.label || '미설정';
+    return selected?.label || "미설정";
   };
 
   const handleEdit = () => {
-    navigate('/helper/account/edit', {
-      state: { from: '/helper/account' },
+    navigate("/helper/account/edit", {
+      state: { from: "/helper/account" },
     });
   };
 
@@ -40,10 +53,11 @@ export default function Account() {
   //TODO 프리티어 설정에서 tailwind 플러그인 도입할것것
   return (
     <>
-      <main className='max-w-md mx-auto flex flex-col gap-4 p-4'>
-        <Header title='프로필' />
+      <main className="max-w-md mx-auto flex flex-col justify-center items-center gap-4 p-4">
+        <Header title="프로필" />
 
         {/* 기본 정보 */}
+
         <profile className='space-y-4'>
           {/* 프로필 이미지 */}
           <section className='flex items-center'>
@@ -120,17 +134,25 @@ export default function Account() {
           </section>
         </profile>
 
+
+{/* <SectionTitle title="간병경력이 있으신가요?" subtitle="선택 " /> */}
+{/* <SectionTitle
+            title="자기소개"
+            subtitle="선택 (보호자에게 노출됩니다.)"
+          /> */}
+
+
         {/* 희망 급여 섹션 */}
-        <section className='space-y-4'>
-          <h2 className='font-semibold'>희망 급여</h2>
+        <section className="space-y-4">
+          <h2 className="font-semibold">희망 급여</h2>
           <div>
             {profile.pay ? (
               <p>
-                {profile.pay.type === 'hourly'
-                  ? '시급'
-                  : profile.pay.type === 'daily'
-                    ? '일급'
-                    : '주급'}
+                {profile.pay.type === "hourly"
+                  ? "시급"
+                  : profile.pay.type === "daily"
+                  ? "일급"
+                  : "주급"}
                 {profile.pay.amount?.toLocaleString()}원
               </p>
             ) : (
@@ -142,61 +164,63 @@ export default function Account() {
         
 
         {/* 돌봄 유형 섹션 */}
-        <section className='space-y-4'>
-          <h2 className='font-semibold'>돌봄 유형</h2>
-          <div className='space-y-2 text-sm'>
+        <section className="space-y-4">
+          <h2 className="font-semibold">돌봄 유형</h2>
+          <div className="space-y-2 text-sm">
             <p>
-              <span className='text-gray-500'>근무 종류: </span>
-              {getCareTypeLabel('workTypes')}
+              <span className="text-gray-500">근무 종류: </span>
+              {getCareTypeLabel("workTypes")}
             </p>
             <p>
-              <span className='text-gray-500'>장기요양등급: </span>
-              {getCareTypeLabel('careGrade')}
+              <span className="text-gray-500">장기요양등급: </span>
+              {getCareTypeLabel("careGrade")}
             </p>
 
             <p>
-              <span className='text-gray-500'>동거인 여부: </span>
-              {getCareTypeLabel('livingArrangement')}
+              <span className="text-gray-500">동거인 여부: </span>
+              {getCareTypeLabel("livingArrangement")}
             </p>
-            <p>{getCareTypeLabel('gender')}</p>
+            <p>{getCareTypeLabel("gender")}</p>
             <p>
-              <span className='text-gray-500'>식사보조: </span>
-              {getCareTypeLabel('mealCare')}
-            </p>
-            <p>
-              <span className='text-gray-500'>이동보조: </span>
-              {getCareTypeLabel('mobilitySupport')}
+              <span className="text-gray-500">식사보조: </span>
+              {getCareTypeLabel("mealCare")}
             </p>
             <p>
-              <span className='text-gray-500'>일상생활: </span>
-              {getCareTypeLabel('dailyLife')}
+              <span className="text-gray-500">이동보조: </span>
+              {getCareTypeLabel("mobilitySupport")}
+            </p>
+            <p>
+              <span className="text-gray-500">일상생활: </span>
+              {getCareTypeLabel("dailyLife")}
             </p>
           </div>
         </section>
 
         {/* 선호 지역 섹션 */}
-        <section className='space-y-4'>
-          <h2 className='font-semibold'>선호 지역</h2>
+        <section className="space-y-4">
+          <h2 className="font-semibold">선호 지역</h2>
           <div>
             {Object.entries(profile.locations || {})
               .filter(([_, districts]) => districts.length > 0)
-              .map(([city, districts]) => districts.map((district) => `${city}-${district}`))
+              .map(([city, districts]) =>
+                districts.map((district) => `${city}-${district}`)
+              )
               .flat()
-              .join(', ') || '선택된 지역이 없습니다.'}
+              .join(", ") || "선택된 지역이 없습니다."}
           </div>
         </section>
 
         {/* 근무 가능 시간 섹션 */}
-        <section className='space-y-4'>
-          <h2 className='font-semibold'>근무 가능 시간</h2>
+        <section className="space-y-4">
+          <h2 className="font-semibold">근무 가능 시간</h2>
           <div>
             {Object.entries(profile.schedules || {})
               .map(([day, time]) => `${day}요일 ${time.start}시-${time.end}시`)
-              .join(', ') || '설정된 근무시간이 없습니다.'}
+              .join(", ") || "설정된 근무시간이 없습니다."}
           </div>
         </section>
 
-        <Button onClick={handleEdit} className='mt-4'>
+        <Button variant="default" onClick={handleEdit} className="mt-4 ">
           프로필 수정하기
         </Button>
       </main>

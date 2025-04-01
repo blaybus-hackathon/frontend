@@ -61,7 +61,7 @@ export default function Account() {
         <section className="flex flex-col gap-6">
           {/* 프로필 이미지 */}
           <section className="flex items-center">
-            <div className="flex flex-row justify-between items-center gap-12  h-auto pr-6 pl-6">
+            <div className="flex flex-row justify-between items-center gap-12  h-auto ">
               <img
                 src="/defaultProfile.png"
                 alt="프로필 이미지"
@@ -77,7 +77,7 @@ export default function Account() {
 
           {/* 자기 소개 섹션 */}
           <section className="space-y-2">
-            <div className="flex flex-col pr-6 pl-6 gap-2">
+            <div className="flex flex-col gap-2">
               <span className="text-left font-bold">자기소개</span>
               {/* 내용은 zustand에저장한 내용 가져올 것 */}
               <p className="border-1 rounded-xl text-left p-4">
@@ -89,14 +89,14 @@ export default function Account() {
 
           {/* 간병 경력 섹션 */}
           <section className="space-y-2">
-            <div className="flex flex-col pr-6 pl-6 gap-2">
+            <div className="flex flex-col  gap-2">
               <span className="text-left font-bold">간병경력</span>
               <p className="border-2 rounded-xl text-center p-3">신입</p>
             </div>
           </section>
 
           {/* 선호 지역 섹션 */}
-          <section className="space-y-2 flex flex-col pr-6 pl-6 gap-2">
+          <section className="space-y-2 flex flex-col  gap-2">
             <span className="text-left font-bold">선호지역</span>
 
             <p className="text-left flex flex-row items-center gap-3 p-3 border-2 rounded-xl">
@@ -117,7 +117,7 @@ export default function Account() {
 
           {/* 나의 근무 가능 일정 섹션 */}
           {/* TODO : 피그마 아이콘 변경 */}
-          <section className="space-y-2 flex flex-col pr-6 pl-6 gap-2">
+          <section className="space-y-2 flex flex-col  gap-2">
             <span className="text-left font-bold">나의 근무 가능 일정</span>
             <p className="text-left flex flex-row items-center gap-3 p-3 border-2 rounded-xl">
               <img
@@ -136,7 +136,7 @@ export default function Account() {
           </section>
 
           {/* 급여 섹션 */}
-          <section className="space-y-2 flex flex-col pr-6 pl-6 gap-2">
+          <section className="space-y-2 flex flex-col  gap-2">
             <span className="text-left font-bold">나의 희망급여</span>
             <p className="text-left flex flex-row items-center gap-4 border-2 rounded-xl p-3">
               <img
@@ -161,7 +161,7 @@ export default function Account() {
           </section>
 
           {/* 돌봄 유형 섹션*/}
-          <section className="space-y-2 flex flex-col pr-6 pl-6 gap-2">
+          <section className="space-y-2 flex flex-col  gap-2">
             <span className="text-left font-bold">나의 희망 돌봄유형</span>
             <p className="text-left flex flex-row items-center gap-4 border-2 rounded-xl p-3">
               <img
@@ -174,7 +174,7 @@ export default function Account() {
           </section>
 
           {/* 자격증 등록 섹션*/}
-          <section className="space-y-2 flex flex-col pr-6 pl-6 gap-2">
+          <section className="space-y-2 flex flex-col  gap-2">
             <span className="text-left font-bold">나의 소지 자격증</span>
             <p className="text-left flex flex-row items-center gap-4 border-2 rounded-xl p-3">
               <span className="">요양보호사</span>

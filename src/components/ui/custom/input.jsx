@@ -14,7 +14,7 @@ const Input = React.forwardRef(
     },
     ref
   ) => {
-    const widthStyle = width ? { width: width } : { width: "16rem" };
+    const widthStyle = width ? { width: width } : { width: "100%" };
 
     return (
       <div className={`relative`} style={widthStyle}>

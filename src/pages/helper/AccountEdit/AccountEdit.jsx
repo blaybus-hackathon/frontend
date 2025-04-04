@@ -8,17 +8,12 @@ import { Radio, RadioItem } from "@/components/ui/custom/multiRadio";
 import Header from "@/components/ui/temp/Header";
 import { SectionTitle } from "@/components/ui/custom/SectionTitle";
 
-import useAccountStore from "@/store/suho/useAccountStore";
-import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
-import useScheduleStore from "@/store/suho/useScheduleStore";
-import usePayStore from "@/store/suho/usePayStore";
-import useCareTypeStore, { CARE_TYPES } from "@/store/suho/useCareTypeStore";
+import CareTypeSection from "@/pages/helper/AccountEdit/CareTypeSection ";
 
 // ✅ 5. 이미지 및 정적 파일
 import location_icon from "@/assets/images/location.png";
 import overview from "@/assets/images/overview.png";
 import backarrow from "@/assets/images/back-arrow.png";
-import homecontrols from "@/assets/images/home-controls.png";
 
 // 리듀서
 const profileReducer = (state, action) => {
@@ -65,6 +60,10 @@ const profileReducer = (state, action) => {
 const initialProfileState = {
   introduction: "",
   careExperience: "",
+  location: {},
+  careTypes: {},
+  payType: "",
+  payAmount: "",
   selectedOptions: {}, //자격증
   inputs: {},
 };
@@ -73,76 +72,36 @@ export default function AccountEdit() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const profile = useAccountStore((state) => state.profile);
-  const updateProfile = useAccountStore((state) => state.updateProfile);
-  const saveProfile = useAccountStore((state) => state.saveProfile);
+  // const [editedProfile, setEditedProfile] = useState(profile);
 
-  // PayStore
-  const selectedPay = usePayStore((state) => state.selectedPay);
-  const payType = usePayStore((state) => state.payType);
-  const setPay = usePayStore((state) => state.setPay);
+  // const handleBasicInfoChange = (field, value) => {
+  //   setEditedProfile((prev) => ({
+  //     ...prev,
+  //     [field]: value,
+  //   }));
+  // };
 
-  // CareTypeStore
-  const selectedTypes = useCareTypeStore((state) => state.selectedTypes);
-  const setCareTypes = useCareTypeStore((state) => state.setSelection);
+  // const getCareTypeLabel = (category) => {
+  //   if (category === "workTypes") {
+  //     return (
+  //       selectedTypes.workTypes
+  //         ?.map(
+  //           (type) => CARE_TYPES.workTypes.find((t) => t.id === type)?.label
+  //         )
+  //         .join(", ") || "미설정"
+  //     );
+  //   }
+  //   const selected = CARE_TYPES[category]?.find(
+  //     (item) => item.id === selectedTypes[category]
+  //   );
+  //   return selected?.label || "미설정";
+  // };
 
-  // LocationStore
-  const selectedDistricts = useHelperLocationStore(
-    (state) => state.selectedDistricts
-  );
-  const setDistricts = useHelperLocationStore((state) => state.setDistricts);
-
-  // ScheduleStore
-  const schedules = useScheduleStore((state) => state.schedules);
-  const setSchedules = useScheduleStore((state) => state.setAllSchedules);
-
-  const [editedProfile, setEditedProfile] = useState(profile);
-
-  useEffect(() => {
-    if (profile) {
-      setEditedProfile(profile);
-    }
-  }, [profile]);
-
-  useEffect(() => {
-    // Account 페이지에서 왔을 때만 초기화
-    if (location.state?.from === "/helper/account" && profile) {
-      setEditedProfile(profile);
-
-      // 각 Store 초기화
-      if (profile.pay) setPay(profile.pay);
-      if (profile.careTypes) {
-        Object.entries(profile.careTypes).forEach(([key, value]) => {
-          setCareTypes(key, value);
-        });
-      }
-      if (profile.locations) setDistricts(profile.locations);
-      if (profile.schedules) setSchedules(profile.schedules);
-    }
-  }, [profile]);
-
-  const handleBasicInfoChange = (field, value) => {
-    setEditedProfile((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const getCareTypeLabel = (category) => {
-    if (category === "workTypes") {
-      return (
-        selectedTypes.workTypes
-          ?.map(
-            (type) => CARE_TYPES.workTypes.find((t) => t.id === type)?.label
-          )
-          .join(", ") || "미설정"
-      );
-    }
-    const selected = CARE_TYPES[category]?.find(
-      (item) => item.id === selectedTypes[category]
-    );
-    return selected?.label || "미설정";
-  };
+  // const [careTypeData, setCareTypeData] = useState({ workTypes: [] });
+  // const handleSaveCareType = (newCareType) => {
+  //   console.log("저장된 데이터:", newCareType);
+  //   setCareTypeData(newCareType); // 상태 업데이트
+  // };
 
   const handleSave = async () => {
     try {
@@ -195,6 +154,14 @@ export default function AccountEdit() {
     });
   };
 
+  const handleSaveCareType = (updatedData) => {
+    console.log("자식에서 받은 데이터:", updatedData);
+    // setProfileState((prevState) => ({
+    //   ...prevState,
+    //   careTypeData: updatedData,
+    // }));
+  };
+
   return (
     <main className="max-w-md mx-auto flex flex-col justify-center gap-6 p-4">
       <Header title="나의 계정" />
@@ -202,7 +169,7 @@ export default function AccountEdit() {
       {/* 기본 정보 섹션 */}
       <section className="flex flex-col gap-6">
         {/* 프로필 이미지 */}
-        <section className="flex flex-row justify-between items-center gap-12  h-auto pr-6 pl-6 relative">
+        {/* <section className="flex flex-row justify-between items-center gap-12  h-auto pr-6 pl-6 relative">
           <div className="relative">
             <img
               src={editedProfile?.profileImage || "/defaultProfile.png"}
@@ -241,7 +208,7 @@ export default function AccountEdit() {
             <span>{profile.name || "홍길동"}</span>
             <p>서울특별시 용산구 거주</p>
           </div>
-        </section>
+        </section> */}
 
         {/* 자기소개 섹션 */}
         <section className="space-y-2">
@@ -300,7 +267,7 @@ export default function AccountEdit() {
 
         {/* 나의 근무 가능 일정 섹션 */}
         {/* 클릭이벤트 */}
-        <section
+        {/* <section
           className="space-y-2 flex flex-col gap-2 hover:cursor-pointer"
           onClick={() => navigate("/helper/account/schedule")}
         >
@@ -322,12 +289,11 @@ export default function AccountEdit() {
             />
             13:00 ~ 20:00
           </p>
-        </section>
+        </section> */}
 
         {/* 급여 섹션 */}
         {/* 클릭이벤트 */}
-        {/* 모달창? */}
-        <section
+        {/* <section
           className="space-y-2 flex flex-col gap-2 hover:cursor-pointer"
           onClick={() => navigate("/helper/account/pay")}
         >
@@ -345,16 +311,6 @@ export default function AccountEdit() {
                 : profile.pay.type === "daily"
                 ? "일급"
                 : "주급"}
-
-              {/* {selectedPay
-              ? `${
-                  payType === "hourly"
-                    ? "시급"
-                    : payType === "daily"
-                    ? "일급"
-                    : "주급"
-                } ${selectedPay.toLocaleString()}원`
-              : "설정된 급여가 없습니다."} */}
             </span>
             <img
               src={backarrow}
@@ -363,26 +319,20 @@ export default function AccountEdit() {
             />
             <span className="">{profile.pay.amount?.toLocaleString()}원</span>
           </p>
-        </section>
+        </section> */}
 
         {/* 돌봄 유형 섹션*/}
-        <section
-          className="space-y-2 flex flex-col  gap-2 hover:cursor-pointer"
-          onClick={() => navigate("/helper/account/care-type")}
-        >
-          <span className="text-left font-bold">나의 희망 돌봄유형</span>
-          <span className="text-left">
-            내가 자신있는 돌봄 유형을 설정해 보세요!
-          </span>
-          <p className="text-left flex flex-row items-center gap-4 border-2 rounded-xl p-3">
-            <img
-              className="w-[24px] h-[24px]"
-              src={homecontrols}
-              alt="homeControls_icon"
-            />
-            <span className="">{getCareTypeLabel("workTypes")}</span>
-          </p>
-        </section>
+        <CareTypeSection
+          // careTypeData={profileState.careTypeData}
+          // careTypeData3={careTypeData2}
+          // onSave={handleSaveCareType}
+          onSave={handleSaveCareType}
+        />
+        <span>
+          {/* {careTypeData2?.workTypes.length > 0
+            ? careTypeData2.workTypes.join(", ")
+            : "설정되지 않음"} */}
+        </span>
 
         {/* 자격증 등록 섹션*/}
         <section className="space-y-2 flex flex-col  gap-2">

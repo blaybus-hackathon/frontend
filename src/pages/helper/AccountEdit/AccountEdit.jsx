@@ -9,6 +9,10 @@ import Header from "@/components/ui/temp/Header";
 import { SectionTitle } from "@/components/ui/custom/SectionTitle";
 
 import CareTypeSection from "@/pages/helper/AccountEdit/CareTypeSection ";
+import CareExperienceSelector from "@/pages/helper/AccountEdit/CareerSection";
+import IntroductionInput from "@/pages/helper/AccountEdit/IntroSection";
+
+import useProfileStore from "@/store/useProfileStore";
 
 // ✅ 5. 이미지 및 정적 파일
 import location_icon from "@/assets/images/location.png";
@@ -154,13 +158,11 @@ export default function AccountEdit() {
     });
   };
 
-  const handleSaveCareType = (updatedData) => {
-    console.log("자식에서 받은 데이터:", updatedData);
-    // setProfileState((prevState) => ({
-    //   ...prevState,
-    //   careTypeData: updatedData,
-    // }));
-  };
+
+
+  const { profileEdit, updateProfileField } = useProfileStore();
+console.log("변경",profileEdit)
+  const careExperience = useProfileStore((state) => state.profileEdit.careExperience);
 
   return (
     <main className="max-w-md mx-auto flex flex-col justify-center gap-6 p-4">
@@ -211,34 +213,13 @@ export default function AccountEdit() {
         </section> */}
 
         {/* 자기소개 섹션 */}
-        <section className="space-y-2">
-          <p className="text-left font-bold">자기소개</p>
-          <TextAreaInput
-            value={profileState.introduction}
-            onChange={(e) =>
-              dispatch({ type: "UPDATE_INTRODUCTION", payload: e.target.value })
-            }
-            placeholder="자기소개"
-            className="min-h-[6.25rem] border-1 rounded-xl text-left p-4"
-          />
-        </section>
+
+        <IntroductionInput
+    />
 
         {/* 간병 경력 섹션 */}
-        <section className="space-y-2 flex flex-col gap-2">
-          <span className="text-left font-bold">간병경력이 있으신가요?</span>
-          <div className="flex flex-col gap-2 justify-between ">
-            <Radio
-              onValueChange={(value) =>
-                dispatch({ type: "UPDATE_CARE_EXPERIENCE", payload: value })
-              }
-              cols={2}
-              className="gap-12"
-            >
-              <RadioItem>신입</RadioItem>
-              <RadioItem>경력</RadioItem>
-            </Radio>
-          </div>
-        </section>
+        <CareExperienceSelector
+    />
 
         {/* 나의 선호 지역 섹션 */}
         {/* 클릭 이벤트 지역 설정으로 이동 */}
@@ -322,17 +303,8 @@ export default function AccountEdit() {
         </section> */}
 
         {/* 돌봄 유형 섹션*/}
-        <CareTypeSection
-          // careTypeData={profileState.careTypeData}
-          // careTypeData3={careTypeData2}
-          // onSave={handleSaveCareType}
-          onSave={handleSaveCareType}
-        />
-        <span>
-          {/* {careTypeData2?.workTypes.length > 0
-            ? careTypeData2.workTypes.join(", ")
-            : "설정되지 않음"} */}
-        </span>
+        <CareTypeSection/>
+
 
         {/* 자격증 등록 섹션*/}
         <section className="space-y-2 flex flex-col  gap-2">

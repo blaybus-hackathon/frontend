@@ -8,7 +8,7 @@ import HelperLocation from "./pages/helper/HelperLocation";
 import HelperLocationDetail from "./pages/helper/HelperLocationDetail";
 import AccountSchedule from "./pages/helper/AccountEdit/AccountSchedule";
 import AccountPay from "./pages/helper/AccountPay";
-import AccountCareType from "./pages/helper/AccountCareType";
+import AccountCareType from "./pages/helper/AccountEdit/AccountCareType";
 
 import "./App.css";
 

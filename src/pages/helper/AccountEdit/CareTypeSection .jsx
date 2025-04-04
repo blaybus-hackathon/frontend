@@ -6,7 +6,7 @@ const CareTypeSection = () => {
   const navigate = useNavigate();
   const { profileEdit } = useProfileStore(); // Zustand store에서 데이터 가져오기
   const careTypeData = profileEdit.careTypes;
-  console.log(careTypeData);
+  // console.log(careTypeData);
 
   return (
     <section

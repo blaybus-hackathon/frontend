@@ -83,6 +83,9 @@ const useProfileStore = create((set) => ({
       },
     }),
 
+
+    
+
   updateCareTypeField: (key, value) =>
     set((state) => {
       console.log("updateCareTypeField state:", state); // 추가
@@ -93,6 +96,17 @@ const useProfileStore = create((set) => ({
             ...state.profileEdit.careTypes,
             [key]: value,
           },
+        },
+      };
+    }),
+
+    updateProfileField: (field, value) =>
+      set((state) => {
+        console.log("updateProfileField state:", value); // 추가
+        return {
+        profileEdit: {
+          ...state.profileEdit, // 기존 상태를 복사
+          [field]: value, // 특정 필드 업데이트
         },
       };
     }),

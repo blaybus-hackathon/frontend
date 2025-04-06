@@ -26,8 +26,8 @@ const CITY_OPTIONS = [
 
 export default function HelperLocation() {
   const navigate = useNavigate();
-  const { selectedDistricts } = useHelperLocationStore();
-  const { resetLocations } = useHelperLocationStore();
+  const { selectedDistricts } = useHelperLocationStore(); //선택한 지역 가져오기
+  const { resetLocations } = useHelperLocationStore(); //지역 초기화
 
   // 전체 선택된 구/군 개수
   const getTotalSelectedCount = () => {
@@ -38,6 +38,7 @@ export default function HelperLocation() {
   };
 
   return (
+
     <main className='max-w-md mx-auto flex flex-col items-center gap-4 p-4'>
       <div className='w-full flex items-center justify-between'>
         <Header title='선호 지역' />

@@ -72,6 +72,11 @@ const initialProfileState = {
   inputs: {},
 };
 
+useEffect(() => {
+  console.log("selectedDistricts 변경 감지");
+  useProfileStore.getState().syncLocation();
+}, [useHelperLocationStore.getState().selectedDistricts]);
+
 export default function AccountEdit() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -225,7 +230,7 @@ console.log("변경",profileEdit)
         {/* 클릭 이벤트 지역 설정으로 이동 */}
         <section
           className="space-y-2 flex flex-col gap-2  hover:cursor-pointer"
-          onClick={() => navigate("/helper/location")}
+          onClick={() => navigate("/test")}
         >
           <span className="text-left font-bold">나의 선호 지역</span>
           <span className="text-left">나의 희망근무 지역을 설정해 보세요.</span>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -11,75 +11,37 @@ import { SectionTitle } from "@/components/ui/custom/SectionTitle";
 import CareTypeSection from "@/pages/helper/AccountEdit/CareTypeSection ";
 import CareExperienceSelector from "@/pages/helper/AccountEdit/CareerSection";
 import IntroductionInput from "@/pages/helper/AccountEdit/IntroSection";
+import LocationSection from "@/pages/helper/AccountEdit/LocationSection";
 
 import useProfileStore from "@/store/useProfileStore";
-
+import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
 // ✅ 5. 이미지 및 정적 파일
 import location_icon from "@/assets/images/location.png";
 import overview from "@/assets/images/overview.png";
 import backarrow from "@/assets/images/back-arrow.png";
 
-// 리듀서
-const profileReducer = (state, action) => {
-  switch (action.type) {
-    case "UPDATE_INTRODUCTION":
-      console.log("액션:", action);
-      return { ...state, introduction: action.payload };
-    case "UPDATE_CARE_EXPERIENCE":
-      console.log("액션:", action);
-      return { ...state, careExperience: action.payload };
-    case "TOGGLE_OPTION":
-      console.log("액션:", action);
-      return {
-        ...state,
-        selectedOptions: {
-          ...state.selectedOptions,
-
-          [action.value]: action.checked,
-        },
-        inputs: action.checked
-          ? state.inputs // 선택된 경우 기존 값 유지
-          : Object.keys(state.inputs).reduce((acc, key) => {
-              if (key !== action.value) {
-                acc[key] = state.inputs[key];
-              }
-              return acc;
-            }, {}),
-      };
-    case "UPDATE_INPUT_VALUE":
-      console.log("액션:", action);
-      return {
-        ...state,
-        inputs: {
-          ...state.inputs,
-          [action.name]: action.value,
-        },
-      };
-    default:
-      return state;
-  }
-};
-
-// 초기 상태 정의
-const initialProfileState = {
-  introduction: "",
-  careExperience: "",
-  location: {},
-  careTypes: {},
-  payType: "",
-  payAmount: "",
-  selectedOptions: {}, //자격증
-  inputs: {},
-};
-
-useEffect(() => {
-  console.log("selectedDistricts 변경 감지");
-  useProfileStore.getState().syncLocation();
-}, [useHelperLocationStore.getState().selectedDistricts]);
-
 export default function AccountEdit() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { profileEdit, updateProfileField, syncLocation } = useProfileStore();
+  const { selectedDistricts } = useHelperLocationStore(); // 상태만 가져옴
+
+  // TODO : subscribe 변경 고민
+  useEffect(() => {
+    syncLocation();
+  }, [selectedDistricts]);
+
+  const formattedLocations = Object.entries(selectedDistricts)
+    .flatMap(([city, districts]) =>
+      Object.entries(districts).map(
+        ([district, subDistricts]) =>
+          `${city}<img src="${backarrow}" alt="backarrow" class="w-4 h-4 rotate-180 inline-block mx-1" />${district} (${subDistricts.join(
+            ", "
+          )})`
+      )
+    )
+    .join(", ");
 
   // const [editedProfile, setEditedProfile] = useState(profile);
 
@@ -138,36 +100,12 @@ export default function AccountEdit() {
   const handleCancel = () => {
     navigate("/helper/account");
   };
-
-  //  리듀서
-  const [profileState, dispatch] = useReducer(
-    profileReducer,
-    initialProfileState
+  const handleTest = () => {
+    console.log("profileEdit 상태:", profileEdit);
+  };
+  const careExperience = useProfileStore(
+    (state) => state.profileEdit.careExperience
   );
-
-  // Radio 버튼 변경 핸들러
-  const handleRadioChange = (value, checked) => {
-    dispatch({
-      type: "TOGGLE_OPTION",
-      value: value, // RadioItem에서 전달된 value 사용
-      checked: checked,
-    });
-  };
-
-  // Input 값 변경 핸들러
-  const handleInputChange = (event) => {
-    dispatch({
-      type: "UPDATE_INPUT_VALUE",
-      name: event.target.name, // event.target.name 사용
-      value: event.target.value,
-    });
-  };
-
-
-
-  const { profileEdit, updateProfileField } = useProfileStore();
-console.log("변경",profileEdit)
-  const careExperience = useProfileStore((state) => state.profileEdit.careExperience);
 
   return (
     <main className="max-w-md mx-auto flex flex-col justify-center gap-6 p-4">
@@ -218,38 +156,14 @@ console.log("변경",profileEdit)
         </section> */}
 
         {/* 자기소개 섹션 */}
-
-        <IntroductionInput
-    />
+        <IntroductionInput />
 
         {/* 간병 경력 섹션 */}
-        <CareExperienceSelector
-    />
+        <CareExperienceSelector />
 
         {/* 나의 선호 지역 섹션 */}
-        {/* 클릭 이벤트 지역 설정으로 이동 */}
-        <section
-          className="space-y-2 flex flex-col gap-2  hover:cursor-pointer"
-          onClick={() => navigate("/test")}
-        >
-          <span className="text-left font-bold">나의 선호 지역</span>
-          <span className="text-left">나의 희망근무 지역을 설정해 보세요.</span>
 
-          <p className="text-left flex flex-row items-center gap-3 p-3 border-2 rounded-xl">
-            <img
-              className="w-[24px] h-[24px] "
-              src={location_icon}
-              alt="location_icon"
-            />
-            서울
-            <img
-              src={backarrow}
-              alt="backarrow"
-              className="w-4 h-4 rotate-180"
-            />
-            서울 전체
-          </p>
-        </section>
+        <LocationSection selectedDistricts={selectedDistricts} />
 
         {/* 나의 근무 가능 일정 섹션 */}
         {/* 클릭이벤트 */}
@@ -308,11 +222,10 @@ console.log("변경",profileEdit)
         </section> */}
 
         {/* 돌봄 유형 섹션*/}
-        <CareTypeSection/>
-
+        <CareTypeSection />
 
         {/* 자격증 등록 섹션*/}
-        <section className="space-y-2 flex flex-col  gap-2">
+        {/* <section className="space-y-2 flex flex-col  gap-2">
           <span className="text-left font-bold">나의 소지 자격증</span>
 
           <Radio
@@ -349,7 +262,7 @@ console.log("변경",profileEdit)
               );
             })}
           </Radio>
-        </section>
+        </section> */}
 
         {/* 저장/취소 버튼 */}
         <div className="flex gap-2">
@@ -365,6 +278,7 @@ console.log("변경",profileEdit)
             취소
           </Button>
         </div>
+        <Button type="button" onClick={handleTest} />
       </section>
     </main>
   );

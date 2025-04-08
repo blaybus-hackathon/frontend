@@ -1,14 +1,12 @@
 import { create } from "zustand";
-import useHelperLocationStore from "@/store/suho/useHelperLocationStore"; 
+import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
 
 // Zustand Store 생성
 const useProfileStore = create((set) => ({
-
-
   profile: {
     introduction: "",
     careExperience: "",
-    location: useHelperLocationStore.getState().selectedDistricts,
+    location: {}, // 초기값으로 빈 객체 설정
     careTypes: {
       workTypes: [], //돌봄 유형
       careGrade: "", //요양등급
@@ -27,7 +25,7 @@ const useProfileStore = create((set) => ({
     // profileEdit 초기 상태를 명시적으로 정의
     introduction: "",
     careExperience: "",
-    location: useHelperLocationStore.getState().selectedDistricts,
+    location: {}, // 초기값으로 빈 객체 설정
     careTypes: {
       workTypes: [], //돌봄 유형
       careGrade: "", //요양등급
@@ -87,9 +85,6 @@ const useProfileStore = create((set) => ({
       },
     }),
 
-
-    
-
   updateCareTypeField: (key, value) =>
     set((state) => {
       console.log("updateCareTypeField state:", state); // 추가
@@ -104,10 +99,10 @@ const useProfileStore = create((set) => ({
       };
     }),
 
-    updateProfileField: (field, value) =>
-      set((state) => {
-        console.log("updateProfileField state:", value); // 추가
-        return {
+  updateProfileField: (field, value) =>
+    set((state) => {
+      console.log("updateProfileField state:", value); // 추가
+      return {
         profileEdit: {
           ...state.profileEdit, // 기존 상태를 복사
           [field]: value, // 특정 필드 업데이트
@@ -130,31 +125,35 @@ const useProfileStore = create((set) => ({
   // profileEdit 초기화 액션 추가
   initializeProfileEdit: (initialProfile) =>
     set({ profileEdit: { ...initialProfile } }),
+
+  // 🔥 location 변경을 감지해서 profileEdit 업데이트
+  syncLocation: () => {
+    const selectedDistricts =
+      useHelperLocationStore.getState().selectedDistricts;
+    console.log("응애 ", selectedDistricts);
+    set((state) => ({
+      profileEdit: {
+        ...state.profileEdit,
+        location: selectedDistricts, // 🟢 location 동기화
+      },
+    }));
+  },
+
+  subscribeToLocationStore: () => {
+    useHelperLocationStore.subscribe(
+      (state) => state.selectedDistricts,
+      (newSelectedDistricts) => {
+        get().syncLocation(); // ✅ get()을 사용하여 store의 함수에 접근
+      }
+    );
+  },
 }));
 
+// 컴포넌트가 마운트될 때 구독 시작 (권장되는 방식)
+const { subscribeToLocationStore } = useProfileStore.getState();
+subscribeToLocationStore();
 
-    // 🔥 location 변경을 감지해서 profileEdit 업데이트
-    syncLocation: () => {
-      const { selectedDistricts } = useHelperLocationStore.getState();
-      set((state) => ({
-        profileEdit: {
-          ...state.profileEdit,
-          location: selectedDistricts, // 🟢 location 동기화
-        },
-      }));
-    },
-  
-
-  // 🔥 location store가 변경될 때 자동 업데이트
-  useHelperLocationStore.subscribe(
-    (state) => state.selectedDistricts,
-    () => {
-      store.syncLocation();
-    }
-  );
 export default useProfileStore;
-
-
 
 // import { create } from "zustand";
 

@@ -20,6 +20,9 @@ const useProfileStore = create((set) => ({
     payAmount: "",
     selectedOptions: {}, // 자격증
     inputs: {},
+    name: "",
+    address: "",
+    profileImage: "",
   },
   profileEdit: {
     // profileEdit 초기 상태를 명시적으로 정의
@@ -39,6 +42,9 @@ const useProfileStore = create((set) => ({
     payAmount: "",
     selectedOptions: {}, // 자격증
     inputs: {},
+    name: "",
+    address: "",
+    profileImage: "",
   },
   // 상태 업데이트 함수
   updateProfile: (newProfile) => set({ profile: { ...newProfile } }),
@@ -63,6 +69,9 @@ const useProfileStore = create((set) => ({
         payAmount: "",
         selectedOptions: {}, // 자격증
         inputs: {},
+        name: "",
+        address: "",
+        profileImage: "",
       },
       profileEdit: {
         // reset 시 profileEdit도 초기화
@@ -82,6 +91,9 @@ const useProfileStore = create((set) => ({
         payAmount: "",
         selectedOptions: {}, // 자격증
         inputs: {},
+        name: "",
+        address: "",
+        profileImage: "",
       },
     }),
 
@@ -101,14 +113,21 @@ const useProfileStore = create((set) => ({
 
   updateProfileField: (field, value) =>
     set((state) => {
-      console.log("updateProfileField state:", value); // 추가
-      return {
-        profileEdit: {
-          ...state.profileEdit, // 기존 상태를 복사
-          [field]: value, // 특정 필드 업데이트
-        },
-      };
+      console.log(value);
+      const updatedProfileEdit = { ...state.profileEdit, [field]: value };
+      if (field === "profileImage") {
+        sessionStorage.setItem("profileImageUrl", value);
+      }
+      return { profileEdit: updatedProfileEdit };
     }),
+
+  clearProfileImage: () =>
+    set((state) => ({
+      profileEdit: {
+        ...state.profileEdit,
+        profileImage: "",
+      },
+    })),
 
   // careTypes의 workTypes 업데이트 액션 추가
   updateCareTypeField: (fieldName, value) =>

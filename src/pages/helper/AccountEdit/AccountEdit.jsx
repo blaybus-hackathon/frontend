@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
-import { Input } from "@/components/ui/custom/input";
-import { TextAreaInput } from "@/components/ui/TextAreaInput";
-import { Radio, RadioItem } from "@/components/ui/custom/multiRadio";
 import Header from "@/components/ui/temp/Header";
-import { SectionTitle } from "@/components/ui/custom/SectionTitle";
 
 import CareTypeSection from "@/pages/helper/AccountEdit/CareTypeSection ";
 import CareExperienceSelector from "@/pages/helper/AccountEdit/CareerSection";
 import IntroductionInput from "@/pages/helper/AccountEdit/IntroSection";
 import LocationSection from "@/pages/helper/AccountEdit/LocationSection";
+import BaseSection from "@/pages/helper/AccountEdit/BaseSection";
+import CertificateSection from "@/pages/helper/AccountEdit/CertificateSection";
 
 import useProfileStore from "@/store/useProfileStore";
 import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
@@ -22,7 +20,6 @@ import backarrow from "@/assets/images/back-arrow.png";
 
 export default function AccountEdit() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const { profileEdit, updateProfileField, syncLocation } = useProfileStore();
   const { selectedDistricts } = useHelperLocationStore(); // 상태만 가져옴
@@ -42,15 +39,6 @@ export default function AccountEdit() {
       )
     )
     .join(", ");
-
-  // const [editedProfile, setEditedProfile] = useState(profile);
-
-  // const handleBasicInfoChange = (field, value) => {
-  //   setEditedProfile((prev) => ({
-  //     ...prev,
-  //     [field]: value,
-  //   }));
-  // };
 
   // const getCareTypeLabel = (category) => {
   //   if (category === "workTypes") {
@@ -88,9 +76,10 @@ export default function AccountEdit() {
         schedules: schedules,
       };
 
+      console.log("저장할 프로필 정보:", newProfile); // 저장될 정보 확인
+
       // 한 번에 저장
       updateProfile(newProfile);
-      await saveProfile();
       navigate("/helper/account");
     } catch (error) {
       console.error("프로필 저장 실패:", error);
@@ -111,49 +100,10 @@ export default function AccountEdit() {
     <main className="max-w-md mx-auto flex flex-col justify-center gap-6 p-4">
       <Header title="나의 계정" />
 
-      {/* 기본 정보 섹션 */}
+      {/* 프로필 섹션 */}
       <section className="flex flex-col gap-6">
-        {/* 프로필 이미지 */}
-        {/* <section className="flex flex-row justify-between items-center gap-12  h-auto pr-6 pl-6 relative">
-          <div className="relative">
-            <img
-              src={editedProfile?.profileImage || "/defaultProfile.png"}
-              alt="profile_image"
-              className="w-24 h-24 rounded-full "
-            />
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              id="profile-image"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  // 이미지 미리보기 URL 생성
-                  const imageUrl = URL.createObjectURL(file);
-                  handleBasicInfoChange("profileImage", imageUrl);
-                }
-              }}
-            />
-            <label
-              htmlFor="profile-image"
-              className="absolute bottom-0 right-0 bg-primary text-white p-1 rounded-full cursor-pointer hover:bg-primary/90"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-              </svg>
-            </label>
-          </div>
-          <div className="flex flex-col justify-center gap-2 text-left">
-            <span>{profile.name || "홍길동"}</span>
-            <p>서울특별시 용산구 거주</p>
-          </div>
-        </section> */}
+        {/* 기본 정보 섹션 */}
+        <BaseSection />
 
         {/* 자기소개 섹션 */}
         <IntroductionInput />
@@ -206,11 +156,13 @@ export default function AccountEdit() {
               alt="overview_icon"
             />
             <span>
-              {profile.pay.type === "hourly"
+              {profileEdit.payType === "hourly"
                 ? "시급"
-                : profile.pay.type === "daily"
+                : profileEdit.payType === "daily"
                 ? "일급"
-                : "주급"}
+                : profileEdit.payType === "weekly"
+                ? "주급"
+                : "월급"}
             </span>
             <img
               src={backarrow}
@@ -225,44 +177,7 @@ export default function AccountEdit() {
         <CareTypeSection />
 
         {/* 자격증 등록 섹션*/}
-        {/* <section className="space-y-2 flex flex-col  gap-2">
-          <span className="text-left font-bold">나의 소지 자격증</span>
-
-          <Radio
-            onValueChange={(value) => {
-              //  제거: 더이상 여기서 state 업데이트 안함
-            }}
-            cols={1}
-            multiple
-            className="gap-4"
-          >
-            {["자격증1", "자격증2", "자격증3"].map((certificate) => {
-              const isChecked =
-                profileState.selectedOptions[certificate] || false;
-              return (
-                <div key={certificate} className="flex flex-col gap-2">
-                  <RadioItem
-                    value={certificate} // RadioItem에 value prop 전달
-                    checked={isChecked}
-                    onClick={() => handleRadioChange(certificate, !isChecked)}
-                  >
-                    {certificate}
-                  </RadioItem>
-                  {isChecked && (
-                    <Input
-                      type="text"
-                      name={certificate}
-                      value={profileState.inputs[certificate] || ""}
-                      onChange={(e) => handleInputChange(e)} // event 객체 전달
-                      placeholder={`${certificate} 자격증 정보를 입력하세요`}
-                      className="border p-2 rounded-md"
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </Radio>
-        </section> */}
+        <CertificateSection />
 
         {/* 저장/취소 버튼 */}
         <div className="flex gap-2">

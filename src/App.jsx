@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import AddressSelect from './pages/AddressSelect';
 import Account from './pages/helper/Account';
 import AccountEdit from './pages/helper/AccountEdit';
 import HelperLocation from './pages/helper/HelperLocation';
@@ -16,11 +17,12 @@ import Home from './pages/Home';
 import Matching from './pages/center/Matching';
 import MatchingStatus from './pages/center/MatchingStatus';
 
-import SignTest from './components/Auth/SignUp/SignTest';
+// import SignTest from './components/Auth/SignUp/SignTest';
 import ModifyInfo from './pages/center/ModifyInfo';
 import CaregiverInfo from './pages/center/CaregiverInfo';
 
 import ElderRegister from './pages/center/ElderRegister';
+import LoginTest from './loginTest';
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
         {/* 공통 */}
         <Route path='/signIn' element={<SignIn />} />
         <Route path='/signUp' element={<SignUp />} />
+        <Route path='/address' element={<AddressSelect />} />
 
         {/* Center */}
         <Route path='/center/register' element={<ElderRegister />} />
@@ -46,7 +49,7 @@ function App() {
         <Route path='/status' element={<MatchingStatus />} />
         <Route path='/modify' element={<ModifyInfo />} />
         <Route path='/caredetail' element={<CaregiverInfo />} />
-        <Route path='/test' element={<SignTest />} />
+        <Route path='/test' element={<LoginTest />} />
       </Routes>
     </Router>
   );

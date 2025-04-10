@@ -1,7 +1,8 @@
-import NextBtn from '@/components/ui/Button/NextButton';
+import NextButton from '@/components/ui/Button/NextButton';
 import { Input } from '@/components/ui/custom/input';
 import { Button } from '@/components/ui/custom/button';
-import useElderCareStore from '@/store/Paper/elderRegiDummy.js';
+// Todo : 연결 완료 후 삭제 필요
+import elderRegiDummy from '@/store/Paper/elderRegiDummy.js';
 import useElderRegiStore from '@/store/center/useElderRegiStore';
 import { useElderBasicForm } from '@/hooks/useElderBasicForm';
 
@@ -114,7 +115,7 @@ const BasicInfoForm = ({ formData, handleInputChange, gender, careLevelList }) =
 );
 
 export default function ElderBasicInfo() {
-  const { gender, careLevelList } = useElderCareStore();
+  const { gender, careLevelList } = elderRegiDummy();
   const { formData, handleInputChange, isFormValid } = useElderBasicForm();
   const registerElder = useElderRegiStore((state) => state.registerElder);
 
@@ -131,7 +132,7 @@ export default function ElderBasicInfo() {
         gender={gender}
         careLevelList={careLevelList}
       />
-      <NextBtn disabled={!isFormValid()} onClick={handleNextClick} />
+      <NextButton disabled={!isFormValid()} onClick={handleNextClick} />
     </>
   );
 }

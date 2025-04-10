@@ -50,15 +50,13 @@
   --outline: #c8c8c8;
   --disabled: #b8b8b8;
   --black: #171d1b;
-  --text: #191919;
 
   --company-primary: #522e9a;
   --helper-primary: #275280;
   --header-gray: #191919;
-  --required-red: #e40000;
+  --required-red: #d43232;
   --button-black: #171d1b;
   --button-inactive: #f6f6f6;
-  --placeholder-gray: #6c6c6c;
 }
 
 .dark {
@@ -92,13 +90,13 @@
   --outline: #c8c8c8;
   --disabled: #b8b8b8;
   --black: #171d1b;
+
   --company-primary: #522e9a;
   --helper-primary: #275280;
   --header-gray: #191919;
-  --required-red: #e40000;
+  --required-red: #d43232;
   --button-black: #171d1b;
   --button-inactive: #f6f6f6;
-  --placeholder-gray: #6c6c6c;
 }
 
 @theme inline {
@@ -142,12 +140,6 @@
   }
   body {
     @apply bg-background text-foreground;
-
-    input[type='number']::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-    }
   }
 }
 
@@ -156,38 +148,9 @@
 }
 
 .sub-title {
-  @apply text-[1.4375rem] font-semibold text-[var(--text)];
+  @apply text-xl font-semibold text-[var(--button-black)] tracking-[-0.0125rem];
 }
 
 .required-text {
-  @apply text-[1.06rem] text-[var(--required-red)] font-normal ml-[0.56rem];
-}
-
-.input-container {
-  @apply bg-[var(--button-inactive)] rounded-lg p-4 h-[4.0625rem] text-lg font-normal text-[var(--button-black)];
-}
-
-.input-container::placeholder {
-  @apply text-[var(--placeholder-gray)];
-}
-
-.input-container::-webkit-outer-spin-button,
-.input-container::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-.single-select {
-  @apply text-[var(--text)] text-[1.06rem] font-normal ml-[0.56rem];
-}
-
-.elder-service-grid-layout {
-  @apply grid grid-cols-2 gap-4;
-}
-
-.elder-service-grid-layout > button:nth-child(3),
-.elder-service-grid-layout > button:nth-child(4),
-.elder-service-grid-layout > button:nth-child(5),
-.elder-service-grid-layout > button:nth-child(6) {
-  @apply col-span-2;
+  @apply text-[1rem] tracking-[-0.01rem] text-[var(--required-red)];
 }

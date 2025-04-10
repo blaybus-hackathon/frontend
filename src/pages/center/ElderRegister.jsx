@@ -1,10 +1,10 @@
 import Header from '@/components/ui/temp/Header';
 import ElderBasicInfo from '@/components/Center/ElderRegistration/ElderBasicInfo';
+import CareRequirements from '@/components/Center/ElderRegistration/CareRequirements';
 import ElderAdditionalInfo from '@/components/Center/ElderRegistration/ElderAdditionalInfo';
 import ElderService from '@/components/Center/ElderRegistration/ElderService';
 import ElderRegiComplete from '@/components/Center/ElderRegistration/ElderRegiComplete';
 import { useElderRegiStepStore } from '@/store/center/useElderRegiStepStore.js';
-import CareRequirements from '@/components/Center/ElderRegistration/CareRequirements';
 
 // step config list
 const REGISTRATION_STEPS = [

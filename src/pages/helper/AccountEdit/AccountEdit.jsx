@@ -13,21 +13,24 @@ import CertificateSection from "@/pages/helper/AccountEdit/CertificateSection";
 
 import useProfileStore from "@/store/useProfileStore";
 import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
+import useScheduleStore from "@/store/suho/useScheduleStore";
+
 // ✅ 5. 이미지 및 정적 파일
-import location_icon from "@/assets/images/location.png";
-import overview from "@/assets/images/overview.png";
 import backarrow from "@/assets/images/back-arrow.png";
+import location_icon from "@/assets/images/location.png";
+import ScheduleSection from "./ScheduleSection";
 
 export default function AccountEdit() {
   const navigate = useNavigate();
 
   const { profileEdit, updateProfileField, syncLocation } = useProfileStore();
   const { selectedDistricts } = useHelperLocationStore(); // 상태만 가져옴
+  const { schedule } = useScheduleStore();
 
   // TODO : subscribe 변경 고민
   useEffect(() => {
     syncLocation();
-  }, [selectedDistricts]);
+  }, [selectedDistricts, schedule]);
 
   const formattedLocations = Object.entries(selectedDistricts)
     .flatMap(([city, districts]) =>
@@ -117,29 +120,7 @@ export default function AccountEdit() {
 
         {/* 나의 근무 가능 일정 섹션 */}
         {/* 클릭이벤트 */}
-        {/* <section
-          className="space-y-2 flex flex-col gap-2 hover:cursor-pointer"
-          onClick={() => navigate("/helper/account/schedule")}
-        >
-          <span className="text-left font-bold">나의 근무 가능 일정</span>
-          <span className="text-left">
-            나의 근무 가능한 날짜와 시간대를 설정해 보세요.
-          </span>
-          <p className="text-left flex flex-row items-center gap-3 p-3 border-2 rounded-xl">
-            <img
-              className="w-[24px] h-[24px] "
-              src={location_icon}
-              alt="location_icon"
-            />
-            월, 화, 수
-            <img
-              src={backarrow}
-              alt="backarrow"
-              className="w-4 h-4 rotate-180"
-            />
-            13:00 ~ 20:00
-          </p>
-        </section> */}
+        <ScheduleSection schedule={schedule} />
 
         {/* 급여 섹션 */}
         {/* 클릭이벤트 */}

@@ -21,10 +21,10 @@ function LocationSection({ selectedDistricts }) {
           alt="location_icon"
         />
         {Object.entries(selectedDistricts).length > 0 ? (
-          <span className="flex flex-wrap gap-2">
+          <span className="flex flex-col  gap-2">
             {Object.entries(selectedDistricts).map(([city, districts]) =>
               Object.entries(districts).map(([district, subDistricts]) => (
-                <span
+                <div // span 대신 div 사용 (블록 레벨)
                   key={`${city}-${district}`}
                   className="flex items-center gap-1"
                 >
@@ -35,7 +35,7 @@ function LocationSection({ selectedDistricts }) {
                     className="w-4 h-4 rotate-180 inline-block mx-1"
                   />
                   {district} ({subDistricts.join(", ")})
-                </span>
+                </div>
               ))
             )}
           </span>

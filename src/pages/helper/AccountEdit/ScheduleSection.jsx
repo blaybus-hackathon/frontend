@@ -1,79 +1,54 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-const DAYS = ["월", "화", "수", "목", "금", "토", "일"];
+import backarrow from "@/assets/images/back-arrow.png";
+import location_icon from "@/assets/images/location.png";
 
-export default function ScheduleSection({
-  schedules,
-  setDaySchedule,
-  removeDaySchedule,
-}) {
+import useScheduleStore from "@/store/suho/useScheduleStore";
+function ScheduleSection() {
+  const { schedule, consult } = useScheduleStore();
+
   const navigate = useNavigate();
 
-  const handleDayToggle = (day) => {
-    if (schedules[day]) {
-      removeDaySchedule(day);
-    } else {
-      setDaySchedule(day, { start: "", end: "" });
-    }
-  };
-
-  const handleTimeChange = (day, type, value) => {
-    if (value && (value < 0 || value > 24)) return;
-
-    setDaySchedule(day, {
-      ...schedules[day],
-      [type]: value,
-    });
-  };
+  const optimizedScheduleData = useMemo(() => {
+    return useScheduleStore.getState().optimizedSchedule();
+  }, [schedule]);
 
   return (
-    <main className="max-w-md mx-auto flex flex-col gap-4 p-4">
-      {DAYS.map((day) => (
-        <div key={day} className="items-center gap-4">
-          <Button
-            type="button"
-            variant={schedules[day] ? "default" : "outline"}
-            onClick={() => handleDayToggle(day)}
-            className=""
-          >
-            {day}요일
-          </Button>
+    <section
+      className="space-y-2 flex flex-col gap-2 hover:cursor-pointer"
+      onClick={() => navigate("/helper/account/schedule")}
+    >
+      <span className="text-left font-bold">나의 근무 가능 일정</span>
+      <span className="text-left">
+        나의 근무 가능한 날짜와 시간대를 설정해 보세요.
+      </span>
+      <p className="text-left flex flex-row items-center gap-3 p-3 border-2 rounded-xl">
+        <img
+          className="w-[24px] h-[24px] "
+          src={location_icon}
+          alt="location_icon"
+        />
 
-          {schedules[day] && (
-            <div className="flex items-center gap-4">
-              <Input
-                type="number"
-                min="0"
-                max="24"
-                placeholder="시작"
-                value={schedules[day]?.start || ""}
-                onChange={(e) => handleTimeChange(day, "start", e.target.value)}
-                className=""
-              />
-              <span>-</span>
-              <Input
-                type="number"
-                min="0"
-                max="24"
-                placeholder="종료"
-                value={schedules[day]?.end || ""}
-                onChange={(e) => handleTimeChange(day, "end", e.target.value)}
-                className=""
-              />
-              <span>시</span>
-            </div>
+        <div>
+          {optimizedScheduleData.length > 0 ? (
+            optimizedScheduleData.map((item, index) => (
+              <div key={index} className="flex items-center gap-2 py-1">
+                <span>{item.days}</span>
+                <img
+                  src={backarrow}
+                  alt="backarrow"
+                  className="w-4 h-4 rotate-180"
+                />
+                <span>{item.time}</span>
+              </div>
+            ))
+          ) : (
+            <span>설정된 근무 가능 시간이 없습니다.</span>
           )}
         </div>
-      ))}
-
-      <Button
-        className="w-full"
-        disabled={Object.keys(schedules).length === 0}
-        onClick={() => navigate("/helper/account/edit")}
-      >
-        저장하기
-      </Button>
-    </main>
+      </p>
+      <div className="text-right">{consult ? "협의 가능" : "협의 불가"}</div>
+    </section>
   );
 }
+export default ScheduleSection;

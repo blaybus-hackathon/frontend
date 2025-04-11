@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
-
+import useScheduleStore from "@/store/suho/useScheduleStore"; // 스케줄 스토어 임포트
 // Zustand Store 생성
 const useProfileStore = create((set) => ({
   profile: {
     introduction: "",
     careExperience: "",
+    schedule: {},
     location: {}, // 초기값으로 빈 객체 설정
     careTypes: {
       workTypes: [], //돌봄 유형
@@ -28,6 +29,7 @@ const useProfileStore = create((set) => ({
     // profileEdit 초기 상태를 명시적으로 정의
     introduction: "",
     careExperience: "",
+    schedule: {},
     location: {}, // 초기값으로 빈 객체 설정
     careTypes: {
       workTypes: [], //돌봄 유형
@@ -55,6 +57,7 @@ const useProfileStore = create((set) => ({
       profile: {
         introduction: "",
         careExperience: "",
+        schedule: {},
         location: {},
         careTypes: {
           workTypes: [], //돌봄 유형
@@ -77,6 +80,7 @@ const useProfileStore = create((set) => ({
         // reset 시 profileEdit도 초기화
         introduction: "",
         careExperience: "",
+        schedule: {},
         location: {},
         careTypes: {
           workTypes: [], //돌봄 유형
@@ -149,11 +153,13 @@ const useProfileStore = create((set) => ({
   syncLocation: () => {
     const selectedDistricts =
       useHelperLocationStore.getState().selectedDistricts;
-    console.log("응애 ", selectedDistricts);
+    const selectedSchedule = useScheduleStore.getState().schedule;
+    console.log("응애 ", selectedSchedule);
     set((state) => ({
       profileEdit: {
         ...state.profileEdit,
         location: selectedDistricts, // 🟢 location 동기화
+        schedule: selectedSchedule,
       },
     }));
   },

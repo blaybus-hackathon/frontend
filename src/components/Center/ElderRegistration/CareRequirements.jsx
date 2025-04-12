@@ -8,7 +8,6 @@ import {
   SelectValue,
 } from '@/components/ui/custom/select';
 import elderRegiDummy from '@/store/Paper/elderRegiDummy.js';
-import useElderRegiStore from '@/store/center/useElderRegiStore';
 import { useCareRequireForm } from '@/hooks/useCareRequireForm';
 
 // constant
@@ -131,7 +130,7 @@ const CareDaysSection = ({ days, formData, handleInputChange, handleTimeChange }
         <div className='mt-1.37rem'>
           <RadioItem
             value={formData.timeNegotiation}
-            className='flex justify-start border-none'
+            className='flex justify-start border-none mt-5'
             checked={formData.timeNegotiation}
             onClick={() => handleInputChange('timeNegotiation', !formData.timeNegotiation)}
           >
@@ -146,12 +145,6 @@ const CareDaysSection = ({ days, formData, handleInputChange, handleTimeChange }
 export default function CareRequirements() {
   const { workTypeList } = elderRegiDummy();
   const { formData, handleInputChange, handleTimeChange, isFormValid } = useCareRequireForm();
-  const registerElder = useElderRegiStore((state) => state.registerElder);
-
-  // Todo : 추후 삭제 필요
-  const handleNextClick = () => {
-    console.log('현재까지 저장된 데이터:', registerElder);
-  };
 
   return (
     <>
@@ -166,7 +159,7 @@ export default function CareRequirements() {
         handleInputChange={handleInputChange}
         handleTimeChange={handleTimeChange}
       />
-      <NextButton disabled={!isFormValid()} onClick={handleNextClick} />
+      <NextButton disabled={!isFormValid()} />
     </>
   );
 }

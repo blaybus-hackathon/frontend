@@ -3,7 +3,6 @@ import { Input } from '@/components/ui/custom/input';
 import { Button } from '@/components/ui/custom/button';
 // Todo : 연결 완료 후 삭제 필요
 import elderRegiDummy from '@/store/Paper/elderRegiDummy.js';
-import useElderRegiStore from '@/store/center/useElderRegiStore';
 import { useElderBasicForm } from '@/hooks/useElderBasicForm';
 
 const FormField = ({ label, required, children }) => (
@@ -117,12 +116,6 @@ const BasicInfoForm = ({ formData, handleInputChange, gender, careLevelList }) =
 export default function ElderBasicInfo() {
   const { gender, careLevelList } = elderRegiDummy();
   const { formData, handleInputChange, isFormValid } = useElderBasicForm();
-  const registerElder = useElderRegiStore((state) => state.registerElder);
-
-  const handleNextClick = () => {
-    console.log('현재까지 저장된 데이터(formData):', formData);
-    console.log('현재까지 저장된 데이터(store):', registerElder);
-  };
 
   return (
     <>
@@ -132,7 +125,7 @@ export default function ElderBasicInfo() {
         gender={gender}
         careLevelList={careLevelList}
       />
-      <NextButton disabled={!isFormValid()} onClick={handleNextClick} />
+      <NextButton disabled={!isFormValid()} />
     </>
   );
 }

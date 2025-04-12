@@ -3,7 +3,6 @@ import NextButton from '@/components/ui/Button/NextButton';
 import { Button } from '@/components/ui/custom/Button';
 import { useServiceForm } from '@/hooks/useServiceForm';
 import elderRegiDummy from '@/store/Paper/elderRegiDummy.js';
-import useElderRegiStore from '@/store/center/useElderRegiStore';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 
 const FormField = ({ label, required, children, isMultiple }) => (
@@ -176,7 +175,6 @@ export default function ElderService() {
   const { serviceMealList, serviceToiletList, serviceMobilityList, serviceDailyList } =
     elderRegiDummy();
   const { formData, handleInputChange, isFormValid } = useServiceForm();
-  const registerElder = useElderRegiStore((state) => state.registerElder);
 
   const handleProfileOptionChange = (value) => {
     console.log('Profile option change requested with value:', value, typeof value);
@@ -229,13 +227,6 @@ export default function ElderService() {
     setSelectedImage(null);
   };
 
-  // Todo : 추후 삭제 필요
-  // just for debugging
-  const handleNextClick = () => {
-    console.log('현재까지 저장된 데이터(formData):', formData);
-    console.log('현재까지 저장된 데이터(store):', registerElder);
-  };
-
   return (
     <>
       <MealSection
@@ -268,7 +259,7 @@ export default function ElderService() {
         handleImageUpload={handleImageUpload}
       />
 
-      <NextButton disabled={!isFormValid()} onClick={handleNextClick} />
+      <NextButton disabled={!isFormValid()} />
     </>
   );
 }

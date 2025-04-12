@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/custom/Button';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 import { useElderAddForm } from '@/hooks/useElderAddForm';
 import elderRegiDummy from '@/store/Paper/elderRegiDummy.js';
-import useElderRegiStore from '@/store/center/useElderRegiStore';
 
 const FormField = ({ label, required, children, isMultiple }) => (
   <section className='mb-10'>
@@ -60,13 +59,6 @@ const InmateStateSection = ({ inmateStateList, formData, handleInputChange }) =>
 export default function ElderAdditionalInfo() {
   const { dementiaSymptomList, inmateStateList } = elderRegiDummy();
   const { formData, handleInputChange, isFormValid } = useElderAddForm();
-  const registerElder = useElderRegiStore((state) => state.registerElder);
-
-  // Todo : 추후 삭제 필요
-  const handleNextClick = () => {
-    console.log('현재까지 저장된 데이터(formData):', formData);
-    console.log('현재까지 저장된 데이터(store):', registerElder);
-  };
 
   return (
     <>
@@ -80,7 +72,7 @@ export default function ElderAdditionalInfo() {
         formData={formData}
         handleInputChange={handleInputChange}
       />
-      <NextButton disabled={!isFormValid()} onClick={handleNextClick} />
+      <NextButton disabled={!isFormValid()} />
     </>
   );
 }

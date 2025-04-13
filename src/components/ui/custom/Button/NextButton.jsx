@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/custom/button';
+import { Button } from '@/components/ui/custom/Button';
 import { useElderRegiStepStore } from '@/store/center/useElderRegiStepStore.js';
 
 export default function NextButton({ className, disabled, onClick }) {

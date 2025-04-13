@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/custom/button';
+import { Button } from '@/components/ui/custom/Button';
 import { useNavigate } from 'react-router-dom';
 import Profile from '@/assets/images/elder-basic-profile.png';
 import elderStore from '@/store/center/useElderRegiStore';

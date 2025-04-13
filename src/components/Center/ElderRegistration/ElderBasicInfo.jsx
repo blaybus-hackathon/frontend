@@ -1,6 +1,6 @@
 import NextButton from '@/components/ui/custom/Button/NextButton';
 import { Input } from '@/components/ui/custom/input';
-import { Button } from '@/components/ui/custom/button';
+import { Button } from '@/components/ui/custom/Button';
 // Todo : 연결 완료 후 삭제 필요
 import elderRegiDummy from '@/store/jpaper/elderRegiDummy.js';
 import { useElderBasicForm } from '@/hooks/center/service/useElderBasicForm';

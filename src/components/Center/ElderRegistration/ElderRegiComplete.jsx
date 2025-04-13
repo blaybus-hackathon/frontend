@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/custom/button';
 import { useNavigate } from 'react-router-dom';
 import Profile from '@/assets/images/elder-basic-profile.png';
 import elderStore from '@/store/center/useElderRegiStore';
+
 export default function ElderRegiComplete() {
   const navigate = useNavigate();
   const { registerElder } = elderStore();

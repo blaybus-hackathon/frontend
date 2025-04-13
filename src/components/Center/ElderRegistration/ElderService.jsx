@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import NextButton from '@/components/ui/Button/NextButton';
+import NextButton from '@/components/ui/custom/Button/NextButton';
 import { Button } from '@/components/ui/custom/Button';
-import { useServiceForm } from '@/hooks/useServiceForm';
-import elderRegiDummy from '@/store/Paper/elderRegiDummy.js';
+import { useServiceForm } from '@/hooks/center/service/useServiceForm';
+import elderRegiDummy from '@/store/jpaper/elderRegiDummy.js';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
+import useElderRegiStore from '@/store/center/useElderRegiStore';
 
 const FormField = ({ label, required, children, isMultiple }) => (
   <section className='mb-10'>
@@ -96,10 +97,12 @@ const ElderProfileSection = ({
   profileOption,
   selectedImage,
   handleProfileOptionChange,
-  handleImageChange,
-  handleImageDelete,
+  handleImageChange, // image select button click handler
+  handleImageDelete, // delete image
+  handleImageSave, // save image to server
+  isUploading, // uploading image to server
   fileInputRef,
-  handleImageUpload,
+  handleImageUpload, // file select event handler
 }) => {
   console.log('ProfileSection rendered:', { profileOption, selectedImage });
 
@@ -123,34 +126,33 @@ const ElderProfileSection = ({
             />
             {!selectedImage ? (
               <div className='flex flex-col items-center gap-2'>
-                <button
-                  onClick={handleImageChange}
-                  className='px-6 py-3 bg-gray-100 rounded-md hover:bg-gray-200 text-lg'
-                >
+                <Button onClick={handleImageChange} className='px-6 py-3' variant='white'>
                   이미지 선택
-                </button>
+                </Button>
               </div>
             ) : (
               <div className='flex flex-col items-start gap-2'>
-                <img
-                  src={selectedImage}
-                  alt='프로필 미리보기'
-                  className='w-32 h-32 object-cover rounded-md'
-                />
+                {selectedImage && (
+                  <img
+                    src={URL.createObjectURL(selectedImage)}
+                    alt='프로필 미리보기'
+                    className='w-32 h-32 object-cover rounded-md'
+                  />
+                )}
 
                 <div className='flex gap-2'>
-                  <button
-                    onClick={handleImageChange}
-                    className='px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200'
+                  {/* image save button */}
+                  <Button
+                    onClick={handleImageSave}
+                    disabled={isUploading}
+                    className='py-3'
+                    variant='ghost'
                   >
-                    이미지 변경
-                  </button>
-                  <button
-                    onClick={handleImageDelete}
-                    className='px-4 py-2 text-red-500 hover:text-red-700'
-                  >
+                    저장하기
+                  </Button>
+                  <Button onClick={handleImageDelete} className='px-6 text-red-500' variant='ghost'>
                     삭제
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -162,8 +164,10 @@ const ElderProfileSection = ({
 };
 
 export default function ElderService() {
-  const [profileOption, setProfileOption] = useState('2'); // default '아이콘대체'
-  const [selectedImage, setSelectedImage] = useState(null);
+  // 상태 관리
+  const [profileOption, setProfileOption] = useState('2'); // default: '아이콘대체'
+  const [selectedImage, setSelectedImage] = useState(null); // selected image file
+  const [isUploading, setIsUploading] = useState(false); // uploading image status
   const fileInputRef = useRef(null);
 
   // Todo : 추후 삭제 필요
@@ -175,31 +179,27 @@ export default function ElderService() {
   const { serviceMealList, serviceToiletList, serviceMobilityList, serviceDailyList } =
     elderRegiDummy();
   const { formData, handleInputChange, isFormValid } = useServiceForm();
+  const { setProfileImage, registerElder } = useElderRegiStore();
 
   const handleProfileOptionChange = (value) => {
     console.log('Profile option change requested with value:', value, typeof value);
 
     if (value) {
       const valueAsString = String(value);
-      // Todo : 추후 삭제 필요
-      // console.log('Setting profile option to:', valueAsString);
       setProfileOption(valueAsString);
 
       if (valueAsString === '2') {
-        // Todo : 추후 삭제 필요
-        // 아이콘대체 선택시 이미지 초기화
         console.log('Clearing selected image');
         setSelectedImage(null);
+        setProfileImage(null);
       }
     }
   };
 
   const handleImageChange = () => {
-    // 파일 입력 필드 초기화
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-    // 파일 선택 다이얼로그 열기
     fileInputRef.current?.click();
   };
 
@@ -213,10 +213,41 @@ export default function ElderService() {
       return;
     }
 
-    // 파일 타입 체크
+    // 파일 타입 체크 (이미지 파일만 허용)
     if (!file.type.startsWith('image/')) {
       alert('이미지 파일만 업로드 가능합니다.');
       return;
+    }
+
+    // 선택된 이미지 파일 저장
+    setSelectedImage(file);
+  };
+
+  const handleImageSave = async () => {
+    if (!selectedImage) return;
+
+    setIsUploading(true); // uploading image status
+    try {
+      const formData = new FormData();
+      formData.append('photoFile', selectedImage);
+      formData.append('patientSeq', registerElder.patientSeq);
+
+      const response = await fetch('/api/cmn/upload-img/PATIENT', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('failed to upload image');
+      }
+
+      const data = await response.json();
+      setProfileImage(data.imgSeq);
+      setIsUploading(false);
+    } catch (error) {
+      console.error('이미지 업로드 오류:', error);
+      alert('이미지 업로드에 실패했습니다. 다시 시도해주세요.');
+      setIsUploading(false);
     }
   };
 
@@ -255,6 +286,8 @@ export default function ElderService() {
         handleProfileOptionChange={handleProfileOptionChange}
         handleImageChange={handleImageChange}
         handleImageDelete={handleImageDelete}
+        handleImageSave={handleImageSave}
+        isUploading={isUploading}
         fileInputRef={fileInputRef}
         handleImageUpload={handleImageUpload}
       />

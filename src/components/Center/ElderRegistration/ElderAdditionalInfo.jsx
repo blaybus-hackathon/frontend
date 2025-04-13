@@ -1,8 +1,8 @@
-import NextButton from '@/components/ui/Button/NextButton';
+import NextButton from '@/components/ui/custom/Button/NextButton';
 import { Button } from '@/components/ui/custom/Button';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
-import { useElderAddForm } from '@/hooks/useElderAddForm';
-import elderRegiDummy from '@/store/Paper/elderRegiDummy.js';
+import { useElderAddForm } from '@/hooks/center/service/useElderAddForm';
+import elderRegiDummy from '@/store/jpaper/elderRegiDummy.js';
 
 const FormField = ({ label, required, children, isMultiple }) => (
   <section className='mb-10'>

@@ -1,4 +1,4 @@
-import NextButton from '@/components/ui/Button/NextButton';
+import NextButton from '@/components/ui/custom/Button/NextButton';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 import {
   Select,
@@ -7,8 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/custom/select';
-import elderRegiDummy from '@/store/Paper/elderRegiDummy.js';
-import { useCareRequireForm } from '@/hooks/useCareRequireForm';
+import elderRegiDummy from '@/store/jpaper/elderRegiDummy.js';
+import { useCareRequireForm } from '@/hooks/center/service/useCareRequireForm';
 
 // constant
 const DAYS = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];

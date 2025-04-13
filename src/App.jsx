@@ -20,18 +20,19 @@ import SignTest from './components/Auth/SignUp/SignTest';
 import ModifyInfo from './pages/center/ModifyInfo';
 import CaregiverInfo from './pages/center/CaregiverInfo';
 
-import Test from './pages/Test';
+import ElderRegister from './pages/center/ElderRegister';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/test' element={<Test />} />
         {/* 공통 */}
         <Route path='/signIn' element={<SignIn />} />
         <Route path='/signUp' element={<SignUp />} />
 
+        {/* Center */}
+        <Route path='/center/register' element={<ElderRegister />} />
         {/* Helper */}
         <Route path='/helper/account' element={<Account />} />
         <Route path='/helper/account/edit' element={<AccountEdit />} />

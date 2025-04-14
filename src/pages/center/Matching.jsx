@@ -10,7 +10,10 @@ export default function Matching() {
   const [curMatchingPage, setCurMatchingPage] = useState(1);
   return (
     <>
-      <Header title={'공고 올리기'} />
+      {curMatchingPage < 4 && (
+        <Header title={'공고 올리기'} currentPage={curMatchingPage} totalPage={3} />
+      )}
+
       {curMatchingPage === 1 && (
         <MatchingManage
           handleMatchingPage={(pg) => {

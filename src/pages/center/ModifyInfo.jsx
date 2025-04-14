@@ -1,6 +1,6 @@
 import Header from '@/components/ui/temp/Header';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/custom/button';
+import { Input } from '@/components/ui/custom/input';
 import patientStore from '@/store/patientStore';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -21,35 +21,31 @@ export default function ModifyInfo() {
     '독거',
     '배우자와 동거, 돌봄 시간 중 집에 있음',
     '배우자와 동거, 돌봄 시간 중 자리 비움',
-    '다른 가족과 동거, 돌봄 시간 중 집에 있음',
+    '다른가족과 동거 (돌봄 중 집에 있음)',
     '다른 가족과 동거, 돌봄 시간 중 자리 비움',
   ];
-  const MEAL = ['스스로 식사 가능', '식사 차려드리기', '죽, 반찬 등 요리 필요', '경관식 보조'];
-  const TOILET = [
-    '스스로 배변 가능',
-    '기저귀 케어 필요',
-    '가끔 대소변 실수 시 도움',
-    '유치도뇨/방광루/장루 관리',
-  ];
-  const MOBILE = ['스스로 거동 가능', '이동시 부축 도움', '휠체어 이동 보조', '거동 불가'];
+  const MEAL = ['스스로 식사 가능', '식사 차려드리기', '요리 필요', '경관식 보조'];
+  const TOILET = ['스스로 가능', '기저귀 케어', '실수 시 도움', '장루 관리'];
+  const MOBILE = ['스스로 가능', '부축 도움', '휠체어 이동', '거동 불가'];
   const DAILY = [
     '청소, 빨래 보조',
     '목욕 보조',
     '병원 동행',
     '산책, 간단한 운동',
-    '말벗 등 정서지원',
+    '말벗, 정서지원',
     '인지자극 활동',
   ];
 
-  const { patientData, recruitData, setPatient } = patientStore();
+  const { patientData, setPatient } = patientStore();
 
   const navigate = useNavigate();
 
   const [name, setName] = useState(patientData.name);
   const [birthday, setBirthday] = useState(patientData.birth);
-  const [year, setYear] = useState('');
-  const [month, setMonth] = useState('');
-  const [day, setDay] = useState('');
+  const [numericBirth, setNumericBirth] = useState('');
+  // const [year, setYear] = useState('');
+  // const [month, setMonth] = useState('');
+  // const [day, setDay] = useState('');
   const [gender, setGender] = useState(patientData.gender);
   const [grade, setGrade] = useState(patientData.grade);
   const [weight, setWeight] = useState(patientData.weight);
@@ -65,24 +61,26 @@ export default function ModifyInfo() {
   // const [, year, month, day] = birthday.match(/(\d{4})년 (\d{1,2})월 (\d{1,2})일/) || [];
 
   useEffect(() => {
-    const match = birthday.match(/(\d{4})년 (\d{1,2})월 (\d{1,2})일/);
-    if (match) {
-      setYear(match[1]);
-      setMonth(match[2]);
-      setDay(match[3]);
-    }
+    // const match = birthday.match(/(\d{4})년 (\d{1,2})월 (\d{1,2})일/);
+    // if (match) {
+    //   setYear(match[1]);
+    //   setMonth(match[2]);
+    //   setDay(match[3]);
+    // }
+    const match = birthday.replace(
+      /(\d{4})년 (\d{1,2})월 (\d{1,2})일/,
+      (_, year, month, day) => `${year}${month.padStart(2, '0')}${day.padStart(2, '0')}`,
+    );
+    setNumericBirth(match);
   }, [birthday]);
 
   const renderGrade = () =>
     GRADE.map((gd, idx) => (
       <Button
         key={idx}
-        className={`h-16 text-lg font-medium ${
-          grade === gd
-            ? 'bg-[var(--company-primary)] text-white'
-            : 'bg-[var(--button-inactive)] text-black'
-        }`}
-        onClick={(e) => {
+        variant={grade === gd ? 'default' : 'outline'}
+        className='h-16 text-lg font-medium w-full mb-0'
+        onClick={() => {
           // console.log(e.target.innerText);
           // setGrade(e.target.innerText);
           setGrade(gd);
@@ -95,11 +93,8 @@ export default function ModifyInfo() {
     DEMEN.map((d, idx) => (
       <Button
         key={idx}
-        className={`h-16 text-lg font-medium ${
-          demen.includes(d)
-            ? 'bg-[var(--company-primary)] text-white'
-            : 'bg-[var(--button-inactive)] text-black'
-        }`}
+        variant={demen.includes(d) ? 'default' : 'outline'}
+        className='h-16 text-lg font-medium w-full mb-0'
         onClick={() => {
           if (demen.includes(d)) setDemen((prev) => prev.filter((item) => item !== d));
           else setDemen((prev) => [...prev, d]);
@@ -112,11 +107,8 @@ export default function ModifyInfo() {
     WITH.map((w, idx) => (
       <Button
         key={idx}
-        className={`h-16 text-lg font-medium ${
-          withs === w
-            ? 'bg-[var(--company-primary)] text-white'
-            : 'bg-[var(--button-inactive)] text-black'
-        }`}
+        variant={withs === w ? 'default' : 'outline'}
+        className='h-16 text-lg font-medium w-full mb-0'
         onClick={() => {
           setWiths(w);
         }}
@@ -128,14 +120,10 @@ export default function ModifyInfo() {
     MEAL.map((d, idx) => (
       <Button
         key={idx}
-        className={`h-16 text-lg font-medium ${
-          meal.includes(d)
-            ? 'bg-[var(--company-primary)] text-white'
-            : 'bg-[var(--button-inactive)] text-black'
-        }`}
+        variant={meal === d ? 'default' : 'outline'}
+        className='h-16 text-lg font-medium w-full mb-0'
         onClick={() => {
-          if (meal.includes(d)) setMeal((prev) => prev.filter((item) => item !== d));
-          else setMeal((prev) => [...prev, d]);
+          setMeal(d);
         }}
       >
         {d}
@@ -145,11 +133,8 @@ export default function ModifyInfo() {
     TOILET.map((d, idx) => (
       <Button
         key={idx}
-        className={`h-16 text-lg font-medium ${
-          toilet.includes(d)
-            ? 'bg-[var(--company-primary)] text-white'
-            : 'bg-[var(--button-inactive)] text-black'
-        }`}
+        variant={toilet.includes(d) ? 'default' : 'outline'}
+        className='h-16 text-lg font-medium w-full mb-0'
         onClick={() => {
           if (toilet.includes(d)) setToilet((prev) => prev.filter((item) => item !== d));
           else setToilet((prev) => [...prev, d]);
@@ -162,11 +147,8 @@ export default function ModifyInfo() {
     MOBILE.map((d, idx) => (
       <Button
         key={idx}
-        className={`h-16 text-lg font-medium ${
-          mobile.includes(d)
-            ? 'bg-[var(--company-primary)] text-white'
-            : 'bg-[var(--button-inactive)] text-black'
-        }`}
+        variant={mobile.includes(d) ? 'default' : 'outline'}
+        className='h-16 text-lg font-medium w-full mb-0'
         onClick={() => {
           if (mobile.includes(d)) setMobile((prev) => prev.filter((item) => item !== d));
           else setMobile((prev) => [...prev, d]);
@@ -180,11 +162,8 @@ export default function ModifyInfo() {
     DAILY.map((d, idx) => (
       <Button
         key={idx}
-        className={`h-16 text-lg font-medium ${
-          daily.includes(d)
-            ? 'bg-[var(--company-primary)] text-white'
-            : 'bg-[var(--button-inactive)] text-black'
-        }`}
+        variant={daily.includes(d) ? 'default' : 'outline'}
+        className='h-16 text-lg font-medium w-full mb-0'
         onClick={() => {
           if (daily.includes(d)) setDaily((prev) => prev.filter((item) => item !== d));
           else setDaily((prev) => [...prev, d]);
@@ -197,7 +176,8 @@ export default function ModifyInfo() {
   const modify = () => {
     setPatient({
       name: name,
-      birth: `${year}년 ${month}월 ${day}일`,
+      // birth: `${year}년 ${month}월 ${day}일`,
+      birth: numericBirth.replace(/(\d{4})(\d{2})(\d{2})/, '$1$2$3'),
       gender: gender,
       grade: grade,
       weight: weight,
@@ -215,201 +195,168 @@ export default function ModifyInfo() {
   return (
     <div>
       <Header title='공고 수정하기' />
-      <div className='max-w-2xl mx-auto'>
-        <p className='mt-10 font-bold text-xl mb-7'>{`(${patientData.name})어르신의 정보를 확인해주세요`}</p>
-        <div className='px-6 gap-5 flex flex-col mb-40'>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              이름<span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <Input
-              className='h-16 bg-[var(--button-inactive)] font-medium text-lg'
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-            />
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              생년월일<span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='flex gap-3'>
-              <div className='flex flex-1 h-16 bg-[var(--button-inactive)] font-medium text-lg'>
-                <Input
-                  className='flex-1 h-full text-center border-none'
-                  value={year}
-                  onChange={(e) => {
-                    setYear(e.target.value);
-                  }}
-                />
-                <p className='h-full flex items-center'>년</p>
-              </div>
-              <div className='flex flex-1 h-16 bg-[var(--button-inactive)] font-medium text-lg'>
-                <Input
-                  className='flex-1 h-full text-center border-none'
-                  value={month}
-                  onChange={(e) => {
-                    setMonth(e.target.value);
-                  }}
-                />
-                <p className='h-full flex items-center'>월</p>
-              </div>
-              <div className='flex flex-1 h-16 bg-[var(--button-inactive)] font-medium text-lg'>
-                <Input
-                  className='flex-1 h-full text-center border-none'
-                  value={day}
-                  onChange={(e) => {
-                    setDay(e.target.value);
-                  }}
-                />
-                <p className='h-full flex items-center'>일</p>
-              </div>
-              {/* <Input
-                className='flex-1 h-16 bg-[var(--button-inactive)] font-medium text-lg'
-                value='1'
-              />
-              <Input
-                className='flex-1 h-16 bg-[var(--button-inactive)] font-medium text-lg'
-                value='27'
-              /> */}
-            </div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              성별<span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='flex gap-4 w-full'>
-              <Button
-                className={`flex-1 h-16 ${
-                  gender === '여성'
-                    ? 'bg-[var(--company-primary)] text-white'
-                    : 'bg-[var(--button-inactive)] text-black'
-                } text-lg`}
-                onClick={() => {
-                  setGender('여성');
-                }}
-              >
-                여성
-              </Button>
-              <Button
-                className={`flex-1 h-16 ${
-                  gender === '남성'
-                    ? 'bg-[var(--company-primary)] text-white'
-                    : 'bg-[var(--button-inactive)] text-black'
-                } text-lg`}
-                onClick={() => {
-                  setGender('남성');
-                }}
-              >
-                남성
-              </Button>
-            </div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              장기요양등급 <span className='font-normal text-lg'>(단일 선택)</span>
-              <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='w-full grid grid-cols-2 gap-4'>{renderGrade()}</div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              몸무게
-              <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='relative flex items-center w-full'>
-              <Input
-                type='number'
-                className='flex-1 h-16 bg-[var(--button-inactive)] text-lg text-center pr-10'
-                value={weight}
-                onChange={(e) => {
-                  setWeight(e.target.value);
-                }}
-              />
-              <span className='absolute right-2 text-lg'>kg</span>
-            </div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              보유 질병/질환
-              <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <Input
-              className='h-16 bg-[var(--button-inactive)] font-medium text-lg'
-              value={disease}
-              onChange={(e) => {
-                setDisease(e.target.value);
-              }}
-            />
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              치매 증상 <span className='font-normal text-lg'>(복수 선택 가능)</span>
-              <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='w-full grid grid-cols-1 gap-4'>{renderDemen()}</div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              동거인 여부 <span className='font-normal text-lg'>(단일 선택)</span>
-              <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='w-full grid gap-4'>{renderWith()}</div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              식사 보조 <span className='font-normal text-lg'>(복수 선택 가능)</span>
-              <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='w-full grid grid-cols-2 gap-4'>{renderMeal()}</div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              배변보조 <span className='font-normal text-lg'>(복수 선택 가능)</span>
-              <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='w-full grid grid-cols-1 gap-4'>{renderToilet()}</div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              이동 보조 <span className='font-normal text-lg'>(복수 선택 가능)</span>
-              <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='w-full grid grid-cols-2 gap-4'>{renderMobile()}</div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>
-              일상 생활 <span className='font-normal text-lg'>(복수 선택 가능)</span>
-              <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
-            </label>
-            <div className='w-full grid grid-cols-2 gap-4'>{renderDaily()}</div>
-          </div>
-          <div className='flex flex-col items-start relative'>
-            <label className='font-semibold text-xl mb-4'>
-              기타 요청 사항
-              <span className='font-normal text-sm ml-2'>선택</span>
-            </label>
-            <textarea
-              maxLength={300}
-              placeholder='기타 작성 (최대 300자)'
-              className='border w-full rounded-md h-65 p-4'
-              value={guitar}
-              onChange={(e) => {
-                setGuitar(e.target.value);
-              }}
-            />
-            <span className='absolute -bottom-6 right-3'>{`${guitar.length}/300`}</span>
-          </div>
-          <Button
-            className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
-            onClick={() => {
-              modify();
+      {/* <p className='mt-10 font-bold text-xl mb-7'>{`(${patientData.name})어르신의 정보를 확인해주세요`}</p> */}
+      <div className='max-w-2xl mx-auto px-6 mt-8 gap-10 flex flex-col mb-40'>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-5'>
+            이름<span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <Input
+            className='h-16 text-lg rounded-md border-[var(--outline)]'
+            width='100%'
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
             }}
-          >
-            확인
-          </Button>
+          />
         </div>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-5'>
+            생년월일<span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <Input
+            className='h-16 text-lg rounded-md border-[var(--outline)]'
+            width='100%'
+            type='number'
+            value={numericBirth}
+            onChange={(e) => {
+              setNumericBirth(e.target.value);
+            }}
+          />
+        </div>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-5'>
+            보유질병
+            <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <Input
+            className='h-16 text-lg rounded-md border-[var(--outline)]'
+            width='100%'
+            value={disease}
+            onChange={(e) => {
+              setDisease(e.target.value);
+            }}
+          />
+        </div>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-5'>
+            몸무게
+            <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <div className='h-16 text-lg rounded-md border border-[var(--outline)] w-full text-start relative'>
+            <input
+              type='number'
+              className='h-16 w-full px-4'
+              value={weight}
+              onChange={(e) => {
+                setWeight(e.target.value);
+              }}
+            />
+            <span className='absolute right-3 top-1/2 transform -translate-y-1/2 text-lg'>kg</span>
+          </div>
+        </div>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-5'>
+            성별<span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <div className='flex gap-4 w-full'>
+            <Button
+              variant={gender === '여성' ? 'default' : 'outline'}
+              className='flex-1 h-16 text-lg mb-0'
+              onClick={() => {
+                setGender('여성');
+              }}
+            >
+              여성
+            </Button>
+            <Button
+              variant={gender === '남성' ? 'default' : 'outline'}
+              className='flex-1 h-16 text-lg mb-0'
+              onClick={() => {
+                setGender('남성');
+              }}
+            >
+              남성
+            </Button>
+          </div>
+        </div>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-5'>
+            장기요양등급
+            <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <div className='w-full grid grid-cols-2 gap-4'>{renderGrade()}</div>
+        </div>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-5'>
+            동거인 여부
+            <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <div className='w-full grid gap-4'>{renderWith()}</div>
+        </div>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-5'>
+            식사 보조
+            <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <div className='w-full grid grid-cols-2 gap-4'>{renderMeal()}</div>
+        </div>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-4'>
+            이동 보조
+            <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <div className='w-full grid grid-cols-2 gap-4'>{renderMobile()}</div>
+        </div>
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-4'>
+            일상 생활
+            <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <div className='w-full grid grid-cols-2 gap-4'>{renderDaily()}</div>
+        </div>
+
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-4'>
+            치매 증상
+            {/* <span className='font-normal text-lg'>(복수 선택 가능)</span> */}
+            <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <div className='w-full grid grid-cols-1 gap-4'>{renderDemen()}</div>
+        </div>
+
+        <div className='flex flex-col items-start'>
+          <label className='font-semibold text-xl mb-4'>
+            배변보조 <span className='font-normal text-lg'>(복수 선택 가능)</span>
+            <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
+          </label>
+          <div className='w-full grid grid-cols-2 gap-4'>{renderToilet()}</div>
+        </div>
+
+        <div className='flex flex-col items-start relative'>
+          <label className='font-semibold text-xl mb-4'>
+            기타 요청 사항
+            <span className='font-normal text-sm ml-2'>선택</span>
+          </label>
+          <textarea
+            maxLength={300}
+            placeholder='기타 작성 (최대 300자)'
+            className='border w-full rounded-md h-65 p-4'
+            value={guitar}
+            onChange={(e) => {
+              setGuitar(e.target.value);
+            }}
+          />
+          <span className='absolute -bottom-6 right-3'>{`${guitar.length}/300`}</span>
+        </div>
+        <Button
+          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
+          onClick={() => {
+            modify();
+          }}
+        >
+          확인
+        </Button>
       </div>
     </div>
   );

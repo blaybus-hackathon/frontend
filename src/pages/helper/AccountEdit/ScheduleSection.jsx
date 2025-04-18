@@ -3,15 +3,13 @@ import { useNavigate } from "react-router-dom";
 import backarrow from "@/assets/images/back-arrow.png";
 import location_icon from "@/assets/images/location.png";
 
-import useScheduleStore from "@/store/suho/useScheduleStore";
-function ScheduleSection() {
-  const { schedule, consult } = useScheduleStore();
+
+function ScheduleSection({optimize,consult}) {
+  
+  const optimized = optimize();
 
   const navigate = useNavigate();
 
-  const optimizedScheduleData = useMemo(() => {
-    return useScheduleStore.getState().optimizedSchedule();
-  }, [schedule]);
 
   return (
     <section
@@ -30,8 +28,8 @@ function ScheduleSection() {
         />
 
         <div>
-          {optimizedScheduleData.length > 0 ? (
-            optimizedScheduleData.map((item, index) => (
+          {optimized.length > 0 ? (
+            optimized.map((item, index) => (
               <div key={index} className="flex items-center gap-2 py-1">
                 <span>{item.days}</span>
                 <img

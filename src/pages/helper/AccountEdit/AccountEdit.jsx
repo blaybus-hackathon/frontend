@@ -10,10 +10,12 @@ import IntroductionInput from "@/pages/helper/AccountEdit/IntroSection";
 import LocationSection from "@/pages/helper/AccountEdit/LocationSection";
 import BaseSection from "@/pages/helper/AccountEdit/BaseSection";
 import CertificateSection from "@/pages/helper/AccountEdit/CertificateSection";
+import PaySection from "@/pages/helper/AccountEdit/PaySection";
 
 import useProfileStore from "@/store/useProfileStore";
 import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
 import useScheduleStore from "@/store/suho/useScheduleStore";
+import usePayStore from "@/store/suho/usePayStore"; // 스케줄 스토어 임포트
 
 // ✅ 5. 이미지 및 정적 파일
 import backarrow from "@/assets/images/back-arrow.png";
@@ -25,12 +27,15 @@ export default function AccountEdit() {
 
   const { profileEdit, updateProfileField, syncLocation } = useProfileStore();
   const { selectedDistricts } = useHelperLocationStore(); // 상태만 가져옴
-  const { schedule } = useScheduleStore();
+  const { schedule,consult,optimizedSchedule } = useScheduleStore();
+  const { pay } = usePayStore();
 
+
+ 
   // TODO : subscribe 변경 고민
   useEffect(() => {
     syncLocation();
-  }, [selectedDistricts, schedule]);
+  }, [selectedDistricts, schedule,pay,consult]);
 
   const formattedLocations = Object.entries(selectedDistricts)
     .flatMap(([city, districts]) =>
@@ -120,10 +125,11 @@ export default function AccountEdit() {
 
         {/* 나의 근무 가능 일정 섹션 */}
         {/* 클릭이벤트 */}
-        <ScheduleSection schedule={schedule} />
+        <ScheduleSection optimize={optimizedSchedule} consult={consult}/>
 
         {/* 급여 섹션 */}
         {/* 클릭이벤트 */}
+        <PaySection pay = {pay}/>
         {/* <section
           className="space-y-2 flex flex-col gap-2 hover:cursor-pointer"
           onClick={() => navigate("/helper/account/pay")}

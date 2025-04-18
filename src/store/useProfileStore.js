@@ -1,12 +1,15 @@
 import { create } from "zustand";
 import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
 import useScheduleStore from "@/store/suho/useScheduleStore"; // 스케줄 스토어 임포트
+import usePayStore from "@/store/suho/usePayStore"; // 스케줄 스토어 임포트
 // Zustand Store 생성
+//TODO: 기본값 설정할것
 const useProfileStore = create((set) => ({
   profile: {
     introduction: "",
     careExperience: "",
     schedule: {},
+    consult: false,
     location: {}, // 초기값으로 빈 객체 설정
     careTypes: {
       workTypes: [], //돌봄 유형
@@ -17,8 +20,10 @@ const useProfileStore = create((set) => ({
       mobilitySupport: "",
       dailyLife: [],
     },
-    payType: "",
-    payAmount: "",
+    pay: {
+      type: "",
+      amount: 0,
+    },
     selectedOptions: {}, // 자격증
     inputs: {},
     name: "",
@@ -30,6 +35,7 @@ const useProfileStore = create((set) => ({
     introduction: "",
     careExperience: "",
     schedule: {},
+    consult: false,
     location: {}, // 초기값으로 빈 객체 설정
     careTypes: {
       workTypes: [], //돌봄 유형
@@ -40,8 +46,10 @@ const useProfileStore = create((set) => ({
       mobilitySupport: "",
       dailyLife: [],
     },
-    payType: "",
-    payAmount: "",
+    pay: {
+      type: "",
+      amount: 0,
+    },
     selectedOptions: {}, // 자격증
     inputs: {},
     name: "",
@@ -58,6 +66,7 @@ const useProfileStore = create((set) => ({
         introduction: "",
         careExperience: "",
         schedule: {},
+    consult: false,
         location: {},
         careTypes: {
           workTypes: [], //돌봄 유형
@@ -68,8 +77,10 @@ const useProfileStore = create((set) => ({
           mobilitySupport: "",
           dailyLife: [],
         },
-        payType: "",
-        payAmount: "",
+        pay: {
+          type: "",
+          amount: 0,
+        },
         selectedOptions: {}, // 자격증
         inputs: {},
         name: "",
@@ -81,6 +92,7 @@ const useProfileStore = create((set) => ({
         introduction: "",
         careExperience: "",
         schedule: {},
+    consult: false,
         location: {},
         careTypes: {
           workTypes: [], //돌봄 유형
@@ -91,8 +103,10 @@ const useProfileStore = create((set) => ({
           mobilitySupport: "",
           dailyLife: [],
         },
-        payType: "",
-        payAmount: "",
+        pay: {
+          type: "",
+          amount: 0,
+        },
         selectedOptions: {}, // 자격증
         inputs: {},
         name: "",
@@ -154,29 +168,33 @@ const useProfileStore = create((set) => ({
     const selectedDistricts =
       useHelperLocationStore.getState().selectedDistricts;
     const selectedSchedule = useScheduleStore.getState().schedule;
-    console.log("응애 ", selectedSchedule);
+    const selectedConsult = useScheduleStore.getState().consult;
+    const selectedPay =  usePayStore.getState().pay;
+    // console.log("응애 ", selectedConsult);
     set((state) => ({
       profileEdit: {
         ...state.profileEdit,
         location: selectedDistricts, // 🟢 location 동기화
         schedule: selectedSchedule,
+        pay: selectedPay,
+        consult: selectedConsult,
       },
     }));
   },
 
-  subscribeToLocationStore: () => {
-    useHelperLocationStore.subscribe(
-      (state) => state.selectedDistricts,
-      (newSelectedDistricts) => {
-        get().syncLocation(); // ✅ get()을 사용하여 store의 함수에 접근
-      }
-    );
-  },
+  // subscribeToLocationStore: () => {
+  //   useHelperLocationStore.subscribe(
+  //     (state) => state.selectedDistricts,
+  //     (newSelectedDistricts) => {
+  //       get().syncLocation(); // ✅ get()을 사용하여 store의 함수에 접근
+  //     }
+  //   );
+  // },
 }));
 
 // 컴포넌트가 마운트될 때 구독 시작 (권장되는 방식)
-const { subscribeToLocationStore } = useProfileStore.getState();
-subscribeToLocationStore();
+// const { subscribeToLocationStore } = useProfileStore.getState();
+// subscribeToLocationStore();
 
 export default useProfileStore;
 

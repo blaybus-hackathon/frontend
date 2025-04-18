@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,25 +9,21 @@ const PAY_TYPES = [
   { id: 'hourly', label: '시급' },
   { id: 'daily', label: '일급' },
   { id: 'weekly', label: '주급' },
+  { id: 'monthly', label: '월급' },
 ];
 
 export default function AccountPay() {
   const navigate = useNavigate();
 
   // store에서 직접 값과 함수 가져오기
-  const selectedPay = usePayStore((state) => state.selectedPay);
-  const payType = usePayStore((state) => state.payType);
-  const setPay = usePayStore((state) => state.setPay);
+ const {pay, setPay} = usePayStore();
 
   // 로컬 상태로 관리
-  const [inputPay, setInputPay] = useState(selectedPay?.toString() || '');
-  const [selectedType, setSelectedType] = useState(payType || 'hourly');
+  const [inputPay, setInputPay] = useState(pay.amount);
+  const [selectedType, setSelectedType] = useState(pay.type || 'hourly');
 
   // PayStore의 현재 값으로 초기화
-  useEffect(() => {
-    setInputPay(selectedPay?.toString() || '');
-    setSelectedType(payType);
-  }, [selectedPay, payType]);
+
 
   const handlePayChange = (e) => {
     const value = e.target.value;

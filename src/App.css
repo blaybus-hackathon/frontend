@@ -154,3 +154,14 @@
 .required-text {
   @apply text-[1rem] tracking-[-0.01rem] text-[var(--required-red)];
 }
+
+
+.helper-title{
+  @apply text-[#191919] text-[23px] font-semibold leading-none;
+}
+.helper-subtitle{
+  @apply text-[#191919]  text-[17px] font-normal leading-none
+}
+.helper-section{
+  @apply flex flex-col items-start gap-5
+}

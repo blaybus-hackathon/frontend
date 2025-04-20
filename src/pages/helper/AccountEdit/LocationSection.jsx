@@ -8,13 +8,17 @@ function LocationSection({ selectedDistricts }) {
 
   return (
     <section
-      className="space-y-2 flex flex-col gap-2  hover:cursor-pointer"
+    /*space-y-2 flex flex-col gap-2*/
+      className=" helper-section hover:cursor-pointer"
       onClick={() => navigate("/helper/location")}
     >
-      <span className="text-left font-bold">나의 선호 지역</span>
-      <span className="text-left">나의 희망근무 지역을 설정해 보세요.</span>
-
-      <p className="text-left flex flex-row items-center gap-3 p-3 border-2 rounded-xl">
+      <div className="flex flex-col items-start gap-2.5 self-stretch">
+      <span className="helper-title">나의 선호 지역</span>
+      <span className="helper-subtitle ">나의 희망근무 지역을 설정해 보세요!</span>
+      </div>
+      
+      {/* text-left flex flex-row items-center gap-3 p-3 border-2 rounded-xl */}
+      <p className="flex w-full p-5 items-center self-stretch rounded-[10px] border border-[#C8C8C8] bg-white gap-3">
         <img
           className="w-[24px] h-[24px]"
           src={location_icon}
@@ -43,6 +47,9 @@ function LocationSection({ selectedDistricts }) {
           <span>미설정</span>
         )}
       </p>
+
+
+      
     </section>
   );
 }

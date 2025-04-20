@@ -31,7 +31,6 @@ export default function AccountEdit() {
   const { pay } = usePayStore();
 
 
- 
   // TODO : subscribe 변경 고민
   useEffect(() => {
     syncLocation();
@@ -105,11 +104,11 @@ export default function AccountEdit() {
   );
 
   return (
-    <main className="max-w-md mx-auto flex flex-col justify-center gap-6 p-4">
+    <main className="max-w-md mx-auto flex flex-col gap-6 ">
       <Header title="나의 계정" />
 
       {/* 프로필 섹션 */}
-      <section className="flex flex-col gap-6">
+      <section className="flex flex-col items-stretch gap-12">
         {/* 기본 정보 섹션 */}
         <BaseSection />
 

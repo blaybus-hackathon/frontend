@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/custom/tabs';
-
+import InfoCard from '@/components/Center/MatchingInfo/InfoCard';
 export default function MatchingInfo() {
   const [activeTab, setActiveTab] = useState('waiting');
 
@@ -27,7 +27,7 @@ export default function MatchingInfo() {
 
   return (
     <>
-      <section className='flex flex-col items-start px-[1.31rem] pt-[1.13rem] h-[9.12rem]'>
+      <section className='flex flex-col items-start px-[1.31rem] pt-[1.13rem] h-[9.12rem] mx-auto max-w-2xl'>
         <p className='text-[1.4375rem] font-semibold text-[var(--text)] '>
           {tabDescriptions[activeTab].title}
         </p>
@@ -35,37 +35,39 @@ export default function MatchingInfo() {
           {tabDescriptions[activeTab].description}
         </p>
       </section>
-      <Tabs defaultValue='waiting' onValueChange={handleTabChange} className='mt-[1.19rem]'>
-        <TabsList className='w-full'>
-          <TabsTrigger value='waiting'>
-            매칭 대기
-            <span className='text-[0.8rem] font-semibold w-[1.375rem] h-[1.375rem] text-white bg-[var(--main)] rounded-full'>
-              12
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value='matching'>
-            매칭 진행중
-            <span className='text-[0.8rem] font-semibold w-[1.375rem] h-[1.375rem] text-white bg-[var(--main)] rounded-full'>
-              12
-            </span>
-          </TabsTrigger>
-          <TabsTrigger value='completed'>
-            매칭 완료
-            <span className='text-[0.8rem] font-semibold w-[1.375rem] h-[1.375rem] text-white bg-[var(--main)] rounded-full'>
-              12
-            </span>
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent value='waiting'>
-          <div>매칭 대기</div>
-        </TabsContent>
-        <TabsContent value='matching'>
-          <div>매칭 진행중</div>
-        </TabsContent>
-        <TabsContent value='completed'>
-          <div>매칭 완료</div>
-        </TabsContent>
-      </Tabs>
+      <section className='mx-auto max-w-2xl'>
+        <Tabs defaultValue='waiting' onValueChange={handleTabChange} className='mt-[1.19rem]'>
+          <TabsList className='w-full'>
+            <TabsTrigger value='waiting'>
+              매칭 대기
+              <span className='text-[0.8rem] font-semibold w-[1.375rem] h-[1.375rem] text-white bg-[var(--main)] rounded-full'>
+                12
+              </span>
+            </TabsTrigger>
+            <TabsTrigger value='matching'>
+              매칭 진행중
+              <span className='text-[0.8rem] font-semibold w-[1.375rem] h-[1.375rem] text-white bg-[var(--main)] rounded-full'>
+                12
+              </span>
+            </TabsTrigger>
+            <TabsTrigger value='completed'>
+              매칭 완료
+              <span className='text-[0.8rem] font-semibold w-[1.375rem] h-[1.375rem] text-white bg-[var(--main)] rounded-full'>
+                12
+              </span>
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value='waiting' className='flex items-center justify-center'>
+            <InfoCard />
+          </TabsContent>
+          <TabsContent value='matching'>
+            <div>매칭 진행중</div>
+          </TabsContent>
+          <TabsContent value='completed'>
+            <div>매칭 완료</div>
+          </TabsContent>
+        </Tabs>
+      </section>
     </>
   );
 }

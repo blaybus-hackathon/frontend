@@ -155,8 +155,12 @@
   @apply text-[1rem] tracking-[-0.01rem] text-[var(--required-red)];
 }
 
+/* ▼▼▼Helper▼▼▼ */
 .helper-title {
   @apply text-[#191919] text-[23px] font-semibold leading-none;
+}
+.helper-title_sub {
+  @apply text-[#E40000]  text-[17px] font-normal leading-none ml-[10px];
 }
 .helper-subtitle {
   @apply text-[#191919]  text-[17px] font-normal leading-none;

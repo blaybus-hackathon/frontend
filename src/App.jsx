@@ -5,7 +5,7 @@ import SignUp from "./pages/SignUp";
 import Account from "./pages/helper/Account/Account";
 import AccountEdit from "./pages/helper/AccountEdit/AccountEdit";
 import HelperLocation from "./pages/helper/AccountEdit/navigate/HelperLocation";
-import HelperLocationDetail from "./pages/helper/HelperLocationDetail";
+
 import AccountSchedule from "./pages/helper/AccountEdit/navigate/AccountSchedule";
 import AccountPay from "./pages/helper/AccountEdit/navigate/AccountPay";
 import AccountCareType from "./pages/helper/AccountEdit/navigate/AccountCareType";
@@ -39,10 +39,7 @@ function App() {
         <Route path="/helper/account/pay" element={<AccountPay />} />
         <Route path="/helper/account/care-type" element={<AccountCareType />} />
         <Route path="/helper/location" element={<HelperLocation />} />
-        <Route
-          path="/helper/location/:city"
-          element={<HelperLocationDetail />}
-        />
+
         {/* <Route path="/helper/chat" element={}/> */}
         {/* <Route path="/helper" element={} /> */}
 

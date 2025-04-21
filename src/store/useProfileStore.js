@@ -3,7 +3,6 @@ import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
 import useScheduleStore from "@/store/suho/useScheduleStore"; // 스케줄 스토어 임포트
 import usePayStore from "@/store/suho/usePayStore"; // 스케줄 스토어 임포트
 // Zustand Store 생성
-//TODO: 기본값 설정할것
 const useProfileStore = create((set) => ({
   profile: {
     introduction: "",
@@ -66,7 +65,7 @@ const useProfileStore = create((set) => ({
         introduction: "",
         careExperience: "",
         schedule: {},
-    consult: false,
+        consult: false,
         location: {},
         careTypes: {
           workTypes: [], //돌봄 유형
@@ -92,7 +91,7 @@ const useProfileStore = create((set) => ({
         introduction: "",
         careExperience: "",
         schedule: {},
-    consult: false,
+        consult: false,
         location: {},
         careTypes: {
           workTypes: [], //돌봄 유형
@@ -169,7 +168,7 @@ const useProfileStore = create((set) => ({
       useHelperLocationStore.getState().selectedDistricts;
     const selectedSchedule = useScheduleStore.getState().schedule;
     const selectedConsult = useScheduleStore.getState().consult;
-    const selectedPay =  usePayStore.getState().pay;
+    const selectedPay = usePayStore.getState().pay;
     // console.log("응애 ", selectedConsult);
     set((state) => ({
       profileEdit: {
@@ -181,80 +180,6 @@ const useProfileStore = create((set) => ({
       },
     }));
   },
-
-  // subscribeToLocationStore: () => {
-  //   useHelperLocationStore.subscribe(
-  //     (state) => state.selectedDistricts,
-  //     (newSelectedDistricts) => {
-  //       get().syncLocation(); // ✅ get()을 사용하여 store의 함수에 접근
-  //     }
-  //   );
-  // },
 }));
 
-// 컴포넌트가 마운트될 때 구독 시작 (권장되는 방식)
-// const { subscribeToLocationStore } = useProfileStore.getState();
-// subscribeToLocationStore();
-
 export default useProfileStore;
-
-// import { create } from "zustand";
-
-// // 🔹 초기 상태 정의 (중복 제거)
-// const defaultProfileState = {
-//   introduction: "",
-//   careExperience: "",
-//   location: {},
-//   careTypes: {
-//     workTypes: [],
-//     careGrade: "",
-//     gender: "",
-//     livingArrangement: "",
-//     mealCare: "",
-//     mobilitySupport: "",
-//     dailyLife: [],
-//   },
-//   payType: "",
-//   payAmount: "",
-//   selectedOptions: {}, // 자격증
-//   inputs: {},
-// };
-
-// // 🔹 Zustand Store 생성
-// const useProfileStore = create((set) => ({
-//   profile: { ...defaultProfileState },
-//   profileEdit: { ...defaultProfileState },
-
-//   // 🔹 상태 업데이트 함수
-//   updateProfile: (newProfile) => set({ profile: { ...newProfile } }),
-
-//   // 🔹 profileEdit 상태 수정
-//   updateProfileField: (field, value) =>
-//     set((state) => ({
-//       profileEdit: {
-//         ...state.profileEdit,
-//         [field]: value,
-//       },
-//     })),
-
-//   // 🔹 careTypes 필드 수정
-//   updateCareTypeField: (field, value) =>
-//     set((state) => ({
-//       profileEdit: {
-//         ...state.profileEdit,
-//         careTypes: {
-//           ...state.profileEdit.careTypes,
-//           [field]: value,
-//         },
-//       },
-//     })),
-
-//   // 🔹 profileEdit 초기화
-//   initializeProfileEdit: (initialProfile) =>
-//     set({ profileEdit: { ...initialProfile } }),
-
-//   // 🔹 전체 초기화 (profile & profileEdit)
-//   resetProfile: () => set({ profile: { ...defaultProfileState }, profileEdit: { ...defaultProfileState } }),
-// }));
-
-// export default useProfileStore;

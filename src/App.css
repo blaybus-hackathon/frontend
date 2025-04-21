@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @plugin 'tailwindcss-animate';
 
@@ -132,7 +132,7 @@
 
 @layer base {
   html {
-    font-family: 'Pretendard Variable', sans-serif;
+    font-family: "Pretendard Variable", sans-serif;
   }
 
   * {
@@ -155,13 +155,20 @@
   @apply text-[1rem] tracking-[-0.01rem] text-[var(--required-red)];
 }
 
-
-.helper-title{
+.helper-title {
   @apply text-[#191919] text-[23px] font-semibold leading-none;
 }
-.helper-subtitle{
-  @apply text-[#191919]  text-[17px] font-normal leading-none
+.helper-subtitle {
+  @apply text-[#191919]  text-[17px] font-normal leading-none;
 }
-.helper-section{
-  @apply flex flex-col items-start gap-5
+.helper-section {
+  @apply flex flex-col items-start gap-5;
+}
+
+.profile-section__content-text {
+  @apply text-[#191919] text-[20px] font-normal leading-none text-left;
+}
+
+.profile-section__content-box {
+  @apply flex w-full p-5 items-center self-stretch rounded-[10px] border border-[#C8C8C8] bg-white gap-3;
 }

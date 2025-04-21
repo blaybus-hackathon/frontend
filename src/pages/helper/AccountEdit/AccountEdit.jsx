@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/custom/Button";
 
 import Header from "@/components/ui/temp/Header";
 
@@ -27,14 +27,13 @@ export default function AccountEdit() {
 
   const { profileEdit, updateProfileField, syncLocation } = useProfileStore();
   const { selectedDistricts } = useHelperLocationStore(); // 상태만 가져옴
-  const { schedule,consult,optimizedSchedule } = useScheduleStore();
+  const { schedule, consult, optimizedSchedule } = useScheduleStore();
   const { pay } = usePayStore();
-
 
   // TODO : subscribe 변경 고민
   useEffect(() => {
     syncLocation();
-  }, [selectedDistricts, schedule,pay,consult]);
+  }, [selectedDistricts, schedule, pay, consult]);
 
   const formattedLocations = Object.entries(selectedDistricts)
     .flatMap(([city, districts]) =>
@@ -46,28 +45,6 @@ export default function AccountEdit() {
       )
     )
     .join(", ");
-
-  // const getCareTypeLabel = (category) => {
-  //   if (category === "workTypes") {
-  //     return (
-  //       selectedTypes.workTypes
-  //         ?.map(
-  //           (type) => CARE_TYPES.workTypes.find((t) => t.id === type)?.label
-  //         )
-  //         .join(", ") || "미설정"
-  //     );
-  //   }
-  //   const selected = CARE_TYPES[category]?.find(
-  //     (item) => item.id === selectedTypes[category]
-  //   );
-  //   return selected?.label || "미설정";
-  // };
-
-  // const [careTypeData, setCareTypeData] = useState({ workTypes: [] });
-  // const handleSaveCareType = (newCareType) => {
-  //   console.log("저장된 데이터:", newCareType);
-  //   setCareTypeData(newCareType); // 상태 업데이트
-  // };
 
   const handleSave = async () => {
     try {
@@ -99,9 +76,6 @@ export default function AccountEdit() {
   const handleTest = () => {
     console.log("profileEdit 상태:", profileEdit);
   };
-  const careExperience = useProfileStore(
-    (state) => state.profileEdit.careExperience
-  );
 
   return (
     <main className="max-w-md mx-auto flex flex-col gap-6 ">
@@ -119,45 +93,15 @@ export default function AccountEdit() {
         <CareExperienceSelector />
 
         {/* 나의 선호 지역 섹션 */}
-
         <LocationSection selectedDistricts={selectedDistricts} />
 
         {/* 나의 근무 가능 일정 섹션 */}
         {/* 클릭이벤트 */}
-        <ScheduleSection optimize={optimizedSchedule} consult={consult}/>
+        <ScheduleSection optimize={optimizedSchedule} consult={consult} />
 
         {/* 급여 섹션 */}
         {/* 클릭이벤트 */}
-        <PaySection pay = {pay}/>
-        {/* <section
-          className="space-y-2 flex flex-col gap-2 hover:cursor-pointer"
-          onClick={() => navigate("/helper/account/pay")}
-        >
-          <span className="text-left font-bold">나의 희망급여</span>
-          <span className="text-left">나의 희망급여를 설정해 보세요!</span>
-          <p className="text-left flex flex-row items-center gap-4 border-2 rounded-xl p-3">
-            <img
-              className="w-[24px] h-[24px]"
-              src={overview}
-              alt="overview_icon"
-            />
-            <span>
-              {profileEdit.payType === "hourly"
-                ? "시급"
-                : profileEdit.payType === "daily"
-                ? "일급"
-                : profileEdit.payType === "weekly"
-                ? "주급"
-                : "월급"}
-            </span>
-            <img
-              src={backarrow}
-              alt="backarrow"
-              className="w-4 h-4 rotate-180"
-            />
-            <span className="">{profile.pay.amount?.toLocaleString()}원</span>
-          </p>
-        </section> */}
+        <PaySection pay={pay} />
 
         {/* 돌봄 유형 섹션*/}
         <CareTypeSection />
@@ -167,12 +111,17 @@ export default function AccountEdit() {
 
         {/* 저장/취소 버튼 */}
         <div className="flex gap-2">
-          <Button type="button" onClick={handleSave} className="flex-1">
+          <Button
+            type="button"
+            variant="default"
+            onClick={handleSave}
+            className="flex-1"
+          >
             저장
           </Button>
           <Button
             type="button"
-            variant="outline"
+            variant="white"
             className="flex-1"
             onClick={handleCancel}
           >

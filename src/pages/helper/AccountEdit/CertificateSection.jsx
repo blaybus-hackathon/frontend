@@ -5,7 +5,7 @@ import useProfileStore from "@/store/useProfileStore";
 
 const CertificationSection = () => {
   const { profileEdit, updateProfileField } = useProfileStore();
-  const certificates = ["자격증1", "자격증2", "자격증3"];
+  const certificates = ["요양보호사", "간병사", "병원동행매니저", "산후관리사"];
 
   const handleRadioChange = (certificate, isChecked) => {
     updateProfileField("selectedOptions", {
@@ -30,8 +30,10 @@ const CertificationSection = () => {
   };
 
   return (
-    <section className="space-y-2 flex flex-col gap-2">
-      <span className="text-left font-bold">나의 소지 자격증</span>
+    <section className=" helper-section">
+      <div className="flex flex-col items-start gap-2.5 self-stretch">
+        <span className="helper-title">나의 소지 자격증</span>
+      </div>
 
       <Radio cols={1} multiple className="gap-4">
         {certificates.map((certificate) => {
@@ -39,7 +41,7 @@ const CertificationSection = () => {
           return (
             <div key={certificate} className="flex flex-col gap-2">
               <RadioItem
-                value={certificate} // RadioItem에 value prop 전달
+                value={certificate}
                 checked={isChecked}
                 onClick={() => handleRadioChange(certificate, !isChecked)}
               >
@@ -52,7 +54,7 @@ const CertificationSection = () => {
                   value={profileEdit.inputs[certificate] || ""}
                   onChange={handleInputChange} // event 객체 전달
                   placeholder={`${certificate} 자격증 정보를 입력하세요`}
-                  className="border p-2 rounded-md"
+                  className=""
                 />
               )}
             </div>

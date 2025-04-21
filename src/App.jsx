@@ -2,13 +2,13 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Account from "./pages/helper/Account";
+import Account from "./pages/helper/Account/Account";
 import AccountEdit from "./pages/helper/AccountEdit/AccountEdit";
-import HelperLocation from "./pages/helper/HelperLocation";
+import HelperLocation from "./pages/helper/AccountEdit/navigate/HelperLocation";
 import HelperLocationDetail from "./pages/helper/HelperLocationDetail";
-import AccountSchedule from "./pages/helper/AccountEdit/AccountSchedule";
-import AccountPay from "./pages/helper/AccountPay";
-import AccountCareType from "./pages/helper/AccountEdit/AccountCareType";
+import AccountSchedule from "./pages/helper/AccountEdit/navigate/AccountSchedule";
+import AccountPay from "./pages/helper/AccountEdit/navigate/AccountPay";
+import AccountCareType from "./pages/helper/AccountEdit/navigate/AccountCareType";
 
 import "./App.css";
 

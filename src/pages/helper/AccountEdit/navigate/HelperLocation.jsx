@@ -7,7 +7,10 @@ import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
 const LOCATION_DATA = {
   서울: { 은평구: ["불광", "응암", "역촌"], 강남구: ["삼성", "대치", "역삼"] },
   경기: { 고양시: ["창릉"] },
-  충청남도: { 천안시: ["불당동", "성정동"], 아산시: ["온양1동", "온양2동"] },
+  충청남도: {
+    천안시: ["불당동", "성정동"],
+    아산시: ["온양1동", "온양2동", "온양3동", "온양4동"],
+  },
 };
 
 export default function LocationSelector() {

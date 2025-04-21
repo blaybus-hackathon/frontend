@@ -11,7 +11,6 @@ export default function PayInfoSection({ pay }) {
       <span className="text-left font-bold">나의 희망급여</span>
       <span className="text-left">나의 희망급여를 설정해 보세요!</span>
       <p className="text-left flex flex-row items-center gap-4 border-2 rounded-xl p-3">
-        {/* 필요한 이미지 경로를 실제 경로로 변경하세요 */}
         <img
           className="w-[24px] h-[24px]"
           src="/overview.png"
@@ -26,7 +25,6 @@ export default function PayInfoSection({ pay }) {
             ? "주급"
             : "급여"}
         </span>
-        {/* 필요한 이미지 경로를 실제 경로로 변경하세요 */}
         <img
           src="/backarrow.png"
           alt="backarrow"

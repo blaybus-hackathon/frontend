@@ -16,10 +16,9 @@ const IntroductionInput = () => {
 
   return (
     <section className="helper-section">
-
       <p className="helper-title">자기소개</p>
       <textarea
-      ref={textareaRef}
+        ref={textareaRef}
         value={profileEdit.introduction}
         onInput={handleInput}
         placeholder="한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다."
@@ -30,8 +29,8 @@ const IntroductionInput = () => {
         rounded-[10px] border border-[#C8C8C8] bg-white
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
       "
-/>
+      />
     </section>
   );
 };
-  export default IntroductionInput;
+export default IntroductionInput;

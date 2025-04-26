@@ -12,7 +12,10 @@ const buttonVariants = cva(
           'bg-[var(--main)] text-white border border-[var(--outline)] active:bg-[var(--main-hover)] hover:bg-[var(--main-hover)]',
         white:
           'bg-white text-[var(--main)] border border-[var(--main)] active:bg-[var(--main)] active:text-white hover:bg-[var(--main)] hover:text-white',
-        disabled: 'bg-[var(--disabled)] text-white border border-[var(--disabled)]',
+          black:
+'bg-white text-black border border-[var(--main)] active:bg-[var(--main)] active:text-black hover:bg-[var(--main)] hover:text-white',
+
+          disabled: 'bg-[var(--disabled)] text-white border border-[var(--disabled)]',
         outline:
           'bg-white text-[var(--black)] border border-[var(--outline)] font-normal hover:bg-[var(--main)] hover:text-white',
         ghost: 'bg-transparent hover:bg-accent hover:text-accent-foreground',

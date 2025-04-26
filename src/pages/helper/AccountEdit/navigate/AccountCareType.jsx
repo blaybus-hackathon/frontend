@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-
+import { Radio, RadioItem } from "@/components/ui/custom/multiRadio";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/ui/temp/Header";
@@ -101,13 +101,28 @@ export default function AccountCareType() {
   };
 
   return (
-    <main className="max-w-md mx-auto flex flex-col gap-6 p-4">
+    <main className="max-w-md mx-auto flex flex-col gap-6">
       <Header title="돌봄 유형 설정" />
+      <section className="flex flex-col gap-8 p-4">
+      <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+          희망하는 근무 종류를 선택해 주세요! 
+          </span>
+          <span className="profile-section__content-text">(최대 선택 5개)        
+             <span className="helper-title_sub">필수</span>
+             </span>
+        </div>
+        <div>
+
+        </div>
+
+
+        </section>
 
       {/* 근무 종류 (다중 선택) */}
       <section className="space-y-2">
-        <h2 className="font-semibold">근무 종류 (다중 선택 가능)</h2>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-2">
+          
           {CARE_TYPES.workTypes.map(
             (
               { id, label } // id와 label 대신 key와 value 사용

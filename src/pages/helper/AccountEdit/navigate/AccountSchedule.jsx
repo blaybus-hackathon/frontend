@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/custom/Button";
+import { Radio, RadioItem } from "@/components/ui/custom/multiRadio";
 import { Input } from "@/components/ui/input";
+import Header from "@/components/ui/temp/Header";
 
 import { useNavigate } from "react-router-dom";
 
@@ -54,7 +56,29 @@ export default function AccountSchedule() {
   }, [openDays, updateSchedule]);
 
   return (
-    <main className="max-w-md mx-auto flex flex-col gap-4 p-4">
+    <main className="max-w-md mx-auto flex flex-col gap-6">
+      <Header title="근무 가능 일정" />
+      <section className="flex flex-col gap-8 p-4">
+      <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+          근무 가능한 요일과 시간을 선택해 주세요!
+
+          </span>
+          <span className="profile-section__content-text">중복선택가능           <span className="helper-title_sub">필수</span></span>
+
+        </div>
+
+      {/* <Radio cols={1} multiple className="gap-4">
+
+      </Radio> */}
+
+
+<Button className="w-full" onClick={handleClick}>
+        저장하기
+      </Button>
+
+
+      </section>
       {DAYS_DATA.map((day) => (
         <div key={day} className="flex  flex-col items-center gap-4">
           <Button
@@ -96,9 +120,7 @@ export default function AccountSchedule() {
         {consult ? "협의 가능" : "협의 불가"}
       </Button>
 
-      <Button className="w-full" onClick={handleClick}>
-        저장하기
-      </Button>
+
     </main>
   );
 }

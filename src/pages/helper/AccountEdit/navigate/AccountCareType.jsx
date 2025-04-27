@@ -109,13 +109,74 @@ export default function AccountCareType() {
           희망하는 근무 종류를 선택해 주세요! 
           </span>
           <span className="profile-section__content-text">(최대 선택 5개)        
-             <span className="helper-title_sub">필수</span>
+
              </span>
         </div>
-        <div>
 
+        <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+          희망하는 돌봄유형을 선택해 주세요!
+          </span>
+          <span className="profile-section__content-text">중복선택가능     
+             </span>
         </div>
 
+        <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+          장기요양등급
+          <span className="helper-title_sub ">선택</span>
+          </span>
+        </div>
+
+        <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+          성별
+            <span className="helper-title_sub ">
+              선택
+            </span>
+          </span>
+        </div>
+
+        <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+          동거인 여부부
+            <span className="helper-title_sub ">
+              선택
+            </span>
+          </span>
+        </div>
+
+        <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+          식사 보조
+            <span className="helper-title_sub ">
+              선택
+            </span>
+          </span>
+        </div>
+
+        <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+          이동 보조
+            <span className="helper-title_sub ">
+              선택
+            </span>
+          </span>
+        </div>
+
+        <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+          일상 생활
+            <span className="helper-title_sub ">
+              선택
+            </span>
+          </span>
+        </div>
+
+      {/* 저장 버튼 */}
+      <Button onClick={handleSave} className="w-full mt-4">
+        저장하기
+      </Button>
 
         </section>
 
@@ -264,10 +325,7 @@ export default function AccountCareType() {
         </div>
       </section>
 
-      {/* 저장 버튼 */}
-      <Button onClick={handleSave} className="w-full mt-4">
-        저장하기
-      </Button>
+
     </main>
   );
 }

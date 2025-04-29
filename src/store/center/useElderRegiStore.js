@@ -1,5 +1,14 @@
 import { create } from 'zustand';
-import { elderRegiService } from '@/services/elderRegiService';
+import { submitElderData } from '@/services/center/elderFormService';
+
+// function for clean selectedList
+function omit(obj, keys) {
+  const newObj = { ...obj };
+  keys.forEach((key) => {
+    delete newObj[key];
+  });
+  return newObj;
+}
 
 const createElderDataSlice = (set) => ({
   registerElder: {
@@ -7,24 +16,32 @@ const createElderDataSlice = (set) => ({
       name: '',
       gender: 0,
       birthDate: '',
-      weight: 0,
-      disease: '',
+      afSeq: 0,
+      asSeq: 0,
+      atSeq: 0,
+      weight: '',
+      diseases: '',
       careLevel: 0,
     },
-    careRequirements: {
+    careInfo: {
       workType: 0,
-      timeNegotiation: false,
       timeList: [],
+      timeNegotiation: false,
     },
-    additionalInfo: {
+    addInfo: {
       dementiaSymptom: 0,
       inmateState: 0,
+      selectedDementiaSymptoms: [], // for ui, not for backend
     },
-    service: {
+    serviceInfo: {
       serviceMeal: 0,
       serviceToilet: 0,
       serviceMobility: 0,
       serviceDaily: 0,
+      selectedServiceMealList: [],
+      selectedServiceToiletList: [],
+      selectedServiceMobilityList: [],
+      selectedServiceDailyList: [],
     },
     profileImage: null,
   },
@@ -35,25 +52,25 @@ const createElderDataSlice = (set) => ({
         basicInfo: data,
       },
     })),
-  setCareRequirements: (data) =>
+  setCareInfo: (data) =>
     set((state) => ({
       registerElder: {
         ...state.registerElder,
-        careRequirements: data,
+        careInfo: data,
       },
     })),
-  setAdditionalInfo: (data) =>
+  setAddInfo: (data) =>
     set((state) => ({
       registerElder: {
         ...state.registerElder,
-        additionalInfo: data,
+        addInfo: data,
       },
     })),
-  setService: (data) =>
+  setServiceInfo: (data) =>
     set((state) => ({
       registerElder: {
         ...state.registerElder,
-        service: data,
+        serviceInfo: data,
       },
     })),
   setProfileImage: (imageId) =>
@@ -68,12 +85,30 @@ const createElderDataSlice = (set) => ({
 const createSubmissionSlice = (set, get) => ({
   isSubmitting: false,
   error: null,
-  submitElderData: async () => {
-    const state = get();
+
+  submitElder: async () => {
+    const { registerElder } = get();
     set({ isSubmitting: true, error: null });
 
     try {
-      const result = await elderRegiService.submitElderData(state.registerElder);
+      const { basicInfo, careInfo, addInfo, serviceInfo } = registerElder;
+
+      const cleanAddInfo = omit(addInfo, ['selectedDementiaSymptoms']);
+      const cleanServiceInfo = omit(serviceInfo, [
+        'selectedServiceMealList',
+        'selectedServiceToiletList',
+        'selectedServiceMobilityList',
+        'selectedServiceDailyList',
+      ]);
+
+      const payload = {
+        ...basicInfo,
+        ...careInfo,
+        ...cleanAddInfo,
+        ...cleanServiceInfo,
+      };
+
+      const result = await submitElderData(payload);
       set({ isSubmitting: false });
       return result;
     } catch (error) {
@@ -83,9 +118,8 @@ const createSubmissionSlice = (set, get) => ({
   },
 });
 
-const useElderRegiStore = create((set, get) => ({
+// elder registration store
+export const useElderRegiStore = create((set, get) => ({
   ...createElderDataSlice(set),
   ...createSubmissionSlice(set, get),
 }));
-
-export default useElderRegiStore;

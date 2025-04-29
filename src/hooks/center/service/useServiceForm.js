@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useElderRegiStore from '@/store/center/useElderRegiStore';
+import { useElderRegiStore } from '@/store/center/useElderRegiStore';
 
 const initialFormData = {
   serviceMeal: 0,

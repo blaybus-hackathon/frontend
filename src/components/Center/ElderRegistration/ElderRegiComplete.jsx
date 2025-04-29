@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/custom/Button';
 import { useNavigate } from 'react-router-dom';
 import Profile from '@/assets/images/elder-basic-profile.png';
-import elderStore from '@/store/center/useElderRegiStore';
+import { useElderRegiStore } from '@/store/center/useElderRegiStore';
 
 export default function ElderRegiComplete() {
   const navigate = useNavigate();
-  const { registerElder } = elderStore();
+  const { registerElder } = useElderRegiStore();
 
   return (
     <section className='flex flex-col items-center justify-center mt-[3.13rem]'>

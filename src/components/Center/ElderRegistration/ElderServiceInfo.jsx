@@ -1,97 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
-import NextButton from '@/components/ui/custom/Button/NextButton';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/custom/Button';
-import { useServiceForm } from '@/hooks/center/service/useServiceForm';
-import elderRegiDummy from '@/store/jpaper/elderRegiDummy.js';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
-import useElderRegiStore from '@/store/center/useElderRegiStore';
-
-const FormField = ({ label, required, children, isMultiple }) => (
-  <section className='mb-10'>
-    <div className='flex items-center mb-[1.12rem]'>
-      <span className='sub-title'>{label}</span>
-      <span className='single-select'>{isMultiple ? '(복수선택가능)' : '(단일선택)'}</span>
-      {required && <span className='required-text'>필수</span>}
-    </div>
-    {children}
-  </section>
-);
-
-const MealSection = ({ serviceMealList, formData, handleInputChange }) => (
-  <FormField label='식사 보조' required isMultiple={true}>
-    <div className='grid grid-cols-2 gap-[1.12rem]'>
-      {serviceMealList.map((meal) => (
-        <Button
-          key={meal.id}
-          variant='outline'
-          className='w-full h-[4.0625rem] text-lg sm:text-lg lg:text-xl text-center whitespace-normal break-words'
-          selected={formData.selectedMeals?.includes(meal.careVal)}
-          onClick={() => handleInputChange('selectedMeals', meal.careVal)}
-        >
-          {meal.careName}
-        </Button>
-      ))}
-    </div>
-  </FormField>
-);
-
-const ToiletSection = ({ serviceToiletList, formData, handleInputChange }) => (
-  <FormField label='배변 보조' required isMultiple={true}>
-    <div className='grid grid-cols-2 gap-[1.12rem]'>
-      {serviceToiletList.map((toilet) => (
-        <Button
-          key={toilet.id}
-          variant='outline'
-          className='w-full h-[4.0625rem] text-lg sm:text-lg lg:text-xl text-center whitespace-normal break-words'
-          selected={formData.selectedToilet?.includes(toilet.careVal)}
-          onClick={() => handleInputChange('selectedToilet', toilet.careVal)}
-        >
-          {toilet.careName}
-        </Button>
-      ))}
-    </div>
-  </FormField>
-);
-
-const MobilitySection = ({ serviceMobilityList, formData, handleInputChange }) => (
-  <FormField label='이동 보조' required isMultiple={true}>
-    <div className='grid grid-cols-2 gap-[1.12rem]'>
-      {serviceMobilityList.map((mobility) => (
-        <Button
-          key={mobility.id}
-          variant='outline'
-          className={`w-full h-[4.0625rem] text-lg sm:text-lg lg:text-xl text-center whitespace-normal break-words ${
-            formData.selectedMobility?.includes(mobility.careVal) ? 'bg-primary text-white' : ''
-          }`}
-          selected={formData.selectedMobility?.includes(mobility.careVal)}
-          onClick={() => handleInputChange('selectedMobility', mobility.careVal)}
-        >
-          {mobility.careName}
-        </Button>
-      ))}
-    </div>
-  </FormField>
-);
-
-const DailySection = ({ serviceDailyList, formData, handleInputChange }) => (
-  <FormField label='일상 생활' required isMultiple={true}>
-    <div className='grid grid-cols-2 gap-[1.12rem]'>
-      {serviceDailyList.map((daily) => (
-        <Button
-          key={daily.id}
-          variant='outline'
-          className={`w-full h-[4.0625rem] text-lg sm:text-lg lg:text-xl text-center whitespace-normal break-words ${
-            formData.selectedDaily?.includes(daily.careVal) ? 'bg-primary text-white' : ''
-          }`}
-          selected={formData.selectedDaily?.includes(daily.careVal)}
-          onClick={() => handleInputChange('selectedDaily', daily.careVal)}
-        >
-          {daily.careName}
-        </Button>
-      ))}
-    </div>
-  </FormField>
-);
+import { FormField } from '@/components/ui/custom/FormField';
+import { useElderRegiStore } from '@/store/center/useElderRegiStore';
+import { ElderNextButton } from '@/components/Center/ElderRegistration/Button/ElderNextButton';
 
 const ElderProfileSection = ({
   profileOption,
@@ -163,8 +75,32 @@ const ElderProfileSection = ({
   );
 };
 
-export default function ElderService() {
-  // 상태 관리
+export default function ElderServiceInfo({ formOptions }) {
+  const serviceInfo = useElderRegiStore((state) => state.registerElder.serviceInfo);
+  const setServiceInfo = useElderRegiStore((state) => state.setServiceInfo);
+
+  const updateMultiSelect = useCallback(
+    (category, careVal) => {
+      const listKey = `selected${category}List`; // UI용 배열
+      const fieldKey = category.replace('Service', 'service');
+
+      const selectedList = serviceInfo[listKey] || [];
+      const updatedList = selectedList.includes(careVal)
+        ? selectedList.filter((v) => v !== careVal)
+        : [...selectedList, careVal];
+
+      const sum = updatedList.reduce((acc, cur) => acc + Number(cur), 0);
+
+      setServiceInfo({
+        ...serviceInfo,
+        [listKey]: updatedList,
+        [fieldKey]: sum,
+      });
+    },
+    [serviceInfo, setServiceInfo],
+  );
+
+  // 프로필 상태 관리
   const [profileOption, setProfileOption] = useState('2'); // default: '아이콘대체'
   const [selectedImage, setSelectedImage] = useState(null); // selected image file
   const [isUploading, setIsUploading] = useState(false); // uploading image status
@@ -176,9 +112,6 @@ export default function ElderService() {
     console.log('ElderService state updated:', { profileOption, selectedImage });
   }, [profileOption, selectedImage]);
 
-  const { serviceMealList, serviceToiletList, serviceMobilityList, serviceDailyList } =
-    elderRegiDummy();
-  const { formData, handleInputChange, isFormValid } = useServiceForm();
   const { setProfileImage, registerElder } = useElderRegiStore();
 
   const handleProfileOptionChange = (value) => {
@@ -259,27 +192,79 @@ export default function ElderService() {
   };
 
   return (
-    <>
-      <MealSection
-        serviceMealList={serviceMealList}
-        formData={formData}
-        handleInputChange={handleInputChange}
-      />
-      <ToiletSection
-        serviceToiletList={serviceToiletList}
-        formData={formData}
-        handleInputChange={handleInputChange}
-      />
-      <MobilitySection
-        serviceMobilityList={serviceMobilityList}
-        formData={formData}
-        handleInputChange={handleInputChange}
-      />
-      <DailySection
-        serviceDailyList={serviceDailyList}
-        formData={formData}
-        handleInputChange={handleInputChange}
-      />
+    <div className='w-[88%] mx-auto'>
+      <FormField label='식사 보조' required isMultiple={true}>
+        <div className='grid grid-cols-2 gap-[1.12rem]'>
+          {formOptions.serviceMealList.map((meal) => (
+            <Button
+              key={meal.id}
+              variant='outline'
+              className='w-full h-[4.0625rem] text-lg sm:text-lg lg:text-xl text-center whitespace-normal break-words'
+              selected={serviceInfo.selectedServiceMealList?.includes(meal.careVal)}
+              onClick={() => updateMultiSelect('ServiceMeal', meal.careVal)}
+            >
+              {meal.careName}
+            </Button>
+          ))}
+        </div>
+      </FormField>
+
+      <FormField label='배변 보조' required isMultiple={true}>
+        <div className='grid grid-cols-2 gap-[1.12rem]'>
+          {formOptions.serviceToiletList.map((toilet) => (
+            <Button
+              key={toilet.id}
+              variant='outline'
+              className='w-full h-[4.0625rem] text-lg sm:text-lg lg:text-xl text-center whitespace-normal break-words'
+              selected={serviceInfo.selectedServiceToiletList?.includes(toilet.careVal)}
+              onClick={() => updateMultiSelect('ServiceToilet', toilet.careVal)}
+            >
+              {toilet.careName}
+            </Button>
+          ))}
+        </div>
+      </FormField>
+
+      <FormField label='이동 보조' required isMultiple={true}>
+        <div className='grid grid-cols-2 gap-[1.12rem]'>
+          {formOptions.serviceMobilityList.map((mobility) => (
+            <Button
+              key={mobility.id}
+              variant='outline'
+              className={`w-full h-[4.0625rem] text-lg sm:text-lg lg:text-xl text-center whitespace-normal break-words ${
+                serviceInfo.selectedServiceMobilityList?.includes(mobility.careVal)
+                  ? 'bg-primary text-white'
+                  : ''
+              }`}
+              selected={serviceInfo.selectedServiceMobilityList?.includes(mobility.careVal)}
+              onClick={() => updateMultiSelect('ServiceMobility', mobility.careVal)}
+            >
+              {mobility.careName}
+            </Button>
+          ))}
+        </div>
+      </FormField>
+
+      <FormField label='일상 생활' required isMultiple={true}>
+        <div className='grid grid-cols-2 gap-[1.12rem]'>
+          {formOptions.serviceDailyList.map((daily) => (
+            <Button
+              key={daily.id}
+              variant='outline'
+              className={`w-full h-[4.0625rem] text-lg sm:text-lg lg:text-xl text-center whitespace-normal break-words ${
+                serviceInfo.selectedServiceDailyList?.includes(daily.careVal)
+                  ? 'bg-primary textwhite'
+                  : ''
+              }`}
+              selected={serviceInfo.selectedServiceDailyList?.includes(daily.careVal)}
+              onClick={() => updateMultiSelect('ServiceDaily', daily.careVal)}
+            >
+              {daily.careName}
+            </Button>
+          ))}
+        </div>
+      </FormField>
+
       <ElderProfileSection
         profileOption={profileOption}
         selectedImage={selectedImage}
@@ -292,7 +277,7 @@ export default function ElderService() {
         handleImageUpload={handleImageUpload}
       />
 
-      <NextButton disabled={!isFormValid()} />
-    </>
+      <ElderNextButton />
+    </div>
   );
 }

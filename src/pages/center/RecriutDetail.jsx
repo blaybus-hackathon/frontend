@@ -1,14 +1,27 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 import logo from '@/assets/images/logo.png';
 // import profInit from '@/assets/images/default-profile.png';
+
 import { Button } from '@/components/ui/button';
+import { request } from '@/api';
+
 import patientStore from '@/store/patientStore';
 
 export default function PatientInfo() {
   const navigate = useNavigate();
 
-  const { patientData, recruitReq } = patientStore();
+  const { patientData, recruitReq, setPatient } = patientStore();
+
+  const selectedSeq = 1;
+
+  const [inmate, setInmate] = useState([]);
+  const [meal, setMeal] = useState([]);
+  const [toilet, setToilet] = useState([]);
+  const [mobile, setMobile] = useState([]);
+  const [daily, setDaily] = useState([]);
+  const [dementia, setDementia] = useState([]);
 
   // const renderHelp = (array) =>
   //   array.map((help, idx) => (
@@ -24,6 +37,62 @@ export default function PatientInfo() {
   //   let dementiaStr = '';
   //   patientData.dementia.map((d) => {dementiaStr + });
   // };
+
+  useEffect(() => {
+    request('get', `/patient/${selectedSeq}/detail`)
+      .then((res) => {
+        setPatient({ ...res, patientSeq: selectedSeq });
+        return request('post', '/cmn/part-request-care-list', {
+          careTopEnumList: [
+            'DEMENTIA_SYMPTOM',
+            'INMATE_STATE',
+            'SERVICE_MEAL',
+            'SERVICE_TOILET',
+            'SERVICE_MOBILITY',
+            'SERVICE_DAILY',
+          ],
+        });
+      })
+      .then((res) => {
+        //치매 증상 정보 가져오기
+        setDementia(
+          res.dementiaSymptomList
+            .filter((x) => patientData.careChoice.dementiaSymptomList.includes(x.id))
+            .map((w) => w.careName),
+        );
+        // 동거인 정보 가져오기
+        setInmate(
+          res.inmateStateList
+            .filter((x) => patientData.careChoice.inmateStateList.includes(x.id))
+            .map((w) => w.careName),
+        );
+        //식사 보조 정보 가져오기
+        setMeal(
+          res.serviceMealList
+            .filter((x) => patientData.careChoice.serviceMealList.includes(x.id))
+            .map((m) => m.careName),
+        );
+        //배변 보조 정보 가져오기
+        setToilet(
+          res.serviceToiletList
+            .filter((x) => patientData.careChoice.serviceToiletList.includes(x.id))
+            .map((t) => t.careName),
+        );
+        //이동 보조 정보 가져오기
+        setMobile(
+          res.serviceMobilityList
+            .filter((x) => patientData.careChoice.serviceMobilityList.includes(x.id))
+            .map((m) => m.careName),
+        );
+        //일상생활 정보 가져오기
+        setDaily(
+          res.serviceDailyList
+            .filter((x) => patientData.careChoice.serviceDailyList.includes(x.id))
+            .map((m) => m.careName),
+        );
+      })
+      .catch((e) => console.error(e));
+  }, []);
 
   const gotoModify = () => {
     window.scrollTo(0, 0);
@@ -50,7 +119,7 @@ export default function PatientInfo() {
           <div className='bg-[var(--button-inactive)] size-19 rounded-[50%] mr-8'></div>
           <div className='flex flex-col items-start gap-1 py-2'>
             <p className='font-semibold text-xl'>{patientData.name} 어르신</p>
-            <p className='font-normal'>{`${patientData.gender} / ${patientData.age}세`}</p>
+            <p className='font-normal'>{`${patientData.genderStr} / ${patientData.age}세`}</p>
           </div>
         </div>
         {/* <div className='flex items-center mb-9'>
@@ -80,20 +149,20 @@ export default function PatientInfo() {
         </p>
         <p>
           장기요양등급
-          <span className='font-normal'> {patientData.grade}</span>
+          <span className='font-normal'> {patientData.careLevelStr}</span>
         </p>
         <p>
           몸무게
           <span className='font-normal'> {patientData.weight}kg</span>
         </p>
-        <p className='flex gap-2'>
+        <div className='flex gap-2'>
           <p className='text-left'>치매증상</p>
-          <p className='text-left flex-1 font-normal'>{patientData.dementia.join(', ')}</p>
-        </p>
-        <p className='flex gap-2'>
+          <p className='text-left flex-1 font-normal'>{dementia.join(', ')}</p>
+        </div>
+        <div className='flex gap-2'>
           <p className='text-left'>동거인여부 </p>
-          <p className='text-left flex-1 font-normal'>{patientData.with}</p>
-        </p>
+          <p className='text-left flex-1 font-normal'>{inmate.join(', ')}</p>
+        </div>
         {/* <div className='text-left flex gap-1'>
           <span className='text-sm font-normal'>동거인 여부</span>{' '}
           <p className='flex-1'>{patientData.with}</p>
@@ -116,7 +185,7 @@ export default function PatientInfo() {
             식사 보조
           </p>
           <p className='flex flex-1 text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5'>
-            {patientData.meal}
+            {meal}
           </p>
         </div>
         <div className='w-full flex h-16'>
@@ -124,7 +193,7 @@ export default function PatientInfo() {
             배변 보조
           </p>
           <p className='flex flex-1 text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5'>
-            {patientData.toilet.join(', ')}
+            {toilet.join(', ')}
           </p>
         </div>
         <div className='w-full flex h-16'>
@@ -132,7 +201,7 @@ export default function PatientInfo() {
             이동 보조
           </p>
           <p className='flex flex-1 text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5'>
-            {patientData.mobile.join(', ')}
+            {mobile.join(', ')}
           </p>
         </div>
         <div className='w-full flex h-16'>
@@ -140,7 +209,7 @@ export default function PatientInfo() {
             일상생활
           </p>
           <p className='flex flex-1 text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5'>
-            {patientData.daily.join(', ')}
+            {daily.join(', ')}
           </p>
         </div>
 

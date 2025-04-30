@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import logo from '@/assets/images/logo.png';
 // import profInit from '@/assets/images/default-profile.png';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/custom/Button';
 import patientStore from '@/store/patientStore';
 
 export default function PatientInfo() {

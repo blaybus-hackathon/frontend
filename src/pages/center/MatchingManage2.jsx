@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/custom/Button';
 // import { useState } from 'react';
 import patientStore from '@/store/patientStore';
 

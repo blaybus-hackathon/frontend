@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import Header from '@/components/ui/temp/Header';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 
 import map_pin from '@/assets/images/map-pin.png';

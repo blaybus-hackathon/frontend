@@ -1,5 +1,5 @@
 import Header from '@/components/ui/temp/Header';
-import { Button } from '@/components/ui/custom/button';
+import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
 import patientStore from '@/store/patientStore';
 import { useState, useEffect } from 'react';

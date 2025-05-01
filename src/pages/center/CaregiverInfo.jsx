@@ -17,9 +17,9 @@ export default function CaregiverInfo() {
       <Header title='요양사 상세 정보' />
       <div className='max-w-2xl mx-auto px-6'>
         <div className='flex mt-10 items-center mb-13'>
-          <div className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7'>
-            {/* <img src={profInit} className='items-center size-10' /> */}
-          </div>
+          {/* <div className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7'>
+          </div> */}
+          <img className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7' />
           <div className='flex flex-col items-start gap-5'>
             <p className='text-2xl font-bold'>김길동</p>
             <p className='text-lg'>서울특별시 용산구 거주</p>
@@ -69,12 +69,13 @@ export default function CaregiverInfo() {
           </div>
           <div className='flex flex-col items-start'>
             <label className='font-semibold text-xl mb-4'>나의 근무 가능 일정</label>
-            {/* <div className='h-16 border border-[#C8C8C8] font-medium text-lg flex justify-center items-center rounded-md w-full p-5'>
-              <p>
-                월, 수, 금<br />
-                월, 수, 금
-              </p>
-            </div> */}
+            <div className='border border-[#C8C8C8] font-medium text-lg flex justify-center items-center rounded-md w-full p-5 flex'>
+              <img src={map_pin} className='size-6 mr-5' />
+              <div className='flex-1'>
+                <p>월,화,수 &gt; 13:00~20:00</p>
+                <p>목,금,토 &gt; 12:00~18:00</p>
+              </div>
+            </div>
           </div>
           <div className='flex flex-col items-start'>
             <label className='font-semibold text-xl mb-5'>희망 급여</label>

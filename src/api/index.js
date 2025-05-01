@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://3.37.158.7'; // VITE 환경변수 사용
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://3.37.158.7'; // VITE 환경변수 사용
+const API_BASE_URL = 'http://52.78.187.236:8080';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

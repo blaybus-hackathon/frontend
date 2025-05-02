@@ -31,6 +31,7 @@ export default function SignIn() {
         const { chatSenderId, email, userAuth } = response.data;
         //Zustand에 저장
         setUser({ chatSenderId, email, userAuth });
+        //zustand 프로필 내용도 저장 (세션에)
         navigate("/");
       }
     } catch (error) {

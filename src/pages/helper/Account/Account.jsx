@@ -48,10 +48,6 @@ export default function Account() {
     });
   };
 
-  //TODO (3) : 이미지 업로드 기능
-  //TODO (1) : 시멘틱코드 의식할것.
-  //TODO (1) : 프리티어 설정에서 tailwind 플러그인 도입할것것
-  //TODO (1) : section이 중복되므로 컴포넌트로 만들어 중복된 코드 작성 회피 필요.
   return (
     <>
       <main className="max-w-md mx-auto flex flex-col justify-center gap-6 p-4">

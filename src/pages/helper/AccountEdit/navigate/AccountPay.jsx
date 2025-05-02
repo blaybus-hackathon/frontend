@@ -87,7 +87,7 @@ export default function AccountPay() {
           <div className="w-[50%]">
             <Input
               type="text"
-              value={inputPay + "원"}
+              value={inputPay}
               onChange={handlePayChange}
               placeholder={`${
                 PAY_TYPES.find((t) => t.id === selectedType)?.label

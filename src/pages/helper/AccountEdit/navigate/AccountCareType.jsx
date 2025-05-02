@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Radio, RadioItem } from "@/components/ui/custom/multiRadio";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/custom/Button";
 import Header from "@/components/ui/temp/Header";
 import useProfileStore from "@/store/useProfileStore";
 
@@ -103,229 +103,357 @@ export default function AccountCareType() {
   return (
     <main className="max-w-md mx-auto flex flex-col gap-6">
       <Header title="돌봄 유형 설정" />
-      <section className="flex flex-col gap-8 p-4">
-      <div className="flex flex-col items-start gap-2.5 self-stretch">
-          <span className="helper-title">
-          희망하는 근무 종류를 선택해 주세요! 
-          </span>
-          <span className="profile-section__content-text">(최대 선택 5개)        
-
-             </span>
-        </div>
-
-        <div className="flex flex-col items-start gap-2.5 self-stretch">
-          <span className="helper-title">
-          희망하는 돌봄유형을 선택해 주세요!
-          </span>
-          <span className="profile-section__content-text">중복선택가능     
-             </span>
-        </div>
-
-        <div className="flex flex-col items-start gap-2.5 self-stretch">
-          <span className="helper-title">
-          장기요양등급
-          <span className="helper-title_sub ">선택</span>
-          </span>
-        </div>
-
-        <div className="flex flex-col items-start gap-2.5 self-stretch">
-          <span className="helper-title">
-          성별
-            <span className="helper-title_sub ">
-              선택
-            </span>
-          </span>
-        </div>
-
-        <div className="flex flex-col items-start gap-2.5 self-stretch">
-          <span className="helper-title">
-          동거인 여부부
-            <span className="helper-title_sub ">
-              선택
-            </span>
-          </span>
-        </div>
-
-        <div className="flex flex-col items-start gap-2.5 self-stretch">
-          <span className="helper-title">
-          식사 보조
-            <span className="helper-title_sub ">
-              선택
-            </span>
-          </span>
-        </div>
-
-        <div className="flex flex-col items-start gap-2.5 self-stretch">
-          <span className="helper-title">
-          이동 보조
-            <span className="helper-title_sub ">
-              선택
-            </span>
-          </span>
-        </div>
-
-        <div className="flex flex-col items-start gap-2.5 self-stretch">
-          <span className="helper-title">
-          일상 생활
-            <span className="helper-title_sub ">
-              선택
-            </span>
-          </span>
-        </div>
-
-      {/* 저장 버튼 */}
-      <Button onClick={handleSave} className="w-full mt-4">
-        저장하기
-      </Button>
-
-        </section>
 
       {/* 근무 종류 (다중 선택) */}
-      <section className="space-y-2">
-        <div className="grid grid-cols-1 gap-2">
-          
-          {CARE_TYPES.workTypes.map(
-            (
-              { id, label } // id와 label 대신 key와 value 사용
-            ) => (
-              <Button
-                key={id}
-                type="button"
-                variant={
-                  profileEdit?.careTypes?.workTypes?.some(
-                    (item) => item.key === id
-                  )
-                    ? "default"
-                    : "outline"
-                }
-                onClick={() => toggleWorkType(id, label, "workTypes")}
-              >
-                {label} {/* label을 사용하여 레이블을 표시 */}
-              </Button>
-            )
-          )}
+      <section className="flex flex-col gap-8 p-4">
+        <section>
+          <div className="flex flex-col items-start gap-2.5 self-stretch">
+            <span className="helper-title">
+              희망하는 근무 종류를 선택해 주세요!
+            </span>
+            <span className="profile-section__content-text">
+              (최대 선택 5개)
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 mt-4">
+            {CARE_TYPES.workTypes.map(({ id, label }) => {
+              const isSelected = profileEdit?.careTypes?.workTypes?.some(
+                (item) => item.key === id
+              );
+
+              return (
+                <Button
+                  key={id}
+                  type="button"
+                  variant="white"
+                  size="default"
+                  onClick={() => toggleWorkType(id, label, "workTypes")}
+                  className="border-gray-400 gap-2 justify-start !px-6 w-full cursor-pointer mb-0 text-black"
+                >
+                  <svg
+                    width="29"
+                    height="29"
+                    viewBox="0 0 29 29"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-full w-auto"
+                  >
+                    <rect
+                      width="29"
+                      height="29"
+                      rx="14.5"
+                      fill={isSelected ? "#9b4dff" : "#B6B6B6"} // 선택 시 색상 변경
+                    />
+                    <path
+                      d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z"
+                      fill="white"
+                    />
+                  </svg>
+                  {label} {/* label을 사용하여 레이블을 표시 */}
+                </Button>
+              );
+            })}
+          </div>
+        </section>
+
+        <div className="flex flex-col items-start gap-2.5 self-stretch">
+          <span className="helper-title">
+            희망하는 돌봄유형을 선택해 주세요!
+          </span>
+          <span className="profile-section__content-text">중복선택가능</span>
         </div>
+
+        <section className="">
+          <div className="flex flex-col items-start gap-2.5 self-stretch">
+            <span className="helper-title">
+              장기요양등급
+              <span className="helper-title_sub ">선택</span>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            {CARE_TYPES.careGrade.map(({ id, label }) => {
+              const isSelected = profileEdit?.careTypes?.careGrade === id;
+
+              return (
+                <Button
+                  key={id}
+                  type="button"
+                  variant="white"
+                  size="default"
+                  onClick={() => setSelection("careGrade", id)}
+                  className="border-gray-400 gap-2 justify-start !px-6 w-full cursor-pointer mb-0 text-black"
+                >
+                  <svg
+                    width="29"
+                    height="29"
+                    viewBox="0 0 29 29"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-full w-auto"
+                  >
+                    <rect
+                      width="29"
+                      height="29"
+                      rx="14.5"
+                      fill={isSelected ? "#9b4dff" : "#B6B6B6"} // 선택 시 색상 변경
+                    />
+                    <path
+                      d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z"
+                      fill="white"
+                    />
+                  </svg>
+                  {label}
+                </Button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 성별 */}
+        <section className="">
+          <div className="flex flex-col items-start gap-2.5 self-stretch">
+            <span className="helper-title">
+              성별
+              <span className="helper-title_sub ">선택</span>
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            {CARE_TYPES.gender.map(({ id, label }) => {
+              const isSelected = profileEdit?.careTypes?.gender === id;
+
+              return (
+                <Button
+                  key={id}
+                  type="button"
+                  variant="white"
+                  size="default"
+                  onClick={() => setSelection("gender", id)}
+                  className="border-gray-400 gap-2 justify-start !px-6 w-full cursor-pointer mb-0 text-black"
+                >
+                  <svg
+                    width="29"
+                    height="29"
+                    viewBox="0 0 29 29"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-full w-auto"
+                  >
+                    {/* 선택된 상태일 때 색상 변경 */}
+                    <rect
+                      width="29"
+                      height="29"
+                      rx="14.5"
+                      fill={isSelected ? "#9b4dff" : "#B6B6B6"}
+                    />
+                    <path
+                      d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z"
+                      fill="white"
+                    />
+                  </svg>
+                  {label}
+                </Button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 동거인 여부 */}
+        <section className="">
+          <div className="flex flex-col items-start gap-2.5 self-stretch mt-4">
+            <span className="helper-title">
+              동거인 여부
+              <span className="helper-title_sub ">선택</span>
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {CARE_TYPES.livingArrangement.map(({ id, label }) => {
+              const isSelected = profileEdit?.careTypes?.Living === id;
+
+              return (
+                <Button
+                  key={id}
+                  type="button"
+                  variant="white"
+                  size="default"
+                  onClick={() => setSelection("Living", id)}
+                  className="border-gray-400 gap-2 justify-start !px-6 w-full cursor-pointer mb-0 text-black"
+                >
+                  <svg
+                    width="29"
+                    height="29"
+                    viewBox="0 0 29 29"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-full w-auto"
+                  >
+                    <rect
+                      width="29"
+                      height="29"
+                      rx="14.5"
+                      fill={isSelected ? "#9b4dff" : "#B6B6B6"} // 선택 시 색상 변경
+                    />
+                    <path
+                      d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z"
+                      fill="white"
+                    />
+                  </svg>
+                  {label}
+                </Button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 식사보조 */}
+        <section className="">
+          <div className="flex flex-col items-start gap-2.5 self-stretch ">
+            <span className="helper-title">
+              식사 보조
+              <span className="helper-title_sub ">선택</span>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            {CARE_TYPES.mealCare.map(({ id, label }) => {
+              const isSelected = profileEdit?.careTypes?.mealCare === id;
+
+              return (
+                <Button
+                  key={id}
+                  type="button"
+                  variant="white"
+                  size="default"
+                  onClick={() => setSelection("mealCare", id)}
+                  className="border-gray-400 gap-2 justify-start !px-6 w-full cursor-pointer mb-0 text-black"
+                >
+                  <svg
+                    width="29"
+                    height="29"
+                    viewBox="0 0 29 29"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-full w-auto"
+                  >
+                    <rect
+                      width="29"
+                      height="29"
+                      rx="14.5"
+                      fill={isSelected ? "#9b4dff" : "#B6B6B6"} // 선택 시 색상 변경
+                    />
+                    <path
+                      d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z"
+                      fill="white"
+                    />
+                  </svg>
+                  {label}
+                </Button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 이동보조 */}
+        <section className="">
+          <div className="flex flex-col items-start gap-2.5 self-stretch ">
+            <span className="helper-title">
+              이동 보조
+              <span className="helper-title_sub ">선택</span>
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            {CARE_TYPES.mobilitySupport.map(({ id, label }) => {
+              const isSelected = profileEdit?.careTypes?.moveCare === id;
+
+              return (
+                <Button
+                  key={id}
+                  type="button"
+                  variant="white"
+                  size="default"
+                  onClick={() => setSelection("moveCare", id)}
+                  className="border-gray-400 gap-2 justify-start !px-6 w-full cursor-pointer mb-0 text-black"
+                >
+                  <svg
+                    width="29"
+                    height="29"
+                    viewBox="0 0 29 29"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-full w-auto"
+                  >
+                    <rect
+                      width="29"
+                      height="29"
+                      rx="14.5"
+                      fill={isSelected ? "#9b4dff" : "#B6B6B6"} // 선택 시 색상 변경
+                    />
+                    <path
+                      d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z"
+                      fill="white"
+                    />
+                  </svg>
+                  {label}
+                </Button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 일상생활 */}
+        <section className="">
+          <div className="flex flex-col items-start gap-2.5 self-stretch">
+            <span className="helper-title">
+              일상 생활
+              <span className="helper-title_sub ">선택</span>
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 mt-4">
+            {CARE_TYPES.dailyLife.map(({ id, label }) => {
+              const isSelected = profileEdit?.careTypes?.dailyLife?.some(
+                (item) => item.key === id
+              );
+              return (
+                <Button
+                  key={id}
+                  type="button"
+                  variant="white"
+                  size="default"
+                  onClick={() => toggleWorkType(id, label, "dailyLife")}
+                  className="border-gray-400 gap-2 justify-start !px-6 w-full cursor-pointer mb-0 text-black"
+                >
+                  <svg
+                    width="29"
+                    height="29"
+                    viewBox="0 0 29 29"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-full w-auto"
+                  >
+                    <rect
+                      width="29"
+                      height="29"
+                      rx="14.5"
+                      fill={isSelected ? "#9b4dff" : "#B6B6B6"}
+                    />
+                    <path
+                      d="M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z"
+                      fill="white"
+                    />
+                  </svg>
+                  {label}
+                </Button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 저장 버튼 */}
+        <Button onClick={handleSave} className="w-full mt-4">
+          저장하기
+        </Button>
       </section>
-
-      {/* 장기요양등급 */}
-      <section className="space-y-2">
-        <h2 className="font-semibold">장기요양등급</h2>
-        <div className="grid grid-cols-3 gap-2">
-          {CARE_TYPES.careGrade.map(({ id, label }) => (
-            <Button
-              key={id}
-              type="button"
-              variant={
-                profileEdit?.careTypes?.careGrade === id ? "default" : "outline"
-              }
-              onClick={() => setSelection("careGrade", id)}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-      </section>
-
-      {/* 성별 */}
-      <section className="space-y-2">
-        <h2 className="font-semibold">성별</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {CARE_TYPES.gender.map(({ id, label }) => (
-            <Button
-              key={id}
-              type="button"
-              variant={
-                profileEdit?.careTypes?.gender === id ? "default" : "outline"
-              }
-              onClick={() => setSelection("gender", id)}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-      </section>
-
-      {/* 동거인 여부 */}
-      <section className="space-y-2">
-        <h2 className="font-semibold">동거인 여부</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {CARE_TYPES.livingArrangement.map(({ id, label }) => (
-            <Button
-              key={id}
-              type="button"
-              variant={
-                profileEdit?.careTypes?.Living === id ? "default" : "outline"
-              }
-              onClick={() => setSelection("Living", id)}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-      </section>
-
-      {/* 식사보조 */}
-      <section className="space-y-2">
-        <h2 className="font-semibold">식사보조</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {CARE_TYPES.mealCare.map(({ id, label }) => (
-            <Button
-              key={id}
-              type="button"
-              variant={
-                profileEdit?.careTypes?.mealCare === id ? "default" : "outline"
-              }
-              onClick={() => setSelection("mealCare", id)}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-      </section>
-
-      {/* 이동보조 */}
-      <section className="space-y-2">
-        <h2 className="font-semibold">이동보조</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {CARE_TYPES.mobilitySupport.map(({ id, label }) => (
-            <Button
-              key={id}
-              type="button"
-              variant={
-                profileEdit?.careTypes?.moveCare === id ? "default" : "outline"
-              }
-              onClick={() => setSelection("moveCare", id)}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-      </section>
-
-      {/* 일상생활 */}
-      <section className="space-y-2">
-        <h2 className="font-semibold">일상생활</h2>
-        <div className="grid grid-cols-2 gap-2">
-          {CARE_TYPES.dailyLife.map(({ id, label }) => (
-            <Button
-              key={id}
-              type="button"
-              variant={
-                profileEdit?.careTypes?.dailyLife?.some(
-                  (item) => item.key === id
-                )
-                  ? "default"
-                  : "outline"
-              }
-              onClick={() => toggleWorkType(id, label, "dailyLife")}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-      </section>
-
-
     </main>
   );
 }

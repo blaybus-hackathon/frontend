@@ -30,7 +30,7 @@ function LocationSection({ selectedDistricts }) {
             <span className="flex flex-col  gap-2">
               {Object.entries(selectedDistricts).map(([city, districts]) =>
                 Object.entries(districts).map(([district, subDistricts]) => (
-                  <div // span 대신 div 사용 (블록 레벨)
+                  <div 
                     key={`${city}-${district}`}
                     className="flex profile-section__content-text gap-4"
                   >

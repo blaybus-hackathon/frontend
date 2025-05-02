@@ -87,7 +87,7 @@ export default function AccountSchedule() {
                 variant="white"
                 size="default"
                 onClick={() => toggleDay(day)}
-                className="mb-0 border-gray-400  gap-2 justify-start !px-6 w-full cursor-pointer"
+                className="mb-0 border-gray-400  gap-2 justify-start !px-6 w-full cursor-pointer text-black"
               >
                 <svg
                   width="29"

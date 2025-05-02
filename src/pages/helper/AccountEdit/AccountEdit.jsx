@@ -82,7 +82,7 @@ export default function AccountEdit() {
       <Header title="나의 계정" />
 
       {/* 프로필 섹션 */}
-      <section className="flex flex-col items-stretch gap-12">
+      <section className="flex flex-col items-stretch gap-12 p-5 mt-6">
         {/* 기본 정보 섹션 */}
         <BaseSection />
 

@@ -78,7 +78,7 @@ export default function AccountEdit() {
   };
 
   return (
-    <main className="max-w-md mx-auto flex flex-col gap-6 ">
+    <main className="max-w-md mx-auto flex flex-col  ">
       <Header title="나의 계정" />
 
       {/* 프로필 섹션 */}

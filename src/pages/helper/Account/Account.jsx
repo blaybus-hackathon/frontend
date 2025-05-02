@@ -50,24 +50,29 @@ export default function Account() {
 
   return (
     <>
-      <main className="max-w-md mx-auto flex flex-col justify-center gap-6 p-4">
+      <main className="max-w-md mx-auto flex flex-col ">
         <Header title="나의 계정" />
 
         {/* 기본 정보 */}
-        <section className="flex flex-col gap-6">
+        <section className="flex flex-col items-stretch gap-12 p-5 mt-6">
           {/* 프로필 이미지 */}
-          <section className="flex items-center">
-            <div className="flex flex-row justify-between items-center gap-12  h-auto ">
+          <section className="flex items-center gap-12 ">
+            <div className="relative w-24 h-24">
               <img
                 src="/defaultProfile.png"
-                alt="프로필 이미지"
-                className="w-24 h-24 rounded-full "
+                alt="profile_image"
+                className="w-24 h-24 rounded-full bg-[#DCDCDC]"
               />
-              <div className="flex flex-col justify-center gap-2 text-left">
-                <span>{profile.name || "홍길동"}</span>
-
-                <p>서울특별시 용산구 거주</p>
-              </div>
+            </div>
+            <div className="flex flex-col gap-5 items-start">
+              {/* <span>{profileEdit.name || "홍길동"}</span> */}
+              <span className="text-[#191919] text-[23px] font-bold leading-none h-auto ">
+                홍길동
+              </span>
+              {/* <span>{profileEdit.address || "서울특별시 용산구 거주"}</span> */}
+              <span className="text-[#191919] font-pretendard text-[20px] font-medium leading-none ">
+                서울특별시 용산구 거주
+              </span>
             </div>
           </section>
 
@@ -185,6 +190,7 @@ export default function Account() {
           수정하기
         </Button>
       </main>
+
       <Footer />
     </>
   );

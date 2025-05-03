@@ -6,14 +6,23 @@ import {
   validateAddInfo,
   validateServiceInfo,
 } from '@/utils/validators/center/elderRegister';
+import { fetchDefaultImage } from '@/utils/fetchDefaultImage';
 import NextButton from '@/components/ui/custom/Button/NextButton';
 import { REGISTRATION_STEPS } from '@/constants/registrationSteps';
 
 export function ElderNextButton() {
   const currentStep = useElderRegiStepStore((state) => state.currentStep);
   const goNextStep = useElderRegiStepStore((state) => state.nextStep);
+
   const elderForm = useElderRegiStore((state) => state.registerElder);
   const submitElder = useElderRegiStore((state) => state.submitElder);
+  const setPatientSeq = useElderRegiStore((state) => state.setPatientSeq);
+  const setPatientImage = useElderRegiStore((state) => state.setPatientImage);
+  const uploadProfileImage = useElderRegiStore((state) => state.uploadProfileImage);
+  const profileOption = useElderRegiStore((state) => state.profileOption);
+  const patientImage = useElderRegiStore((state) => state.patientImage);
+
+  const selectedImage = useElderRegiStore((state) => state.selectedImg); // image selected state on frontend
 
   // check if last step
   // the length - 1 is the complete page
@@ -29,8 +38,28 @@ export function ElderNextButton() {
 
     if (isLastStep) {
       try {
-        await submitElder();
-        console.log('어르신 등록 완료');
+        // submit elder data
+        const response = await submitElder();
+        const patientSeq = response.patientSeq;
+        setPatientSeq(patientSeq);
+
+        // upload image
+        let fileToUpload = null;
+
+        if (selectedImage) {
+          fileToUpload = selectedImage;
+        } else if (profileOption === '2') {
+          fileToUpload = await fetchDefaultImage();
+        }
+
+        if (fileToUpload) {
+          const imgResponse = await uploadProfileImage(fileToUpload, patientSeq);
+          if (imgResponse?.imgSeq) {
+            setPatientImage(imgResponse.imgSeq);
+            console.log('프로필 이미지 업로드 완료:', imgResponse);
+          }
+        }
+
         goNextStep();
       } catch (error) {
         console.error('어르신 등록 실패:', error);
@@ -57,6 +86,15 @@ export function ElderNextButton() {
   };
 
   return (
-    <NextButton disabled={!validateCurrentStep()} onClick={handleNext} className={`mb-[2rem]`} />
+    <div className="flex flex-col items-center gap-4">
+      {patientImage && (
+        <img 
+          src={`/api/images/${patientImage}`} 
+          alt="프로필 이미지" 
+          className="w-32 h-32 rounded-full object-cover"
+        />
+      )}
+      <NextButton disabled={!validateCurrentStep()} onClick={handleNext} className="mb-[2rem]" />
+    </div>
   );
 }

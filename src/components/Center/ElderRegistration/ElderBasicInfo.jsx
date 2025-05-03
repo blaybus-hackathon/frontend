@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/custom/input';
 import { Button } from '@/components/ui/custom/Button';
 import { FormField } from '@/components/ui/custom/FormField';
@@ -6,6 +7,7 @@ import { useElderRegiStore } from '@/store/center/useElderRegiStore';
 import { ElderNextButton } from '@/components/Center/ElderRegistration/Button/ElderNextButton';
 
 export default function ElderBasicInfo({ formOptions }) {
+  const navigate = useNavigate();
   const basicInfo = useElderRegiStore((s) => s.registerElder.basicInfo);
   const setBasicInfo = useElderRegiStore((s) => s.setBasicInfo);
 
@@ -63,9 +65,11 @@ export default function ElderBasicInfo({ formOptions }) {
 
       {/* TODO: 주소지 추가 기능 구현 필요 */}
       <FormField label='주소지' required>
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-4' onClick={() => navigate('/center/register/address')}>
           <Input
+            readOnly
             type={'text'}
+            value={basicInfo.addressLabel || ''}
             placeholder={'주소지 등록하러 가기'}
             className='rounded-lg h-[4.0625rem] text-lg font-normal text-[var(--button-black)] border border-[var(--outline)] placeholder:text-[var(--placeholder-gray)]'
             width={'100%'}
@@ -78,14 +82,21 @@ export default function ElderBasicInfo({ formOptions }) {
           <Input
             type={'text'}
             inputMode={'decimal'}
-            placeholder={'예) 60'}
+            placeholder={'예) 60.5'}
             className='rounded-lg h-[4.0625rem] text-lg font-normal text-[var(--button-black)] border border-[var(--outline)] placeholder:text-[var(--placeholder-gray)]'
             width={'100%'}
-            maxLength={5}
+            maxLength={6}
             value={basicInfo.weight}
             onChange={(e) => {
-              const onlyNumber = e.target.value.replace(/[^0-9]/g, '');
-              updateField('weight', onlyNumber);
+              const value = e.target.value;
+              // accept only number and dot
+              const validValue = value.replace(/[^0-9.]/g, '');
+              // limit one dot
+              const parts = validValue.split('.');
+              if (parts.length > 2) return;
+              // limit two decimal places
+              if (parts[1] && parts[1].length > 2) return;
+              updateField('weight', validValue);
             }}
           />
           <span>kg</span>

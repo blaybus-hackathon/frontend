@@ -5,9 +5,9 @@ export const validateBasicInfo = (basicInfo) => {
     name = '',
     gender = 0,
     birthDate = '',
-    // afSeq = 0,
-    // asSeq = 0,
-    // atSeq = 0,
+    afSeq = 0,
+    asSeq = 0,
+    atSeq = 0,
     weight = 0,
     disease = '',
     careLevel = 0,
@@ -15,13 +15,13 @@ export const validateBasicInfo = (basicInfo) => {
 
   return (
     name?.trim() !== '' &&
-    gender !== 0 &&
+    gender > 0 &&
     birthDate?.length === 8 &&
-    // afSeq !== 0 &&
-    // asSeq !== 0 &&
-    // atSeq !== 0 &&
+    afSeq > 0 &&
+    asSeq > 0 &&
+    atSeq > 0 &&
     weight > 0 &&
     disease?.trim() !== '' &&
-    careLevel !== 0
+    careLevel > 0
   );
 };

@@ -156,7 +156,7 @@ export default function ElderServiceInfo({ formOptions }) {
         </div>
       </FormField>
 
-      <FormField label="어르신 프로필 사진 등록">
+      <FormField label='어르신 프로필 사진 등록'>
         <div className='flex flex-col mt-2'>
           <Radio value={profileOption} onValueChange={handleProfileOptionChange}>
             <RadioItem value='1'>등록하기</RadioItem>
@@ -171,7 +171,7 @@ export default function ElderServiceInfo({ formOptions }) {
                 onChange={handleImageUpload}
                 className='hidden'
                 aria-hidden='true'
-                accept="image/*"
+                accept='image/*'
               />
 
               {!selectedImage ? (
@@ -182,9 +182,17 @@ export default function ElderServiceInfo({ formOptions }) {
                 </div>
               ) : (
                 <div className='flex flex-col items-start gap-2'>
-                  <img src={URL.createObjectURL(selectedImage)} alt='어르신 프로필 사진' className='w-32 h-32 rounded-md' />
+                  <img
+                    src={URL.createObjectURL(selectedImage)}
+                    alt='어르신 프로필 사진'
+                    className='w-32 h-32 rounded-md'
+                  />
                   <div className='flex gap-2'>
-                    <Button onClick={handleImageDelete} className='px-6 text-red-500' variant='ghost'>
+                    <Button
+                      onClick={handleImageDelete}
+                      className='px-6 text-red-500'
+                      variant='ghost'
+                    >
                       삭제
                     </Button>
                   </div>

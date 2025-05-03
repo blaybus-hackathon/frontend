@@ -11,9 +11,9 @@ export default function ElderRegiComplete() {
   return (
     <section className='flex flex-col items-center justify-center mt-[3.13rem]'>
       {registerElder.patientImage ? (
-        <img 
+        <img
           src={registerElder.patientImage}
-          alt='프로필 이미지' 
+          alt='프로필 이미지'
           className='w-[14.375rem] h-[14.375rem] rounded-full object-cover'
         />
       ) : (

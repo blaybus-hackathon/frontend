@@ -20,7 +20,7 @@ function ScheduleSection({ optimize, consult }) {
         </span>
       </div>
 
-      <p className="profile-section__content-box">
+      <div className="profile-section__content-box">
         <img
           className="w-[24px] h-[24px] "
           src={location_icon}
@@ -30,7 +30,7 @@ function ScheduleSection({ optimize, consult }) {
         <div>
           {optimized.length > 0 ? (
             optimized.map((item, index) => (
-              <p key={index} className="flex items-center gap-4 py-1">
+              <div key={index} className="flex items-center gap-4 py-1">
                 <span className="profile-section__content-text">
                   {item.days}
                 </span>
@@ -42,7 +42,7 @@ function ScheduleSection({ optimize, consult }) {
                 <span className="profile-section__content-text">
                   {item.time}
                 </span>
-              </p>
+              </div>
             ))
           ) : (
             <span className="profile-section__content-text">
@@ -50,7 +50,7 @@ function ScheduleSection({ optimize, consult }) {
             </span>
           )}
         </div>
-      </p>
+      </div>
       {/* <div className="text-right">{consult ? "협의 가능" : "협의 불가"}</div> */}
     </section>
   );

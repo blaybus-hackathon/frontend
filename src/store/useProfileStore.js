@@ -35,7 +35,11 @@ const useProfileStore = create((set) => ({
     careExperience: "",
     schedule: {},
     consult: false,
-    location: {}, // 초기값으로 빈 객체 설정
+    location: {
+      서울: {
+        은평구: ["불광"],
+      },
+    },
     careTypes: {
       workTypes: [], //돌봄 유형
       careGrade: "", //요양등급
@@ -46,8 +50,8 @@ const useProfileStore = create((set) => ({
       dailyLife: [],
     },
     pay: {
-      type: "",
-      amount: 0,
+      type: "hourly",
+      amount: 1000,
     },
     selectedOptions: {}, // 자격증
     inputs: {},

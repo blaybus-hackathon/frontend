@@ -18,7 +18,7 @@ function LocationSection({ selectedDistricts }) {
         </span>
       </div>
 
-      <p className="profile-section__content-box">
+      <div className="profile-section__content-box">
         <img
           className="w-[24px] h-[24px]"
           src={location_icon}
@@ -49,7 +49,7 @@ function LocationSection({ selectedDistricts }) {
             <span className="profile-section__content-text">미설정</span>
           )}
         </div>
-      </p>
+      </div>
     </section>
   );
 }

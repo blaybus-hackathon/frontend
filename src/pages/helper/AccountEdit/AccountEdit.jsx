@@ -1,9 +1,18 @@
+// ✅ 1. 외부 라이브러리 (React 및 패키지)
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+// ✅ 2. 상태 관리 (스토어, 컨텍스트 등)
+import useProfileStore from "@/store/useProfileStore";
+import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
+import useScheduleStore from "@/store/suho/useScheduleStore";
+import usePayStore from "@/store/suho/usePayStore"; 
+
+// ✅ 3. UI 컴포넌트 (공통 UI → 커스텀 컴포넌트 순)
 import { Button } from "@/components/ui/custom/Button";
 
+// ✅ 4. 레이아웃 컴포넌트 (Header, Footer 등)
 import Header from "@/components/ui/temp/Header";
-
 import CareTypeSection from "@/pages/helper/AccountEdit/CareTypeSection ";
 import CareExperienceSelector from "@/pages/helper/AccountEdit/CareerSection";
 import IntroductionInput from "@/pages/helper/AccountEdit/IntroSection";
@@ -11,16 +20,13 @@ import LocationSection from "@/pages/helper/AccountEdit/LocationSection";
 import BaseSection from "@/pages/helper/AccountEdit/BaseSection";
 import CertificateSection from "@/pages/helper/AccountEdit/CertificateSection";
 import PaySection from "@/pages/helper/AccountEdit/PaySection";
-
-import useProfileStore from "@/store/useProfileStore";
-import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
-import useScheduleStore from "@/store/suho/useScheduleStore";
-import usePayStore from "@/store/suho/usePayStore"; // 스케줄 스토어 임포트
+import ScheduleSection from "./ScheduleSection";
 
 // ✅ 5. 이미지 및 정적 파일
 import backarrow from "@/assets/images/back-arrow.png";
 import location_icon from "@/assets/images/location.png";
-import ScheduleSection from "./ScheduleSection";
+
+
 
 export default function AccountEdit() {
   const navigate = useNavigate();

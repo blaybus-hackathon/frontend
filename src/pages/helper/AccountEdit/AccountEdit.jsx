@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import useProfileStore from "@/store/useProfileStore";
 import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
 import useScheduleStore from "@/store/suho/useScheduleStore";
-import usePayStore from "@/store/suho/usePayStore"; 
+import usePayStore from "@/store/suho/usePayStore";
 
 // ✅ 3. UI 컴포넌트 (공통 UI → 커스텀 컴포넌트 순)
 import { Button } from "@/components/ui/custom/Button";
@@ -25,8 +25,6 @@ import ScheduleSection from "./ScheduleSection";
 // ✅ 5. 이미지 및 정적 파일
 import backarrow from "@/assets/images/back-arrow.png";
 import location_icon from "@/assets/images/location.png";
-
-
 
 export default function AccountEdit() {
   const navigate = useNavigate();
@@ -80,7 +78,7 @@ export default function AccountEdit() {
     navigate("/helper/account");
   };
   const handleTest = () => {
-    console.log("profileEdit 상태:", profileEdit);
+    console.log("profileEdit 상태:", profileEdit.selectedOptions);
   };
 
   return (

@@ -19,7 +19,7 @@ const CareTypeSection = () => {
         </span>
       </div>
 
-      <p className="profile-section__content-box">
+      <div className="profile-section__content-box">
         <img
           className="w-[24px] h-[24px]"
           src={homecontrols}
@@ -30,7 +30,7 @@ const CareTypeSection = () => {
             ? careTypeData.workTypes.map((item) => item.label).join(", ")
             : "설정되지 않음"}
         </span>
-      </p>
+      </div>
     </section>
   );
 };

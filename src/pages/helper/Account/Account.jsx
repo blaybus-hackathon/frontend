@@ -9,7 +9,6 @@ import useScheduleStore from "@/store/suho/useScheduleStore";
 // ✅ 3. UI 컴포넌트 (공통 UI → 커스텀 컴포넌트 순)
 import { Button } from "@/components/ui/custom/Button";
 
-
 // ✅ 4. 레이아웃 컴포넌트 (Header, Footer 등)
 import Header from "@/components/ui/temp/Header";
 import Footer from "@/components/ui/temp/Footer";
@@ -19,7 +18,6 @@ import location_icon from "@/assets/images/location.png";
 import overview from "@/assets/images/overview.png";
 import backarrow from "@/assets/images/back-arrow.png";
 import homecontrols from "@/assets/images/home-controls.png";
-
 
 //temp
 import useProfileStore from "@/store/useProfileStore";
@@ -36,10 +34,7 @@ export default function Account() {
     { id: "weekly", label: "주급" },
     { id: "monthly", label: "월급" },
   ];
-  
 
-
-  
   const navigate = useNavigate();
   const profile = useAccountStore((state) => state.profile);
 
@@ -98,31 +93,31 @@ export default function Account() {
           <section className="helper-section">
             <span className="helper-title">자기소개</span>
             <div
-  className="
+              className="
   text-left
     resize-none overflow-hidden min-h-[4rem] self-stretch
     p-[26px_17px]
     rounded-[10px] border border-[#C8C8C8] bg-white
   "
->
-  <span
-    className={`
-      ${profileEdit.introduction ? 'text-[#191919]' : 'text-[#C8C8C8]'}
+            >
+              <span
+                className={`
+      ${profileEdit.introduction ? "text-[#191919]" : "text-[#C8C8C8]"}
        profile-section__content-text 
     `}
-  >
-    {profileEdit.introduction || "한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다.한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다.한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다."}
-  </span>
-</div>
-
+              >
+                {profileEdit.introduction ||
+                  "한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다.한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다.한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다."}
+              </span>
+            </div>
           </section>
 
           {/* 간병 경력 섹션 */}
           <section className="helper-section">
-          <span className="helper-title">간병경력이 있으신가요?</span>
-          <div className="profile-section__content-box justify-center">
-  <span className="profile-section__content-text">신입</span>
-</div>
+            <span className="helper-title">간병경력이 있으신가요?</span>
+            <div className="profile-section__content-box justify-center">
+              <span className="profile-section__content-text">신입</span>
+            </div>
           </section>
 
           {/* 선호 지역 섹션 */}
@@ -130,108 +125,140 @@ export default function Account() {
             <span className="helper-title">선호지역</span>
 
             <div className="profile-section__content-box">
-        <img
-          className="w-[24px] h-[24px]"
-          src={location_icon}
-          alt="location_icon"
-        />
-        {/* TODO : 긴 문장 처리시 overflow 처리 필요. */}
-        <div className="flex items-center gap-1 py-1">
-          {Object.entries(profileEdit.location).length > 0 ? (
-            <span className="flex flex-col  gap-2">
-              {Object.entries(profileEdit.location).map(([city, districts]) =>
-                Object.entries(districts).map(([district, subDistricts]) => (
-                  <div 
-                    key={`${city}-${district}`}
-                    className="flex profile-section__content-text gap-4"
-                  >
-                    {city}
-                    <img
-                      src={backarrow}
-                      alt="backarrow"
-                      className="w-4 h-4 rotate-180 inline-block mx-1"
-                    />
-                    {district} ({subDistricts.join(", ")})
-                  </div>
-                ))
-              )}
-            </span>
-          ) : (
-            <span className="profile-section__content-text">미설정</span>
-          )}
-        </div>
-      </div>
+              <img
+                className="w-[24px] h-[24px]"
+                src={location_icon}
+                alt="location_icon"
+              />
+              {/* TODO : 긴 문장 처리시 overflow 처리 필요. */}
+              <div className="flex items-center gap-1 py-1">
+                {Object.entries(profileEdit.location).length > 0 ? (
+                  <span className="flex flex-col  gap-2">
+                    {Object.entries(profileEdit.location).map(
+                      ([city, districts]) =>
+                        Object.entries(districts).map(
+                          ([district, subDistricts]) => (
+                            <div
+                              key={`${city}-${district}`}
+                              className="flex profile-section__content-text gap-4"
+                            >
+                              {city}
+                              <img
+                                src={backarrow}
+                                alt="backarrow"
+                                className="w-4 h-4 rotate-180 inline-block mx-1"
+                              />
+                              {district} ({subDistricts.join(", ")})
+                            </div>
+                          )
+                        )
+                    )}
+                  </span>
+                ) : (
+                  <span className="profile-section__content-text">미설정</span>
+                )}
+              </div>
+            </div>
           </section>
 
           {/* 나의 근무 가능 일정 섹션 */}
           {/* TODO : 피그마 아이콘 변경 */}
           <section className="helper-section">
             <span className="helper-title">나의 근무 가능 일정</span>
-<div className="profile-section__content-box">
-        <img
-          className="w-[24px] h-[24px] "
-          src={location_icon}
-          alt="location_icon"
-        />
+            <div className="profile-section__content-box">
+              <img
+                className="w-[24px] h-[24px] "
+                src={location_icon}
+                alt="location_icon"
+              />
 
-        <div>
-          {optimizedSchedule.length > 0 ? (
-            optimizedSchedule.map((item, index) => (
-              <div key={index} className="flex items-center gap-4 py-1">
-                <span className="profile-section__content-text">
-                  {item.days}
-                </span>
-                <img
-                  src={backarrow}
-                  alt="backarrow"
-                  className="w-4 h-4 rotate-180"
-                />
-                <span className="profile-section__content-text">
-                  {item.time}
-                </span>
+              <div>
+                {optimizedSchedule.length > 0 ? (
+                  optimizedSchedule.map((item, index) => (
+                    <div key={index} className="flex items-center gap-4 py-1">
+                      <span className="profile-section__content-text">
+                        {item.days}
+                      </span>
+                      <img
+                        src={backarrow}
+                        alt="backarrow"
+                        className="w-4 h-4 rotate-180"
+                      />
+                      <span className="profile-section__content-text">
+                        {item.time}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <span className="profile-section__content-text">
+                    설정된 근무 가능 시간이 없습니다.
+                  </span>
+                )}
               </div>
-            ))
-          ) : (
-            <span className="profile-section__content-text">
-              설정된 근무 가능 시간이 없습니다.
-            </span>
-          )}
-        </div>
-      </div>
+            </div>
           </section>
 
           {/* 급여 섹션 */}
           <section className="helper-section">
             <span className="helper-title">나의 희망급여</span>
             <div className="profile-section__content-box">
-        <img className="w-[24px] h-[24px]" src={overview} alt="overview_icon" />
-        <span className="profile-section__content-text">
-          {PAY_TYPES.find((t) => t.id === profileEdit.pay.type)?.label || ""}
-        </span>
-        <img src={backarrow} alt="backarrow" className="w-4 h-4 rotate-180" />
-        <span className="profile-section__content-text">{profileEdit.pay.amount}원</span>
-      </div>
+              <img
+                className="w-[24px] h-[24px]"
+                src={overview}
+                alt="overview_icon"
+              />
+              <span className="profile-section__content-text">
+                {PAY_TYPES.find((t) => t.id === profileEdit.pay.type)?.label ||
+                  ""}
+              </span>
+              <img
+                src={backarrow}
+                alt="backarrow"
+                className="w-4 h-4 rotate-180"
+              />
+              <span className="profile-section__content-text">
+                {profileEdit.pay.amount}원
+              </span>
+            </div>
           </section>
 
           {/* 돌봄 유형 섹션*/}
           <section className="helper-section">
             <span className="helper-title">나의 희망 돌봄유형</span>
-            <p className="text-left flex flex-row items-center gap-4 border-2 rounded-xl p-3">
+
+            <div className="profile-section__content-box">
               <img
                 className="w-[24px] h-[24px]"
                 src={homecontrols}
                 alt="homeControls_icon"
               />
-              <span className="">{getCareTypeLabel("workTypes")}</span>
-            </p>
+              <span className="profile-section__content-text">
+                {profileEdit.careTypes.workTypes.length > 0
+                  ? profileEdit.careTypes.workTypes
+                      .map((item) => item.label)
+                      .join(", ")
+                  : "설정되지 않음"}
+              </span>
+            </div>
           </section>
 
           {/* 자격증 등록 섹션*/}
           <section className="helper-section">
             <span className="helper-title">나의 소지 자격증</span>
-            <p className="text-left flex flex-row items-center gap-4 border-2 rounded-xl p-3">
-              <span className="">요양보호사</span>
-            </p>
+
+            <div className="profile-section__content-box">
+              <img
+                className="w-[24px] h-[24px]"
+                src={homecontrols}
+                alt="homeControls_icon"
+              />
+              <span className="profile-section__content-text">
+                {Object.entries(profileEdit.selectedOptions || {})
+                  .filter(([_, value]) => value)
+                  .map(([key]) => key)
+                  .join(", ") || "설정되지 않음"}
+              </span>
+            </div>
           </section>
         </section>
         <Button

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://3.37.158.7'; // VITE 환경변수 사용
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -10,13 +10,43 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// 요청 인터셉터
+api.interceptors.request.use(
+  (config) => {
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
 export const request = async (method, endpoint, data = {}) => {
   try {
     const response = await api({
       method,
       url: `/api${endpoint}`,
-      data,
+      ...(method === 'GET' ? { params: data } : { data }),
     });
+
+    console.log('API 응답: ', response);
+    return response.data;
+  } catch (error) {
+    console.error('API 요청 오류: ', error);
+    throw error;
+  }
+};
+
+export const requestMultipart = async (method, endpoint, formData) => {
+  try {
+    const response = await api({
+      method,
+      url: `/api${endpoint}`,
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     return response.data;
   } catch (error) {
     console.error('API 요청 오류: ', error);

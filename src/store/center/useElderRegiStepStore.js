@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 const initialState = {
   currentStep: 1,
-  totalSteps: 6,
+  totalSteps: 5,
   isCompleted: false,
 };
 
@@ -19,5 +19,5 @@ export const useElderRegiStepStore = create((set) => ({
       currentStep: Math.max(state.currentStep - 1, 1),
     })),
   setCompleted: (completed) => set({ isCompleted: completed }),
-  resetStore: () => set(initialState),
+  reset: () => set(initialState),
 }));

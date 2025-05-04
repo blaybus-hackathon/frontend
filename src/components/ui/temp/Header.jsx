@@ -10,7 +10,7 @@ const DefaultHeader = ({ title, handleBack }) => {
         <img src={backBtn} alt='back button' />
       </button>
       <p className='text-[var(--header-gray)] font-semibold text-xl'>{title}</p>
-      <Progress currentPage={1} TotalPages={5} />
+      {/* <Progress currentPage={currentPage} TotalPages={totalPage} /> */}
     </header>
   );
 };

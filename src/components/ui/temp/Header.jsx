@@ -50,12 +50,21 @@ export default function Header({
   progress = null,
   onBack = null,
   hidden = false,
+  hasBorder = true,
 }) {
   if (hidden || type === 'none') return null;
 
   if (type === 'logo') {
-    return <LogoHeader />;
+    return <LogoHeader hasBorder={hasBorder} />;
   }
 
-  return <HeaderBackOrProgress type={type} title={title} progress={progress} onBack={onBack} />;
+  return (
+    <HeaderBackOrProgress
+      type={type}
+      title={title}
+      progress={progress}
+      onBack={onBack}
+      hasBorder={hasBorder}
+    />
+  );
 }

@@ -27,7 +27,7 @@ export default function ElderRegiComplete() {
         <p className='text-[var-(--text)] text-xl font-bold'>어르신이 등록되었습니다!</p>
       </div>
 
-      <div className='flex flex-col gap-[1.31rem] w-full'>
+      <div className='flex flex-col gap-[1.31rem] w-[88%]'>
         {/* TODO : 페이지 연결 */}
         <Button className='w-full h-[4.0625rem]' onClick={() => navigate('/')}>
           요양사 매칭하러 가기

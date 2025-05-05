@@ -5,9 +5,9 @@ import ElderRegiComplete from '@/components/Center/ElderRegistration/ElderRegiCo
 import ElderServiceInfo from '@/components/Center/ElderRegistration/ElderServiceInfo';
 
 export const REGISTRATION_STEPS = [
-  { id: 1, component: ElderBasicInfo, title: '어르신 등록' },
-  { id: 2, component: ElderCareInfo, title: '어르신 등록' },
-  { id: 3, component: ElderAdditionalInfo, title: '어르신 등록' },
-  { id: 4, component: ElderServiceInfo, title: '어르신 등록' },
-  { id: 5, component: ElderRegiComplete, title: '센터 정보' },
+  { id: 0, component: ElderBasicInfo, title: '어르신 정보 등록' },
+  { id: 1, component: ElderCareInfo, title: '어르신 정보 등록' },
+  { id: 2, component: ElderAdditionalInfo, title: '어르신 정보 등록' },
+  { id: 3, component: ElderServiceInfo, title: '어르신 정보 등록' },
+  { id: 4, component: ElderRegiComplete, title: '어르신 등록 완료' },
 ];

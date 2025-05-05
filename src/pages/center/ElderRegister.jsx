@@ -2,10 +2,11 @@ import Header from '@/components/ui/temp/Header';
 import { useElderRegiStepStore } from '@/store/center/useElderRegiStepStore.js';
 import { REGISTRATION_STEPS } from '@/constants/registrationSteps';
 import { useElderFormData } from '@/hooks/center/service/useElderFormData';
+import { useNavigate } from 'react-router-dom';
 
 function CurrentStepComponent({ formOptions }) {
-  const currentStep = useElderRegiStepStore((state) => state.currentStep);
-  const config = REGISTRATION_STEPS.find((step) => step.id === currentStep);
+  const currentIndex = useElderRegiStepStore((state) => state.currentIndex);
+  const config = REGISTRATION_STEPS[currentIndex];
 
   if (!config) return null;
 
@@ -14,7 +15,18 @@ function CurrentStepComponent({ formOptions }) {
 }
 
 export default function ElderRegister() {
+  const navigate = useNavigate();
   const { data: formOptions, isLoading, isError } = useElderFormData();
+  const { currentIndex, totalSteps, prevStep } = useElderRegiStepStore();
+  const isFinalStep = currentIndex === totalSteps - 1;
+
+  const handleBackClick = () => {
+    if (isFinalStep || currentIndex === 0) {
+      navigate('/');
+    } else {
+      prevStep();
+    }
+  };
 
   // TODO: 로딩 UI 수정 필요
   if (isLoading) {
@@ -22,12 +34,19 @@ export default function ElderRegister() {
   }
 
   if (isError) {
-    return alert('설문 데이터를 불러오는 중 오류가 발생했습니다.');
+    alert('설문 데이터를 불러오는 중 오류가 발생했습니다.');
+    navigate('/');
+    return null;
   }
 
   return (
     <div className='h-screen max-w-2xl mx-auto'>
-      <Header title={'어르신 등록'} />
+      <Header
+        type={isFinalStep ? 'back' : 'back-progress'}
+        title={REGISTRATION_STEPS[currentIndex].title}
+        progress={!isFinalStep ? { current: currentIndex + 1, total: totalSteps - 1 } : null}
+        onBack={handleBackClick}
+      />
       <CurrentStepComponent formOptions={formOptions} />
     </div>
   );

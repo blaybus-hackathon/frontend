@@ -1,22 +1,23 @@
 import { create } from 'zustand';
+import { REGISTRATION_STEPS } from '@/constants/registrationSteps';
 
 const initialState = {
-  currentStep: 1,
-  totalSteps: 5,
+  currentIndex: 0,
+  totalSteps: REGISTRATION_STEPS.length,
   isCompleted: false,
 };
 
 export const useElderRegiStepStore = create((set) => ({
   ...initialState,
 
-  setCurrentStep: (step) => set({ currentStep: step }),
+  setStep: (index) => set({ currentIndex: index }),
   nextStep: () =>
     set((state) => ({
-      currentStep: Math.min(state.currentStep + 1, state.totalSteps),
+      currentIndex: Math.min(state.currentIndex + 1, state.totalSteps - 1),
     })),
   prevStep: () =>
     set((state) => ({
-      currentStep: Math.max(state.currentStep - 1, 1),
+      currentIndex: Math.max(state.currentIndex - 1, 0),
     })),
   setCompleted: (completed) => set({ isCompleted: completed }),
   reset: () => set(initialState),

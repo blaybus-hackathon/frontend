@@ -18,30 +18,6 @@ function LogoHeader({ hasBorder = true }) {
       <img src={Logo} alt='logo' className='w-[12.625rem] h-auto' onClick={handleLogoClick} />
     </header>
   );
-};
-
-const SimpleHeader = () => {
-  return (
-    <header className='flex items-center px-[1.75rem] h-[5.625rem] justify-start'>
-      <img src={Logo} alt='logo' className='w-[49%]' />
-    </header>
-  );
-};
-
-export default function Header({ title, variant = 'default' }) {
-  const navigate = useNavigate();
-
-  const handleBack = () => {
-    navigate(-1);
-  };
-
-  switch (variant) {
-    case 'simple':
-      return <SimpleHeader />;
-    case 'default':
-    default:
-      return <DefaultHeader title={title} handleBack={handleBack} />;
-  }
 }
 
 function HeaderBackOrProgress({ type, title, progress, onBack, hasBorder = true }) {
@@ -74,12 +50,21 @@ export default function Header({
   progress = null,
   onBack = null,
   hidden = false,
+  hasBorder = true,
 }) {
   if (hidden || type === 'none') return null;
 
   if (type === 'logo') {
-    return <LogoHeader />;
+    return <LogoHeader hasBorder={hasBorder} />;
   }
 
-  return <HeaderBackOrProgress type={type} title={title} progress={progress} onBack={onBack} />;
+  return (
+    <HeaderBackOrProgress
+      type={type}
+      title={title}
+      progress={progress}
+      onBack={onBack}
+      hasBorder={hasBorder}
+    />
+  );
 }

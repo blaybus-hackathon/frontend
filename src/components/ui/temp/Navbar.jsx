@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "@/store/helper/useAuthStore";
+import useProfileStore from "@/store/useProfileStore";
 
 export default function Component() {
   const navigate = useNavigate();
-  const { user, clearUser } = useAuthStore();
+  const { profile, clearProfile } = useProfileStore();
+  console.log(profile);
   return (
     <nav className="fixed inset-x-0 top-0 z-50 bg-black shadow-sm ">
       <div className="w-full max-w-7xl mx-auto px-4">
@@ -19,7 +20,6 @@ export default function Component() {
               href="#"
               size="lg"
               className="font-medium flex items-center text-sm transition-colors hover:underline"
-              prefetch={false}
             >
               무언가 하는 페이지
             </Button>
@@ -27,7 +27,6 @@ export default function Component() {
               href="#"
               size="lg"
               className="font-medium flex items-center text-sm transition-colors hover:underline"
-              prefetch={false}
             >
               무언가 하는 페이지
             </Button>
@@ -35,7 +34,6 @@ export default function Component() {
               href="#"
               size="lg"
               className="font-medium flex items-center text-sm transition-colors hover:underline"
-              prefetch={false}
             >
               무언가 하는 페이지
             </Button>
@@ -43,14 +41,20 @@ export default function Component() {
               href="#"
               size="lg"
               className="font-medium flex items-center text-sm transition-colors hover:underline"
-              prefetch={false}
             >
               무언가 하는 페이지
             </Button>
           </nav>
           <div>
-            {user ? (
-              <Button onClick={clearUser}>로그아웃</Button>
+            {profile && profile.email !== "" ? (
+              <Button
+                onClick={() => {
+                  clearProfile();
+                  navigate("/signIn");
+                }}
+              >
+                로그아웃
+              </Button>
             ) : (
               <Button onClick={() => navigate("/signIn")}>로그인</Button>
             )}

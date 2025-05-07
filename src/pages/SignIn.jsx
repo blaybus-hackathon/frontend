@@ -2,13 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthForm from "@/components/Auth/Authform";
 import axios from "axios";
-import useAuthStore from "@/store/helper/useAuthStore";
+import useProfileStore from "@/store/useProfileStore";
 
 export default function SignIn() {
   const navigate = useNavigate();
   const [loginType, setLoginType] = useState("helper");
-  const { setLoginSuccess } = useAuthStore();
-  const { setUser } = useAuthStore();
+  const { updateAuth } = useProfileStore();
 
   const handleSubmit = async ({ email, password }) => {
     try {
@@ -30,7 +29,11 @@ export default function SignIn() {
         //parse
         const { chatSenderId, email, userAuth } = response.data;
         //Zustand에 저장
-        setUser({ chatSenderId, email, userAuth });
+        updateAuth({
+          chatSenderId,
+          email,
+          userAuth,
+        });
         //zustand 프로필 내용도 저장 (세션에)
         navigate("/");
       }

@@ -2,17 +2,17 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/ui/temp/Navbar";
 import Footer from "@/components/ui/temp/Footer";
-import useAuthStore from "@/store/helper/useAuthStore";
+import useProfileStore from "@/store/useProfileStore";
 
 export default function Home() {
-  const { user } = useAuthStore();
+  const { profile } = useProfileStore();
   const navigate = useNavigate();
   const handleButtonClick = () => {
     navigate("/test");
   };
 
   const handleTest = () => {
-    console.log("", user);
+    console.log("", profile);
   };
   return (
     <>
@@ -55,7 +55,7 @@ export default function Home() {
         </main>
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Button } from "@/components/ui/custom/Button";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/ui/temp/Header";
@@ -6,18 +7,59 @@ import location_icon from "@/assets/images/location.png";
 import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
 import backarrow from "@/assets/images/back-arrow.png";
 
-const LOCATION_DATA = {
-  서울: { 은평구: ["불광", "응암", "역촌"], 강남구: ["삼성", "대치", "역삼"] },
-  경기: { 고양시: ["창릉"] },
-  충청남도: {
-    천안시: ["불당동", "성정동"],
-    아산시: ["온양1동", "온양2동", "온양3동", "온양4동"],
-  },
-  부산: { 해운대: ["응애"] },
-};
-
 export default function LocationSelector() {
   const navigate = useNavigate();
+  const {
+    selectedDistricts,
+    addDistrict,
+    removeDistrict,
+    resetDistricts,
+    getTotalSelectedCount,
+  } = useHelperLocationStore();
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState({});
+  const [subDistricts, setSubDistricts] = useState({});
+
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedSubDistrict, setselectedSubDistrict] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/get-first-addr", {
+        withCredentials: true,
+      })
+      .then((res) => setCities(res.data))
+      .catch((err) => console.error("도시 목록 불러오기 실패", err));
+  }, []);
+
+  // 구/군 가져오기
+  const fetchDistricts = async (cityId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/api/second/${cityId}`,
+        { withCredentials: true }
+      );
+      console.log(res.data);
+      setDistricts((prev) => ({ ...prev, [cityId]: res.data }));
+    } catch (error) {
+      console.error("구/군 목록 불러오기 실패", error);
+    }
+  };
+
+  // 동 가져오기
+  const fetchSubDistricts = async (districtId) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/api/third/${districtId}`,
+        { withCredentials: true }
+      );
+
+      setSubDistricts((prev) => ({ ...prev, [districtId]: res.data }));
+    } catch (error) {
+      console.error("동 목록 불러오기 실패", error);
+    }
+  };
 
   const handleClick = () => {
     if (!selectedCity && !selectedDistrict) {
@@ -29,21 +71,10 @@ export default function LocationSelector() {
     }
   };
 
-  const {
-    selectedDistricts,
-    addDistrict,
-    removeDistrict,
-    resetDistricts,
-    getTotalSelectedCount,
-  } = useHelperLocationStore();
-  const [selectedCity, setSelectedCity] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
-
   return (
     <main className="max-w-md mx-auto flex flex-col items-center gap-4 p-4">
       <div className="w-full flex items-center justify-between">
-        <Header title="선호 지역" />
-        {/* 앱솔루트 설정 */}
+        {/* <Header title="선호 지역" /> */}
         <a
           variant=""
           onClick={resetDistricts}
@@ -52,8 +83,7 @@ export default function LocationSelector() {
           초기화
         </a>
       </div>
-
-      <section className="flex flex-col gap-8 p-4">
+      <section className="">
         <div className="flex flex-col items-start gap-2.5 self-stretch">
           <span className="helper-title text-left">
             나의 선호하는 지역을 설정해 주세요!
@@ -63,83 +93,185 @@ export default function LocationSelector() {
             선택 가능)
           </span>
         </div>
-
-        <>
-          {/* 1단계: 도시 선택 */}
-          {!selectedCity ? (
+        <div className="space-y-4">
+          {!selectedCity && (
             <div className="w-full grid grid-cols-3 gap-5">
-              {Object.keys(LOCATION_DATA).map((city) => (
+              {cities.map((city) => (
                 <Button
                   variant="black"
-                  key={city}
-                  onClick={() => setSelectedCity(city)}
-                  className=" text-lg rounded-[0.625rem] mb-0 w-[100%] font-normal"
+                  key={city.id}
+                  onClick={() => {
+                    setSelectedCity(city);
+                    fetchDistricts(city.id);
+                  }}
+                  className="text-lg rounded-[0.625rem] mb-0 w-full font-normal"
                 >
-                  {city}
+                  {city.name}
                 </Button>
               ))}
             </div>
-          ) : null}
-        </>
+          )}
 
-        <>
-          {/* 2단계: 구/군 선택 */}
-          {selectedCity && !selectedDistrict ? (
+          {selectedCity && !selectedDistrict && (
             <div className="w-full grid grid-cols-3 gap-2">
-              {Object.keys(LOCATION_DATA[selectedCity]).map((district) => (
-                <Button
-                  variant="black"
-                  key={district}
-                  onClick={() => setSelectedDistrict(district)}
-                  className=" text-lg rounded-[0.625rem] mb-0 w-[100%]  font-normal"
-                >
-                  {district}
-                </Button>
-              ))}
-            </div>
-          ) : null}
-        </>
+              {Object.values(districts[selectedCity.id] || []).map(
+                (district) => {
+                  const isWholeButton =
+                    district.id === parseInt(`${selectedCity.id}000`, 10);
 
-        <>
-          {/* 3단계: 동 선택 */}
-          {selectedCity && selectedDistrict ? (
-            <div className="w-full grid grid-cols-3 gap-2">
-              {LOCATION_DATA[selectedCity][selectedDistrict].map(
-                (subDistrict) => {
+                  const selectedDistrictsOfCity =
+                    selectedDistricts[selectedCity.name] || {};
+                  const isWholeAlreadySelected = Object.keys(
+                    selectedDistrictsOfCity
+                  ).some((name) => name.includes("전체"));
+
                   const isSelected =
-                    selectedDistricts[selectedCity]?.[
-                      selectedDistrict
-                    ]?.includes(subDistrict);
+                    selectedDistricts[selectedCity.name]?.[
+                      district.name
+                    ]?.includes(district.name) && !isWholeButton;
+
+                  const isDisabled = !isWholeButton && isWholeAlreadySelected;
+
                   return (
                     <Button
                       variant="black"
-                      key={subDistrict}
-                      onClick={() =>
-                        isSelected
-                          ? removeDistrict(
-                              selectedCity,
-                              selectedDistrict,
-                              subDistrict
-                            )
-                          : addDistrict(
-                              selectedCity,
-                              selectedDistrict,
-                              subDistrict
-                            )
-                      }
-                      className={`className=" text-lg rounded-[0.625rem] mb-0 w-[100%]  font-normal" ${
-                        isSelected ? "bg-[var(--main)] text-white " : " "
-                      }`}
+                      key={district.id}
+                      disabled={isDisabled}
+                      onClick={() => {
+                        if (isDisabled) {
+                          return; // disabled 상태면 아무것도 하지 않음
+                        }
+
+                        //전체버튼 선택시
+                        if (isWholeButton) {
+                          if (!isWholeAlreadySelected) {
+                            //전체 버튼 이미 선택 됨
+                            const cityToUpdate = selectedCity.name;
+
+                            // 해당 도시의 모든 구/군 선택 정보 삭제
+                            const updatedSelectedDistricts = {
+                              ...selectedDistricts,
+                            };
+                            if (updatedSelectedDistricts[cityToUpdate]) {
+                              delete updatedSelectedDistricts[cityToUpdate];
+                              useHelperLocationStore.setState({
+                                selectedDistricts: updatedSelectedDistricts,
+                              });
+                            }
+                            addDistrict(
+                              selectedCity.name,
+                              district.name,
+                              district.name
+                            );
+                          } else {
+                            removeDistrict(
+                              selectedCity.name,
+                              district.name,
+                              district.name
+                            );
+                          }
+                        } else {
+                          setSelectedDistrict(district);
+                          fetchSubDistricts(district.id);
+                        }
+                      }}
+                      className={`text-lg rounded-[0.625rem] mb-0 w-full font-normal 
+                        ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
+                      `}
                     >
-                      {subDistrict}
+                      {district.name}
                     </Button>
                   );
                 }
               )}
             </div>
-          ) : null}
-        </>
+          )}
 
+          {selectedCity && selectedDistrict && (
+            <div className="w-full grid grid-cols-3 gap-2">
+              {Object.values(subDistricts[selectedDistrict.id] || []).map(
+                (sub) => {
+                  const selectedDistrictsArray =
+                    selectedDistricts[selectedCity.name]?.[
+                      selectedDistrict.name
+                    ] || [];
+
+                  const isSelected = selectedDistrictsArray.includes(sub.name);
+
+                  const isWholeSelected = selectedDistricts[
+                    selectedCity.name
+                  ]?.[selectedDistrict.name]?.some((district) =>
+                    district.includes("전체")
+                  );
+
+                  const isSubDistrictDisabled = isWholeSelected && !isSelected;
+                  const isWholeSubDistrictButton = sub.name.includes("전체");
+
+                  const isCityWholeSelectButton =
+                    sub.id === parseInt(`${selectedDistrict.id}000`, 10);
+
+                  return (
+                    <Button
+                      variant="black"
+                      key={sub.id}
+                      disabled={isSubDistrictDisabled}
+                      onClick={() => {
+                        console.log(isSubDistrictDisabled);
+                        if (!isSubDistrictDisabled) {
+                          if (isWholeSubDistrictButton) {
+                            // "동 전체" 버튼 클릭 시
+                            const cityToRemoveFrom = selectedCity.name;
+                            const districtToRemoveFrom = selectedDistrict.name;
+
+                            // 기존 선택된 동들 모두 제거
+                            const updatedSelectedDistricts = {
+                              ...selectedDistricts,
+                            };
+                            if (
+                              updatedSelectedDistricts[cityToRemoveFrom] &&
+                              updatedSelectedDistricts[cityToRemoveFrom][
+                                districtToRemoveFrom
+                              ]
+                            ) {
+                              delete updatedSelectedDistricts[cityToRemoveFrom][
+                                districtToRemoveFrom
+                              ];
+                              useHelperLocationStore.setState({
+                                selectedDistricts: updatedSelectedDistricts,
+                              });
+                            }
+                          }
+                          if (isSelected) {
+                            removeDistrict(
+                              selectedCity.name,
+                              selectedDistrict.name,
+                              sub.name
+                            );
+                          } else {
+                            addDistrict(
+                              selectedCity.name,
+                              selectedDistrict.name,
+                              sub.name
+                            );
+                          }
+                        }
+                      }}
+                      className={`text-lg rounded-[0.625rem] mb-0 w-full font-normal ${
+                        isSelected
+                          ? "bg-[var(--main)] text-white"
+                          : isSubDistrictDisabled
+                          ? "opacity-50 cursor-not-allowed"
+                          : "text-black"
+                      }`}
+                    >
+                      {sub.name}
+                    </Button>
+                  );
+                }
+              )}
+            </div>
+          )}
+        </div>
         {/* 선택된 지역 출력 */}
         <div className="flex flex-col items-start gap-2.5 self-stretch">
           <span className="helper-title text-left">

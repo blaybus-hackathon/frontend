@@ -1,79 +1,24 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
 import useScheduleStore from "@/store/suho/useScheduleStore"; // 스케줄 스토어 임포트
 import usePayStore from "@/store/suho/usePayStore"; // 스케줄 스토어 임포트
 // Zustand Store 생성
-const useProfileStore = create((set) => ({
-  profile: {
-    introduction: "",
-    careExperience: "",
-    schedule: {},
-    consult: false,
-    location: {}, // 초기값으로 빈 객체 설정
-    careTypes: {
-      workTypes: [], //돌봄 유형
-      careGrade: "", //요양등급
-      gender: "",
-      livingArrangement: "",
-      mealCare: "",
-      mobilitySupport: "",
-      dailyLife: [],
-    },
-    pay: {
-      type: "",
-      amount: 0,
-    },
-    selectedOptions: {}, // 자격증
-    inputs: {},
-    name: "",
-    address: "",
-    profileImage: "",
-  },
-  profileEdit: {
-    // profileEdit 초기 상태를 명시적으로 정의
-    introduction: "",
-    careExperience: "",
-    schedule: {},
-    consult: false,
-    location: {
-      서울: {
-        은평구: ["불광"],
-      },
-    },
-    careTypes: {
-      workTypes: [], //돌봄 유형
-      careGrade: "", //요양등급
-      gender: "",
-      livingArrangement: "",
-      mealCare: "",
-      mobilitySupport: "",
-      dailyLife: [],
-    },
-    pay: {
-      type: "hourly",
-      amount: 1000,
-    },
-    selectedOptions: {}, // 자격증
-    inputs: {},
-    name: "",
-    address: "",
-    profileImage: "",
-  },
-  // 상태 업데이트 함수
-  updateProfile: (newProfile) => set({ profile: { ...newProfile } }),
-
-  //TODO : subscribe로 변경감지
-  resetProfile: () =>
-    set({
+const useProfileStore = create(
+  persist(
+    (set, get) => ({
       profile: {
+        chatSenderId: "",
+        email: "",
+        userAuth: "",
         introduction: "",
         careExperience: "",
         schedule: {},
         consult: false,
         location: {},
         careTypes: {
-          workTypes: [], //돌봄 유형
-          careGrade: "", //요양등급
+          workTypes: [],
+          careGrade: "",
           gender: "",
           livingArrangement: "",
           mealCare: "",
@@ -84,106 +29,222 @@ const useProfileStore = create((set) => ({
           type: "",
           amount: 0,
         },
-        selectedOptions: {}, // 자격증
+        selectedOptions: {},
         inputs: {},
         name: "",
         address: "",
         profileImage: "",
       },
       profileEdit: {
-        // reset 시 profileEdit도 초기화
         introduction: "",
         careExperience: "",
         schedule: {},
         consult: false,
-        location: {},
-        careTypes: {
-          workTypes: [], //돌봄 유형
-          careGrade: "", //요양등급
-          gender: "",
-          livingArrangement: "",
-          mealCare: "",
-          mobilitySupport: "",
-          dailyLife: [],
-        },
-        pay: {
-          type: "",
-          amount: 0,
-        },
-        selectedOptions: {}, // 자격증
-        inputs: {},
-        name: "",
-        address: "",
-        profileImage: "",
-      },
-    }),
-
-  updateCareTypeField: (key, value) =>
-    set((state) => {
-      console.log("updateCareTypeField state:", state); // 추가
-      return {
-        profileEdit: {
-          ...state.profileEdit,
-          careTypes: {
-            ...state.profileEdit.careTypes,
-            [key]: value,
+        location: {
+          서울: {
+            은평구: ["불광"],
           },
         },
-      };
-    }),
-
-  updateProfileField: (field, value) =>
-    set((state) => {
-      console.log(value);
-      const updatedProfileEdit = { ...state.profileEdit, [field]: value };
-      if (field === "profileImage") {
-        sessionStorage.setItem("profileImageUrl", value);
-      }
-      return { profileEdit: updatedProfileEdit };
-    }),
-
-  clearProfileImage: () =>
-    set((state) => ({
-      profileEdit: {
-        ...state.profileEdit,
+        careTypes: {
+          workTypes: [],
+          careGrade: "",
+          gender: "",
+          livingArrangement: "",
+          mealCare: "",
+          mobilitySupport: "",
+          dailyLife: [],
+        },
+        pay: {
+          type: "hourly",
+          amount: 1000,
+        },
+        selectedOptions: {},
+        inputs: {},
+        name: "",
+        address: "",
         profileImage: "",
       },
-    })),
+      // 상태 업데이트 함수
+      updateProfile: (newProfile) => set({ profile: { ...newProfile } }),
 
-  // careTypes의 workTypes 업데이트 액션 추가
-  updateCareTypeField: (fieldName, value) =>
-    set((state) => ({
-      profileEdit: {
-        ...state.profileEdit,
-        careTypes: {
-          ...state.profileEdit.careTypes,
-          [fieldName]: value,
+      //TODO : subscribe로 변경감지
+      resetProfile: () =>
+        set((state) => ({
+          profile: {
+            ...state.profile,
+            introduction: "",
+            careExperience: "",
+            schedule: {},
+            consult: false,
+            location: {},
+            careTypes: {
+              workTypes: [],
+              careGrade: "",
+              gender: "",
+              livingArrangement: "",
+              mealCare: "",
+              mobilitySupport: "",
+              dailyLife: [],
+            },
+            pay: {
+              type: "",
+              amount: 0,
+            },
+            selectedOptions: {},
+            inputs: {},
+            name: "",
+            address: "",
+            profileImage: "",
+          },
+          profileEdit: {
+            introduction: "",
+            careExperience: "",
+            schedule: {},
+            consult: false,
+            location: {},
+            careTypes: {
+              workTypes: [],
+              careGrade: "",
+              gender: "",
+              livingArrangement: "",
+              mealCare: "",
+              mobilitySupport: "",
+              dailyLife: [],
+            },
+            pay: {
+              type: "",
+              amount: 0,
+            },
+            selectedOptions: {},
+            inputs: {},
+            name: "",
+            address: "",
+            profileImage: "",
+          },
+        })),
+
+      updateAuth: (authData) =>
+        set((state) => ({
+          profile: {
+            ...state.profile,
+            ...authData,
+          },
+        })),
+
+      updateCareTypeField: (fieldName, value) =>
+        set((state) => ({
+          profileEdit: {
+            ...state.profileEdit,
+            careTypes: {
+              ...state.profileEdit.careTypes,
+              [fieldName]: value,
+            },
+          },
+        })),
+
+      updateProfileField: (field, value) =>
+        set((state) => {
+          const updatedProfileEdit = { ...state.profileEdit, [field]: value };
+          if (field === "profileImage") {
+            sessionStorage.setItem("profileImageUrl", value);
+          }
+          return { profileEdit: updatedProfileEdit };
+        }),
+
+      clearProfileImage: () =>
+        set((state) => ({
+          profileEdit: {
+            ...state.profileEdit,
+            profileImage: "",
+          },
+        })),
+
+      clearProfile: () => {
+        sessionStorage.removeItem("profile-storage");
+        set(() => ({
+          profile: {
+            chatSenderId: "",
+            email: "",
+            userAuth: "",
+            introduction: "",
+            careExperience: "",
+            schedule: {},
+            consult: false,
+            location: {},
+            careTypes: {
+              workTypes: [],
+              careGrade: "",
+              gender: "",
+              livingArrangement: "",
+              mealCare: "",
+              mobilitySupport: "",
+              dailyLife: [],
+            },
+            pay: {
+              type: "",
+              amount: 0,
+            },
+            selectedOptions: {},
+            inputs: {},
+            name: "",
+            address: "",
+            profileImage: "",
+          },
+        }));
+      },
+
+      // // careTypes의 workTypes 업데이트 액션 추가
+      // updateCareTypeField: (fieldName, value) =>
+      //   set((state) => ({
+      //     profileEdit: {
+      //       ...state.profileEdit,
+      //       careTypes: {
+      //         ...state.profileEdit.careTypes,
+      //         [fieldName]: value,
+      //       },
+      //     },
+      //   })),
+
+      // profileEdit 초기화 액션 추가
+      initializeProfileEdit: (initialProfile) =>
+        set({ profileEdit: { ...initialProfile } }),
+
+      // 🔥  변경을 감지해서 profileEdit 업데이트
+      syncLocation: () => {
+        const selectedDistricts =
+          useHelperLocationStore.getState().selectedDistricts;
+        const selectedSchedule = useScheduleStore.getState().schedule;
+        const selectedConsult = useScheduleStore.getState().consult;
+        const selectedPay = usePayStore.getState().pay;
+
+        set((state) => ({
+          profileEdit: {
+            ...state.profileEdit,
+            location: selectedDistricts,
+            schedule: selectedSchedule,
+            pay: selectedPay,
+            consult: selectedConsult,
+          },
+        }));
+      },
+    }),
+    {
+      name: "profile-storage",
+      storage: {
+        getItem: (name) => {
+          const item = sessionStorage.getItem(name);
+          return item ? JSON.parse(item) : null;
+        },
+        setItem: (name, value) => {
+          sessionStorage.setItem(name, JSON.stringify(value));
+        },
+        removeItem: (name) => {
+          sessionStorage.removeItem(name);
         },
       },
-    })),
-
-  // profileEdit 초기화 액션 추가
-  initializeProfileEdit: (initialProfile) =>
-    set({ profileEdit: { ...initialProfile } }),
-
-  // 🔥 location 변경을 감지해서 profileEdit 업데이트
-  syncLocation: () => {
-    const selectedDistricts =
-      useHelperLocationStore.getState().selectedDistricts;
-    const selectedSchedule = useScheduleStore.getState().schedule;
-    const selectedConsult = useScheduleStore.getState().consult;
-    const selectedPay = usePayStore.getState().pay;
-    // console.log("응애 ", selectedConsult);
-    set((state) => ({
-      profileEdit: {
-        ...state.profileEdit,
-        location: selectedDistricts, // 🟢 location 동기화
-        schedule: selectedSchedule,
-        pay: selectedPay,
-        consult: selectedConsult,
-      },
-    }));
-  },
-}));
+      partialize: (state) => ({ profile: state.profile }), // profile만 persist
+    }
+  )
+);
 
 export default useProfileStore;

@@ -5,7 +5,11 @@ export const getManagerProfile = async () => {
   return response;
 };
 
-export const updateManagerProfile = async (formData) => {
-  const response = await requestMultipart('POST', '/center-manager/update', formData);
-  return response;
+export const updateManagerProfile = async ({ cmSeq, cmPosition, photoFile, imgChangeYn }) => {
+  const formData = new FormData();
+  formData.append('cmSeq', cmSeq);
+  formData.append('cmPosition', cmPosition);
+  formData.append('photoFile', photoFile);
+  formData.append('imgChangeYn', imgChangeYn);
+  return await requestMultipart('POST', '/center-manager/update', formData);
 };

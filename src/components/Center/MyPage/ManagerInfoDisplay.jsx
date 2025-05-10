@@ -2,7 +2,7 @@ import { FormField } from '@/components/ui/custom/FormField';
 import { Input } from '@/components/ui/custom/input';
 import { RadioItem } from '@/components/ui/custom/multiRadio';
 
-export default function MaganerInfoDisplay({ managerProfile }) {
+export default function ManagerInfoDisplay({ managerProfile }) {
   const profileOptionValue = managerProfile.imgSeq === null ? '2' : '1';
 
   return (
@@ -40,7 +40,7 @@ export default function MaganerInfoDisplay({ managerProfile }) {
             <p className='text-[1.1rem]'>등록하기</p>
           </RadioItem>
           <RadioItem value='2' checked={profileOptionValue === '2'}>
-            <p className='text-[1rem]'>아이콘 대체</p>
+            <p className='text-[1.1rem]'>아이콘 대체</p>
           </RadioItem>
         </div>
       </FormField>

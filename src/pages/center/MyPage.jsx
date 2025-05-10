@@ -3,12 +3,13 @@ import Profile from '@/assets/images/elder-basic-profile.png';
 import { useManagerProfile } from '@/hooks/center/service/useManagerProfile';
 import { useManagerProfileStore } from '@/store/center/useManagerProfileStore';
 import { useNavigate } from 'react-router-dom';
-import MaganerInfoDisplay from '@/components/Center/MyPage/MaganerInfoDisplay';
+import ManagerInfoDisplay from '@/components/Center/MyPage/ManagerInfoDisplay';
+import ManagerInfoEdit from '@/components/Center/MyPage/ManagerInfoEdit';
 import { Button } from '@/components/ui/custom/button';
 
 export default function MyPage() {
-  const { data: managerProfile, isLoading } = useManagerProfile();
-  const { isEditMode, toggleEditMode, setFormData, resetFormData } = useManagerProfileStore();
+  const { data: managerProfile, isLoading, saveManagerProfile } = useManagerProfile();
+  const { isEditMode, toggleEditMode, setFormData, formData } = useManagerProfileStore();
   const navigate = useNavigate();
 
   // TODO: 로딩 컴포넌트 필요
@@ -20,8 +21,27 @@ export default function MyPage() {
 
   // save formData when edit mode is true
   const handleEditClick = () => {
-    setFormData(managerProfile);
+    setFormData({
+      ...managerProfile,
+      photoFile: null,
+      profileOption: managerProfile.imgSeq === null ? '2' : '1',
+    });
     toggleEditMode();
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await saveManagerProfile.mutateAsync({
+        cmSeq: formData.cmSeq,
+        cmPosition: formData.cmPosition,
+        photoFile: formData.profileOption === '2' ? null : formData.photoFile,
+        imgChangeYn:
+          formData.profileOption !== formData.initialProfileOption || !!formData.photoFile,
+      });
+      toggleEditMode();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -46,9 +66,9 @@ export default function MyPage() {
               </div>
             </seciton>
             {isEditMode ? (
-              <MaganerInfoDisplay managerProfile={managerProfile} />
+              <ManagerInfoEdit />
             ) : (
-              <MaganerInfoDisplay managerProfile={managerProfile} />
+              <ManagerInfoDisplay managerProfile={managerProfile} />
             )}
 
             <section className='flex flex-col items-center mb-[2.6rem]'>
@@ -57,7 +77,7 @@ export default function MyPage() {
                   로그아웃
                 </Button>
               )}
-              <Button onClick={isEditMode ? undefined : handleEditClick} className={'w-full'}>
+              <Button onClick={isEditMode ? handleSubmit : handleEditClick} className={'w-full'}>
                 {isEditMode ? '저장하기' : '수정하기'}
               </Button>
             </section>

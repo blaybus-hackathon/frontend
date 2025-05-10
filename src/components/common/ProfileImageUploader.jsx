@@ -39,12 +39,16 @@ export default function ProfileImageUploader({
   };
 
   return (
-    <FormField label='프로필 이미지 등록'>
-      <div className='flex flex-col gap-4'>
+    <FormField label='프로필 사진 등록'>
+      <div className='flex flex-col'>
         {onOptionChange && (
-          <Radio value={profileOption} onValueChange={onOptionChange} cols={2}>
-            <RadioItem value='1'>등록하기</RadioItem>
-            <RadioItem value='2'>아이콘대체</RadioItem>
+          <Radio value={profileOption} onValueChange={onOptionChange} cols={2} className='gap-2'>
+            <RadioItem value='1'>
+              <p className='text-[1.1rem]'>등록하기</p>
+            </RadioItem>
+            <RadioItem value='2'>
+              <p className='text-[1.1rem]'>아이콘 대체</p>
+            </RadioItem>
           </Radio>
         )}
 
@@ -59,7 +63,7 @@ export default function ProfileImageUploader({
               accept='image/*'
             />
 
-            {!selectedImage ? (
+            {selectedImage === null ? (
               <div className='flex flex-col items-center gap-2'>
                 <Button onClick={handleImageChange} className='px-6 py-3' variant='white'>
                   이미지 선택
@@ -73,7 +77,11 @@ export default function ProfileImageUploader({
                   className='w-32 h-32 rounded-md'
                 />
                 <div className='flex gap-2'>
-                  <Button onClick={handleImageDelete} className='px-6 text-red-500' variant='ghost'>
+                  <Button
+                    onClick={handleImageDelete}
+                    className='px-6 text-red-500 '
+                    variant='ghost'
+                  >
                     삭제
                   </Button>
                 </div>

@@ -19,7 +19,7 @@ const Radio = ({ className, children, onValueChange, cols, multiple = false, ...
   return (
     <div
       role='radiogroup'
-      className={`grid ${cols ? `grid-cols-${cols}` : ''} gap-6 w-full ${className}`}
+      className={`grid ${cols ? `grid-cols-${cols}` : ''} ${className || 'gap-6'} w-full`}
       {...props}
     >
       {children.map((child, idx) => {
@@ -43,7 +43,7 @@ const RadioItem = ({ className, children, value, checked, ...props }) => {
   const radioValue = value || children;
   return (
     <button type='button' role='radio' className={className} value={radioValue} {...props}>
-      <div className='flex border border-[var(--outline)] rounded-md py-4.5 px-4 gap-3.5 text-xl'>
+      <div className='flex border border-[var(--outline)] rounded-md py-4.5 px-4 gap-3.5 text-xl items-center'>
         <svg
           width='29'
           height='29'

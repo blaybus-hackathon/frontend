@@ -11,7 +11,7 @@ import NextButton from '@/components/ui/custom/Button/NextButton';
 import { REGISTRATION_STEPS } from '@/constants/registrationSteps';
 
 export function ElderNextButton() {
-  const currentStep = useElderRegiStepStore((state) => state.currentStep);
+  const currentStep = useElderRegiStepStore((state) => state.currentIndex) + 1;
   const goNextStep = useElderRegiStepStore((state) => state.nextStep);
 
   const elderForm = useElderRegiStore((state) => state.registerElder);
@@ -86,15 +86,15 @@ export function ElderNextButton() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className='flex flex-col items-center gap-4'>
       {patientImage && (
-        <img 
-          src={`/api/images/${patientImage}`} 
-          alt="프로필 이미지" 
-          className="w-32 h-32 rounded-full object-cover"
+        <img
+          src={`/api/images/${patientImage}`}
+          alt='프로필 이미지'
+          className='w-32 h-32 rounded-full object-cover'
         />
       )}
-      <NextButton disabled={!validateCurrentStep()} onClick={handleNext} className="mb-[2rem]" />
+      <NextButton disabled={!validateCurrentStep()} onClick={handleNext} className='mb-[2rem]' />
     </div>
   );
 }

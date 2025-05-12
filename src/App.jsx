@@ -24,6 +24,8 @@ import ElderRegister from './pages/center/ElderRegister';
 import MyPage from './pages/center/MyPage';
 import MatchingInfo from './pages/center/MatchingInfo';
 import ElderAddress from './pages/center/ElderAddress';
+import ChatRoomsPage from './pages/center/ChatRoomsPage';
+import PrivateChatRoom from './pages/center/PrivateChatRoom';
 
 function App() {
   return (
@@ -54,6 +56,9 @@ function App() {
         <Route path='/modify' element={<ModifyInfo />} />
         <Route path='/caredetail' element={<CaregiverInfo />} />
         <Route path='/test' element={<SignTest />} />
+
+        <Route path='/chatrooms' element={<ChatRoomsPage />} />
+        <Route path='/chatroom/:roomid' element={<PrivateChatRoom />} />
       </Routes>
     </Router>
   );

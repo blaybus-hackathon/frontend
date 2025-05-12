@@ -5,7 +5,7 @@ import { useManagerProfileStore } from '@/store/center/useManagerProfileStore';
 import { useNavigate } from 'react-router-dom';
 import ManagerInfoDisplay from '@/components/Center/MyPage/ManagerInfoDisplay';
 import ManagerInfoEdit from '@/components/Center/MyPage/ManagerInfoEdit';
-import { Button } from '@/components/ui/custom/button';
+import { Button } from '@/components/ui/custom/Button';
 
 export default function MyPage() {
   const { data: managerProfile, isLoading, saveManagerProfile } = useManagerProfile();

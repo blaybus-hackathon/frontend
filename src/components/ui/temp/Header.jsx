@@ -1,20 +1,70 @@
+import Logo from '@/assets/images/logo.svg';
+import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import backBtn from '@/assets/images/back-arrow.png';
-import Progress from './Progress';
+import { Button } from '../custom/Button';
 
-export default function Header({ title, currentPage = 1, totalPage = 5 }) {
+// TODO: 레이아웃 조정 필요
+function LogoHeader({ hasBorder = true }) {
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    navigate(-1);
+  const handleLogoClick = () => {
+    navigate('/');
   };
+
   return (
-    <header className='flex items-center px-6 h-[3.375rem] justify-between border-b border-b-[#C8C8C8]'>
-      <button className='w-[1.625rem] h-auto cursor-pointer' onClick={handleBack}>
-        <img src={backBtn} alt='back button' />
-      </button>
-      <p className='text-[var(--header-gray)] font-semibold text-xl'>{title}</p>
-      <Progress currentPage={currentPage} TotalPages={totalPage} />
+    <header
+      className={`flex items-center px-7 w-full h-[5.625rem] ${hasBorder ? 'border-b border-b-[#C8C8C8]' : ''}`}
+    >
+      <img src={Logo} alt='logo' className='w-[12.625rem] h-auto' onClick={handleLogoClick} />
     </header>
+  );
+}
+
+function HeaderBackOrProgress({ type, title, progress, onBack, hasBorder = true }) {
+  return (
+    <header
+      className={`flex justify-between items-center px-6 h-[4.875rem] ${hasBorder ? 'border-b border-b-[#C8C8C8]' : ''}`}
+    >
+      <div className='flex items-center gap-[0.625rem]'>
+        {(type === 'back' || type === 'back-progress') && (
+          <Button variant='ghost' onClick={onBack} className='w-[1.625rem] h-[1.625rem]'>
+            <ChevronLeft />
+          </Button>
+        )}
+        <p className='font-semibold text-[1.5rem] lg:text-[1.625rem]'>{title}</p>
+      </div>
+      <div className='flex items-center'>
+        {type === 'back-progress' && (
+          <p className='text-[1.5rem] lg:text-[1.625rem] font-semibold text-[var(--main)]'>
+            {progress.current}/{progress.total}
+          </p>
+        )}
+      </div>
+    </header>
+  );
+}
+
+export default function Header({
+  type = 'logo',
+  title = '',
+  progress = null,
+  onBack = null,
+  hidden = false,
+  hasBorder = true,
+}) {
+  if (hidden || type === 'none') return null;
+
+  if (type === 'logo') {
+    return <LogoHeader hasBorder={hasBorder} />;
+  }
+
+  return (
+    <HeaderBackOrProgress
+      type={type}
+      title={title}
+      progress={progress}
+      onBack={onBack}
+      hasBorder={hasBorder}
+    />
   );
 }

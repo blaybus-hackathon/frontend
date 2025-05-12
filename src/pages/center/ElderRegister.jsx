@@ -47,6 +47,7 @@ export default function ElderRegister() {
         progress={!isFinalStep ? { current: currentIndex + 1, total: totalSteps - 1 } : null}
         onBack={handleBackClick}
       />
+      <div className='mb-[2.7rem]'></div>
       <CurrentStepComponent formOptions={formOptions} />
     </div>
   );

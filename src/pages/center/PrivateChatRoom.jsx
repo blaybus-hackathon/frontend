@@ -89,20 +89,10 @@ function PrivateChatRoom() {
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(true); //다음 페이지 유무
   const [msgInput, setMsgInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const msgContainerRef = useRef();
-  // const topRef = useRef();
-
-  // const options = {
-  //   root: null,
-  //   rootMargin: '0px',
-  //   threshold: 0.7,
-  // };
-  // const callback = (entries) => {
-  //   const target = entries[0];
-  //   console.log('ss');
-  // };
-  // const observer = new IntersectionObserver(callback, options);
+  const prevScrollHeight = useRef(0);
 
   useEffect(() => {
     //최초 채팅 세팅
@@ -119,18 +109,34 @@ function PrivateChatRoom() {
     }
 
     //최초 채팅 가져오기
-    getMessages();
+    // getMessages();
 
-    // observer.observe(topRef.current);
+    // 무한 스크롤 - 스크롤 상단에서 message fetch
     const container = msgContainerRef.current;
-    container.addEventListener('scroll', handleScroll);
+    container?.addEventListener('scroll', handleScroll);
 
     return async () => {
+      //언마운트 시 무한 스크롤 event 제거
+      container?.removeEventListener('scroll', handleScroll);
+
+      //언마운트 시 소켓 통신 해제
       const { disconnectSocket } = await import('./ChatSocket');
       disconnectSocket();
-      // observer.unobserve(topRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (msgContainerRef.current) {
+      const container = msgContainerRef.current;
+      const newScrollHeight = container.scrollHeight;
+      console.log(newScrollHeight);
+      const heightDiff = newScrollHeight - prevScrollHeight.current;
+      container.scrollTop += heightDiff;
+      if (container.scrollHeight !== prevScrollHeight.current) {
+        container.scrollTop = container.scrollHeight - prevScrollHeight.current;
+      }
+    }
+  }, [messages]);
 
   useEffect(() => {
     getMessages();
@@ -157,21 +163,29 @@ function PrivateChatRoom() {
   };
 
   const getMessages = () => {
-    // const prevScrollHeight = scrollRef.current.scrollHeight;
-    if (hasNext) {
-      request(`/chat/find-detail?pageNo=${page}&chatRoomId=${roomId}`)
-        .then((res) => {
-          setMessages((prev) => [...res.list, ...prev]);
-          setHasNext(res.hasNext);
-        })
-        .catch(() => {
-          console.error('채팅 불러오기 실패');
-        });
-    }
+    if (isLoading) return;
+    if (!hasNext) return;
+
+    setIsLoading(true);
+
+    request(`/chat/find-detail?pageNo=${page}&chatRoomId=${roomId}`)
+      .then((res) => {
+        setMessages((prev) => [...res.list, ...prev]);
+        setHasNext(res.hasNext);
+      })
+      .catch(() => {
+        console.error('채팅 불러오기 실패');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   //temporary function
   const _getMessages = () => {
+    const container = msgContainerRef.current;
+    prevScrollHeight.current = container.scrollHeight;
+    console.log(prevScrollHeight.current);
     setMessages((prev) => [...prev, ...prev]);
   };
 
@@ -193,12 +207,6 @@ function PrivateChatRoom() {
           </p>
         </div>
       ));
-  // <div className='flex gap-3'>
-  //   <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
-  //   <p className='bg-[var(--button-inactive)] flex items-center rounded-2xl py-3 px-5'>
-  //     네 안녕하세요!
-  //   </p>
-  // </div>;
 
   return (
     <div className='max-w-md mx-auto px-5.5 pb-4 flex flex-col'>
@@ -217,81 +225,7 @@ function PrivateChatRoom() {
           <p>{`${chatInfo.partnerName}님은 ${chatInfo.patientLogName} 어르신과 연결되었어요!`}</p>
           <p className='underline'>박순자 어르신 프로필 보러가기</p>
         </div>
-        {/* <div ref={topRef} className='-mt-4'></div> */}
         {renderMessages()}
-        {/* <div className='flex justify-end'>
-          <p className='bg-[rgba(82,46,154,0.1)] flex items-center rounded-2xl py-3 px-5'>
-            안녕하세요 김길자 요양사님!
-          </p>
-        </div>
-        <div className='flex gap-3'>
-          <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
-          <p className='bg-[var(--button-inactive)] flex items-center rounded-2xl py-3 px-5'>
-            네 안녕하세요!
-          </p>
-        </div>
-        <div className='flex justify-end'>
-          <p className='bg-[rgba(82,46,154,0.1)] flex items-center rounded-2xl py-3 px-5'>
-            안녕하세요 김길자 요양사님!
-          </p>
-        </div>
-        <div className='flex justify-end'>
-          <p className='bg-[rgba(82,46,154,0.1)] flex items-center rounded-2xl py-3 px-5'>
-            안녕하세요 김길자 요양사님!
-          </p>
-        </div>
-        <div className='flex justify-end'>
-          <p className='bg-[rgba(82,46,154,0.1)] flex items-center rounded-2xl py-3 px-5'>
-            안녕하세요 김길자 요양사님!
-          </p>
-        </div>
-        <div className='flex justify-end'>
-          <p className='bg-[rgba(82,46,154,0.1)] flex items-center rounded-2xl py-3 px-5'>
-            안녕하세요 김길자 요양사님!
-          </p>
-        </div>
-        <div className='flex gap-3'>
-          <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
-          <p className='bg-[var(--button-inactive)] flex items-center rounded-2xl py-3 px-5'>
-            네 안녕하세요!
-          </p>
-        </div>
-        <div className='flex gap-3'>
-          <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
-          <p className='bg-[var(--button-inactive)] flex items-center rounded-2xl py-3 px-5'>
-            네 안녕하세요!
-          </p>
-        </div>
-        <div className='flex gap-3'>
-          <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
-          <p className='bg-[var(--button-inactive)] flex items-center rounded-2xl py-3 px-5'>
-            네 안녕하세요!
-          </p>
-        </div>
-        <div className='flex gap-3'>
-          <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
-          <p className='bg-[var(--button-inactive)] flex items-center rounded-2xl py-3 px-5'>
-            네 안녕하세요!
-          </p>
-        </div>
-        <div className='flex gap-3'>
-          <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
-          <p className='bg-[var(--button-inactive)] flex items-center rounded-2xl py-3 px-5'>
-            네 안녕하세요!
-          </p>
-        </div>
-        <div className='flex gap-3'>
-          <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
-          <p className='bg-[var(--button-inactive)] flex items-center rounded-2xl py-3 px-5'>
-            네 안녕하세요!
-          </p>
-        </div>
-        <div className='flex gap-3'>
-          <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
-          <p className='bg-[var(--button-inactive)] flex items-center rounded-2xl py-3 px-5'>
-            네 안녕하세요!
-          </p>
-        </div> */}
       </div>
 
       {/* 전송 바 */}

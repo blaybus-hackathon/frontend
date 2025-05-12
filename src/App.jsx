@@ -24,6 +24,7 @@ import ElderRegister from './pages/center/ElderRegister';
 import MyPage from './pages/center/MyPage';
 import MatchingInfo from './pages/center/MatchingInfo';
 import ElderAddress from './pages/center/ElderAddress';
+import ElderInfo from './pages/center/ElderInfo';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path='/center/mypage' element={<MyPage />} />
         <Route path='/center/matching-info' element={<MatchingInfo />} />
         <Route path='center/register/address' element={<ElderAddress />} />
+        <Route path='center/elder-info' element={<ElderInfo />} />
 
         {/* Helper */}
         <Route path='/helper/account' element={<Account />} />

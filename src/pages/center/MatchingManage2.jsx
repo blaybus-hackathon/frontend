@@ -68,17 +68,6 @@ export default function MatchingManage2({ handleMatchingPage }) {
       </p>
     ));
 
-  const renderWith = () =>
-    request('post', '/cmn/part-request-care-list', {
-      careTopEnumList: ['INMATE_STATE'],
-    })
-      .then((res) => {
-        res
-          .filter((x) => patientData.careChoice.inmateStateList.includes(x.id))
-          .map((w, idx) => <p key={idx}>{w.careName}</p>);
-      })
-      .catch((e) => console.error(e));
-
   const formatBirth = (birth) => birth.replace(/^(\d{4})(\d{2})(\d{2})$/, '$1년 $2월 $3일');
 
   return (
@@ -185,47 +174,40 @@ export default function MatchingManage2({ handleMatchingPage }) {
         <div className='px-5'>
           <div className='flex min-h-16'>
             <p className='flex flex-1 text-start font-semibold text-xl items-center'>동거인 여부</p>
-            <div className='flex flex-col flex-1 text-start bg-[var(--button-inactive)] items-center rounded-md text-xl px-5'>
-              {/* {inmate.map((i, idx) => (
+            <div className='flex flex-col flex-1 text-start bg-[var(--button-inactive)] justify-center rounded-md text-xl px-5'>
+              {inmate.map((i, idx) => (
                 <p key={idx}>{i}</p>
-              ))} */}
-              <p>배우자와 동거, 돌봄 시간 중 집에 있음</p>
+              ))}
             </div>
           </div>
         </div>
         <div className='px-5'>
           <div className='flex min-h-16'>
             <p className='flex flex-1 text-start font-semibold text-xl items-center'>식사 보조</p>
-            <div className='flex flex-col flex-1 text-start bg-[var(--button-inactive)] items-center rounded-md text-xl px-5'>
-              {/* {meal.map((i, idx) => (
+            <div className='flex flex-col flex-1 text-start bg-[var(--button-inactive)] justify-center rounded-md text-xl px-5'>
+              {meal.map((i, idx) => (
                 <p key={idx}>{i}</p>
-              ))} */}
-              <p>스스로 식사 가능</p>
-              <p>식사 차려드리기</p>
+              ))}
             </div>
           </div>
         </div>
         <div className='px-5'>
           <div className='flex min-h-16'>
             <p className='flex flex-1 text-start font-semibold text-xl items-center'>배변 보조</p>
-            <div className='flex flex-col flex-1 text-start bg-[var(--button-inactive)] items-center rounded-md text-xl px-5'>
-              {/* {toilet.map((i, idx) => (
+            <div className='flex flex-col flex-1 text-start bg-[var(--button-inactive)] justify-center rounded-md text-xl px-5'>
+              {toilet.map((i, idx) => (
                 <p key={idx}>{i}</p>
-              ))} */}
-              <p>스스로 배변 가능</p>
-              <p>기저귀 케어 필요</p>
+              ))}
             </div>
           </div>
         </div>
         <div className='px-5'>
           <div className='flex min-h-16'>
             <p className='flex flex-1 text-start font-semibold text-xl items-center'>이동 보조</p>
-            <div className='flex flex-col flex-1 text-start bg-[var(--button-inactive)] items-center rounded-md text-xl px-5'>
-              {/* {mobile.map((i, idx) => (
+            <div className='flex flex-col justify-center flex-1 text-start bg-[var(--button-inactive)] rounded-md text-xl px-5'>
+              {mobile.map((i, idx) => (
                 <p key={idx}>{i}</p>
-              ))} */}
-              <p>스스로 거동 가능</p>
-              <p>이동시 부축 도움</p>
+              ))}
             </div>
           </div>
         </div>
@@ -233,11 +215,9 @@ export default function MatchingManage2({ handleMatchingPage }) {
           <div className='flex min-h-16'>
             <p className='flex flex-1 text-start font-semibold text-xl items-center'>일상생활</p>
             <div className='flex flex-col justify-center flex-1 text-start bg-[var(--button-inactive)] rounded-md text-xl px-5'>
-              {/* {daily.map((i, idx) => (
+              {daily.map((i, idx) => (
                 <p key={idx}>{i}</p>
-              ))} */}
-              <p>청소,빨래 보조</p>
-              <p>병원 동행</p>
+              ))}
             </div>
           </div>
         </div>

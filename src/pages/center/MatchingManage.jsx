@@ -9,64 +9,25 @@ import patientStore from '@/store/jbStore/patientStore';
 import serach from '@/assets/images/search.png';
 
 export default function MatchingManage({ handleMatchingPage }) {
-  const tempUsers = [
-    {
-      patientSeq: 1,
-      imgAddress: null,
-      name: '박순자',
-      genderStr: '여성',
-      age: 50,
-      workType: '방문 요양',
-      address: '서울 강남구 멍멍동',
-      careLevelStr: '등급 없음',
-      inmateStateStr: '배우자와 동거, 돌봄 시간 중 집에 있음',
-    },
-    {
-      patientSeq: 5,
-      name: '박양자',
-      genderStr: '남성',
-      age: 80,
-      workType: '병원 동행',
-      address: '서울 강남구 댕댕동',
-      careLevelStr: '등급 위험',
-    },
-    {
-      patientSeq: 9,
-      name: '박군자',
-      genderStr: '여성',
-      age: 90,
-      workType: '주야간 보호',
-      address: '서울 강남구 왕왕동',
-      careLevelStr: '등급 없음',
-    },
-    {
-      patientSeq: 11,
-      name: '박임자',
-      genderStr: '여성',
-      age: 102,
-      workType: '입주 요양',
-      address: '서울 강남구 야옹동',
-      careLevelStr: '등급 없음',
-    },
-  ];
-
   const [selectedSeq, setSelectedSeq] = useState(-1);
   const [searchQuery, setSearchQuery] = useState('');
-  // const [elders, setElders] = useState([]);
-  const [elders, setElders] = useState(tempUsers);
+  const [elders, setElders] = useState([]);
 
   const { setPatient } = patientStore();
 
-  // useEffect(() => {
-  //   getElderList;
-  // }, []);
+  useEffect(() => {
+    getElderList();
+    request('get', '/patient/recruit-list?pageNo=0&pageSize=4')
+      .then((res) => console.log(res))
+      .catch((e) => console.log(e));
+  }, []);
 
   const handleCheck = (idx) => {
     setSelectedSeq((prev) => (prev === idx ? -1 : idx));
   };
 
   const getElderList = () =>
-    request('get', `/patient/list?pageNo=${1}&pageSize=${10}`)
+    request('get', `/patient/list?pageNo=${0}&pageSize=${5}`)
       .then((res) => {
         setElders(res.list);
       })
@@ -124,11 +85,7 @@ export default function MatchingManage({ handleMatchingPage }) {
           className='h-16 w-9/10 hover:bg-[var(--company-primary)]/90 fixed bottom-8 font-bold'
           disabled={selectedSeq === -1}
           onClick={() => {
-            // setPatientDetail();
-            handleMatchingPage((prev) => {
-              window.scrollTo(0, 0);
-              return prev + 1;
-            });
+            setPatientDetail();
           }}
         >
           {selectedSeq === -1 ? '어르신을 선택해야 넘어갈 수 있어요!' : '다음'}

@@ -43,21 +43,6 @@ export default function MatchingManage3({ handleMatchingPage }) {
     '23:00',
   ];
 
-  //임시 값 (axios 전)
-  const BENEFIT = [
-    '4대보험',
-    '교통비 지원',
-    '퇴직급여',
-    '경조사비',
-    '명절선물',
-    '식사(비)지원',
-    '장기근속 장려금',
-    '정부지원금',
-    '중증가산수당',
-    '운전 수당',
-  ];
-  const WORKTYPE = ['방문요양', '입주요양', '방문목욕', '주야간보호', '요양원', '병원', '병원동행'];
-
   // selected buttons
   const [selectedDays, setSelectedDays] = useState({
     0: false,
@@ -87,6 +72,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
   const [workTypeBit, setWorkTypeBit] = useState(0);
 
   useEffect(() => {
+    console.log(patientData.afSeq, typeof patientData.afSeq);
     request('post', '/cmn/part-request-care-list', {
       careTopEnumList: ['WORK_TYPE', 'WELFARE'],
     })
@@ -128,25 +114,8 @@ export default function MatchingManage3({ handleMatchingPage }) {
       </Button>
     ));
 
-  //복리후생 렌더링(axios 전)
-  const renderBenefit = () =>
-    BENEFIT.map((benefit, idx) => (
-      <Button
-        key={idx}
-        variant={selectedBenefits.includes(idx) ? 'default' : 'outline'}
-        className='w-full mb-0 h-16'
-        onClick={() => {
-          setSelectedBenefits((prev) =>
-            prev.includes(idx) ? prev.filter((x) => x !== idx) : [...prev, idx],
-          );
-        }}
-      >
-        {benefit}
-      </Button>
-    ));
-
   //복리후생 렌더링
-  const _renderBenefit = () =>
+  const renderBenefit = () =>
     benefits.map((benefit, idx) => (
       <Button
         key={idx}
@@ -177,6 +146,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
         ptEndTime: WORKTIME[workEndTimes[dayIdx]],
       }));
     const data = {
+      linkingYn: true,
       welfare: benefitBit,
       wageNegotiation: payNego,
       wageState,
@@ -184,54 +154,42 @@ export default function MatchingManage3({ handleMatchingPage }) {
       requestContents: '',
       patientSeq: patientData.patientSeq,
       name: patientData.name,
-      afseq: patientData.afSeq,
+      afSeq: patientData.afSeq,
       asSeq: patientData.asSeq,
       atSeq: patientData.atSeq,
-      gender: patientData.genderStr === '남성' ? 0 : 1,
+      gender: patientData.genderStr === '남성' ? 1 : 2,
       birthDate: patientData.birthDate,
       weight: patientData.weight,
       diseases: patientData.diseases,
-      careLevel: patientData.careLevelStr,
+      careLevel: getSelectionBit(patientData.careChoice.careLevelList, 21),
       workType: workTypeBit,
       timeNegotiation: timeNego,
       timeList,
-
-      // dementiaSymptom: 2,
-      // inmateState: 2,
-      // serviceMeal: 3,
-      // serviceToilet: 5,
-      // serviceMobility: 3,
-      // serviceDaily: 5,
+      dementiaSymptom: getSelectionBit(patientData.careChoice.dementiaSymptomList, 29),
+      inmateState: getSelectionBit(patientData.careChoice.inmateStateList, 38),
+      serviceMeal: getSelectionBit(patientData.careChoice.serviceMealList, 45),
+      serviceToilet: getSelectionBit(patientData.careChoice.serviceToiletList, 50),
+      serviceMobility: getSelectionBit(patientData.careChoice.serviceMobilityList, 55),
+      serviceDaily: getSelectionBit(patientData.careChoice.serviceDailyList, 60),
     };
+    console.log(data);
 
     setRecruit(data);
 
     request('post', '/patient/recruit-helper', data)
       .then((res) => {
         console.log(res);
+        handleMatchingPage((prev) => {
+          return prev + 1;
+        });
       })
       .catch((e) => {
         console.error(e);
       });
   };
 
-  //근무형태 렌더링 (axios 전)
-  const renderWorkType = () =>
-    WORKTYPE.map((wt, idx) => (
-      <Button
-        variant={selectedWorkType === idx ? 'default' : 'outline'}
-        onClick={() => {
-          setSelectedWorkType(idx);
-        }}
-        key={idx}
-        className='mb-0 w-full h-16'
-      >
-        {wt}
-      </Button>
-    ));
-
   //근무형태 렌더링
-  const _renderWorkType = () =>
+  const renderWorkType = () =>
     workTypes.map((wt, idx) => (
       <Button
         variant={selectedWorkType === idx ? 'default' : 'outline'}
@@ -319,6 +277,9 @@ export default function MatchingManage3({ handleMatchingPage }) {
         </div>
       ));
 
+  // 선택 항목들 비트 합 구하기 (arr = 선택값 배열, base = 가장 낮은 id값)
+  const getSelectionBit = (arr, base) => arr.reduce((acc, cur) => acc + 2 ** (cur - base), 0);
+
   return (
     <>
       <div className='mx-auto flex flex-col items-center max-w-2xl px-[1.5rem] mb-12'>
@@ -359,36 +320,34 @@ export default function MatchingManage3({ handleMatchingPage }) {
           <label className='font-semibold text-xl mb-4'>구인 시간</label>
           {renderTimeSet()}
 
-          {
-            <div
-              className='flex text-xl'
-              onClick={() => {
-                setTimeNego((prev) => !prev);
-              }}
+          <div
+            className='flex text-xl'
+            onClick={() => {
+              setTimeNego((prev) => !prev);
+            }}
+          >
+            <svg
+              width='29'
+              height='29'
+              viewBox='0 0 29 29'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+              className='!size-7 mr-3'
             >
-              <svg
+              <rect
                 width='29'
                 height='29'
-                viewBox='0 0 29 29'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-                className='!size-7 mr-3'
-              >
-                <rect
-                  width='29'
-                  height='29'
-                  rx='14.5'
-                  fill={timeNego ? 'var(--company-primary)' : '#B6B6B6'}
-                  className='!size-7'
-                />
-                <path
-                  d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
-                  fill='white'
-                />
-              </svg>
-              협의 가능
-            </div>
-          }
+                rx='14.5'
+                fill={timeNego ? 'var(--company-primary)' : '#B6B6B6'}
+                className='!size-7'
+              />
+              <path
+                d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
+                fill='white'
+              />
+            </svg>
+            협의 가능
+          </div>
         </div>
 
         <div className='flex flex-col items-start'>
@@ -464,9 +423,6 @@ export default function MatchingManage3({ handleMatchingPage }) {
           disabled={ptDateBit === 0 || wage === 0}
           onClick={() => {
             postRecruit();
-            handleMatchingPage((prev) => {
-              return prev + 1;
-            });
           }}
         >
           다음

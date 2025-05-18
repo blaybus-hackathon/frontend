@@ -55,7 +55,7 @@ function App() {
           <Route path='helper/location/:city' element={<HelperLocationDetail />} />
 
           <Route path='matching' element={<Matching />} />
-          <Route path='status' element={<MatchingStatus />} />
+          <Route path='status' element={<RecriutDetail />} />
           <Route path='modify' element={<ModifyInfo />} />
           <Route path='caredetail' element={<CaregiverInfo />} />
           <Route path='test' element={<SignTest />} />

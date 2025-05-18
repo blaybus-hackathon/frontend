@@ -22,8 +22,7 @@ export default function ElderBasicInfo({ formOptions }) {
   );
 
   return (
-    // TODO: 추후 Layout 생성 시 디자인 적용 필요
-    <div className='w-[88%] mx-auto'>
+    <>
       <FormField label='이름' required>
         <Input
           placeholder={'이름을 입력해주세요'}
@@ -65,7 +64,10 @@ export default function ElderBasicInfo({ formOptions }) {
 
       {/* TODO: 주소지 추가 기능 구현 필요 */}
       <FormField label='주소지' required>
-        <div className='flex items-center gap-4' onClick={() => navigate('/center/register/address')}>
+        <div
+          className='flex items-center gap-4'
+          onClick={() => navigate('/center/register/address')}
+        >
           <Input
             readOnly
             type={'text'}
@@ -134,6 +136,6 @@ export default function ElderBasicInfo({ formOptions }) {
       </FormField>
 
       <ElderNextButton />
-    </div>
+    </>
   );
 }

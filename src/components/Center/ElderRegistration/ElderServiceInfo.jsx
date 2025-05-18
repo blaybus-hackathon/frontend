@@ -83,7 +83,7 @@ export default function ElderServiceInfo({ formOptions }) {
   };
 
   return (
-    <div className='w-[88%] mx-auto'>
+    <>
       <FormField label='식사 보조' required isMultiple={true}>
         <div className='grid grid-cols-2 gap-[1.12rem]'>
           {formOptions.serviceMealList.map((meal) => (
@@ -204,6 +204,6 @@ export default function ElderServiceInfo({ formOptions }) {
       </FormField>
 
       <ElderNextButton />
-    </div>
+    </>
   );
 }

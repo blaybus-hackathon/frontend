@@ -1,21 +1,36 @@
-import Header from '@/components/ui/temp/Header';
+import { useEffect, useCallback } from 'react';
 import AddressStepFlow from '@/components/address/AddressStepFlow';
 import { useElderRegiStore } from '@/store/center/useElderRegiStore';
 import { useNavigate } from 'react-router-dom';
 import FormattedText from '@/components/ui/custom/FormattedText';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 export default function ElderAddress() {
   const navigate = useNavigate();
   const setBasicInfoField = useElderRegiStore((s) => s.setBasicInfoField);
 
-  const handleBackClick = () => {
+  const handleBackClick = useCallback(() => {
     navigate('/center/register');
-  };
+  }, [navigate]);
+
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '주소지 등록',
+      onBack: handleBackClick,
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, [handleBackClick, setHeaderProps, clearHeaderProps]);
 
   return (
-    <div className='h-screen max-w-2xl mx-auto'>
-      <Header type='back' title='주소지 등록' onBack={handleBackClick} />
-      <div className='w-[88%] mx-auto my-[2rem] flex flex-col items-start gap-[0.62rem]'>
+    <>
+      <div className='my-[2rem] flex flex-col items-start gap-[0.62rem]'>
         <p className='text-[1.44rem] font-semibold text-[var(--text)]'>
           나의 주소지를 등록해 주세요!
         </p>
@@ -37,6 +52,6 @@ export default function ElderAddress() {
           navigate(-1);
         }}
       />
-    </div>
+    </>
   );
 }

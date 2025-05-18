@@ -15,7 +15,7 @@ import './App.css';
 
 import Home from './pages/Home';
 import Matching from './pages/center/Matching';
-import MatchingStatus from './pages/center/MatchingStatus';
+import RecriutDetail from './pages/center/RecriutDetail';
 
 import SignTest from './components/Auth/SignUp/SignTest';
 import ModifyInfo from './pages/center/ModifyInfo';
@@ -55,7 +55,7 @@ function App() {
           <Route path='helper/location/:city' element={<HelperLocationDetail />} />
 
           <Route path='matching' element={<Matching />} />
-          <Route path='status' element={<MatchingStatus />} />
+          <Route path='status' element={<RecriutDetail />} />
           <Route path='modify' element={<ModifyInfo />} />
           <Route path='caredetail' element={<CaregiverInfo />} />
           <Route path='test' element={<SignTest />} />

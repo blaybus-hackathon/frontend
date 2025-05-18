@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/ui/temp/Navbar';
-import Footer from '@/components/ui/temp/Footer';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -38,8 +37,6 @@ export default function Home() {
           </div>
         </main>
       </div>
-
-      <Footer />
     </>
   );
 }

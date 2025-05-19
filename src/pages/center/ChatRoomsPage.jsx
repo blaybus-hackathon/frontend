@@ -43,7 +43,6 @@ function ChatRoomsPage() {
 
   const getChatRooms = () => {
     request('get', '/chat/find-list')
-      // request('get', '/sign/token/refresh-token')
       .then((res) => {
         console.log(res);
         setChatRoomList(res);

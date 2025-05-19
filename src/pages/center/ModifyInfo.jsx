@@ -8,37 +8,6 @@ import { request } from '@/api';
 import recruitStore from '@/store/jbStore/recruitStore';
 
 export default function ModifyInfo() {
-  const GRADE = ['등급 없음', '1등급', '2등급', '3등급', '4등급', '5등급', '인지지원등급'];
-  const DEMEN = [
-    '정상 (치매 증상 없음)',
-    '집 밖을 배회',
-    '단기 기억 장애 (했던 말을 반복)',
-    '가족을 알아보지 못함',
-    '길을 잃거나 자주 가던 곳을 헤맴',
-    '사람을 의심하는 망상',
-    '어린아이 같은 행동',
-    '때리거나 욕설 등 공격적인 행동',
-  ];
-  const WITH = [
-    '독거',
-    '배우자와 동거, 돌봄 시간 중 집에 있음',
-    '배우자와 동거, 돌봄 시간 중 자리 비움',
-    '다른가족과 동거 (돌봄 중 집에 있음)',
-    '다른 가족과 동거, 돌봄 시간 중 자리 비움',
-  ];
-  const MEAL = ['스스로 식사 가능', '식사 차려드리기', '요리 필요', '경관식 보조'];
-  const TOILET = ['스스로 가능', '기저귀 케어', '실수 시 도움', '장루 관리'];
-  const MOBILE = ['스스로 가능', '부축 도움', '휠체어 이동', '거동 불가'];
-  const DAILY = [
-    '청소, 빨래 보조',
-    '목욕 보조',
-    '병원 동행',
-    '산책, 간단한 운동',
-    '말벗, 정서지원',
-    '인지자극 활동',
-  ];
-
-  // const { patientData, setPatient } = patientStore();
   const { recruitInfo } = recruitStore();
 
   const navigate = useNavigate();
@@ -132,38 +101,24 @@ export default function ModifyInfo() {
     items.map((item, idx) => (
       <Button
         key={idx}
-        // variant={selectedList?.includes(item.careVal) ? 'default' : 'outline'}
+        variant={selectedList?.includes(item.careVal) ? 'default' : 'outline'}
         className='h-16 text-lg font-medium w-full mb-0'
-        // onClick={() => {
-        //   if (selectedList.includes(item.careVal)) {
-        //     setSelectedList((prev) => prev.filter((x) => x !== item.careVal));
-        //   } else {
-        //     setSelectedList((prev) => [...prev, item.careVal]);
-        //   }
-        // }}
+        onClick={() => {
+          if (selectedList.includes(item.careVal)) {
+            setSelectedList((prev) => prev.filter((x) => x !== item.careVal));
+          } else {
+            setSelectedList((prev) => [...prev, item.careVal]);
+          }
+        }}
       >
-        {/* {item.careName} */}
-        {item}
+        {item.careName}
       </Button>
     ));
 
   const modify = () => {
-    // setPatient({
-    //   name: name,
-    //   gender: gender,
-    //   grade: grade,
-    //   weight: weight,
-    //   disease: disease,
-    //   dementia: demen,
-    //   with: withs,
-    //   meal: meal,
-    //   toilet: toilet,
-    //   mobile: mobile,
-    //   daily: daily,
-    // });
     const updateData = {
       reMatchYn: false,
-      patientLogSeq: recruitInfo.patientSeq,
+      patientLogSeq: recruitInfo.patientLogSeq,
       linkingYn: recruitInfo.linkingYn,
       welfare: selectedWelfare.reduce((acc, cur) => acc + cur, 0),
       wageNegotiation: recruitInfo.wageNegotiation,
@@ -177,7 +132,7 @@ export default function ModifyInfo() {
       gender: gender === '남성' ? 1 : 2,
       birthDate: birthday,
       weight,
-      diseases: recruitInfo.diseases,
+      diseases: disease,
       careLevel: selectedGrade.reduce((acc, cur) => acc + cur, 0),
       workType: selectedWorkType.reduce((acc, cur) => acc + cur, 0),
       timeNegotiation: recruitInfo.timeNegotiation,
@@ -189,9 +144,9 @@ export default function ModifyInfo() {
       serviceMobility: selectedMobile.reduce((acc, cur) => acc + cur, 0),
       serviceDaily: selectedDaily.reduce((acc, cur) => acc + cur, 0),
     };
-    request('post', '/recruit-patient/update', updateData)
+    request('post', '/patient/recruit-update', updateData)
       .then(() => {
-        navigate('/status');
+        navigate('/recruit-detail');
       })
       .catch((e) => {
         console.error(`공고 수정 실패 : ${e}`);
@@ -291,7 +246,7 @@ export default function ModifyInfo() {
             <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
           </label>
           <div className='w-full grid grid-cols-2 gap-4'>
-            {renderButtons(GRADE, selectedGrade, setSelectedGrade)}
+            {renderButtons(grade, selectedGrade, setSelectedGrade)}
           </div>
         </div>
         <div className='flex flex-col items-start'>
@@ -300,7 +255,7 @@ export default function ModifyInfo() {
             <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
           </label>
           <div className='w-full grid gap-4'>
-            {renderButtons(WITH, selectedWith, setSelectedWith)}
+            {renderButtons(withs, selectedWith, setSelectedWith)}
           </div>
         </div>
         <div className='flex flex-col items-start'>
@@ -309,7 +264,7 @@ export default function ModifyInfo() {
             <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
           </label>
           <div className='w-full grid grid-cols-2 gap-4'>
-            {renderButtons(MEAL, selectedMeal, setSelectedMeal)}
+            {renderButtons(meal, selectedMeal, setSelectedMeal)}
           </div>
         </div>
         <div className='flex flex-col items-start'>
@@ -318,7 +273,7 @@ export default function ModifyInfo() {
             <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
           </label>
           <div className='w-full grid grid-cols-2 gap-4'>
-            {renderButtons(MOBILE, selectedMobile, setSelectedMobile)}
+            {renderButtons(mobile, selectedMobile, setSelectedMobile)}
           </div>
         </div>
         <div className='flex flex-col items-start'>
@@ -327,7 +282,7 @@ export default function ModifyInfo() {
             <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
           </label>
           <div className='w-full grid grid-cols-2 gap-4'>
-            {renderButtons(DAILY, selectedDaily, setSelectedDaily)}
+            {renderButtons(daily, selectedDaily, setSelectedDaily)}
           </div>
         </div>
 
@@ -338,7 +293,7 @@ export default function ModifyInfo() {
             <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
           </label>
           <div className='w-full grid grid-cols-1 gap-4'>
-            {renderButtons(DEMEN, selectedDemen, setSelectedDemen)}
+            {renderButtons(demen, selectedDemen, setSelectedDemen)}
           </div>
         </div>
 
@@ -347,8 +302,8 @@ export default function ModifyInfo() {
             배변보조 <span className='font-normal text-lg'>(복수 선택 가능)</span>
             <span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
           </label>
-          <div className='w-full grid grid-cols-2 gap-4'>
-            {renderButtons(TOILET, selectedToilet, setSelectedToilet)}
+          <div className='w-full grid grid-cols-1 gap-4'>
+            {renderButtons(toilet, selectedToilet, setSelectedToilet)}
           </div>
         </div>
 

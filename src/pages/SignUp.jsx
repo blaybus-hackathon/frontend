@@ -1,54 +1,62 @@
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
-import FirstStep from '@/components/Auth/SignUp/FirstStep';
-import SecondStep from '@/components/Auth/SignUp/SecondStep';
-import ThirdStep from '@/components/Auth/SignUp/ThirdStep';
+import FirstStep from "@/components/Auth/SignUp/FirstStep";
+import SecondStep from "@/components/Auth/SignUp/SecondStep";
+import ThirdStep from "@/components/Auth/SignUp/ThirdStep";
 export default function SignUp() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
-  useEffect(() => {
-    setCurrentStep(1);
-  }, []);
-
-  const handleNext = () => {
-    setCurrentStep((prev) => prev + 1);
-    console.log(currentStep);
+  const handleNext = (data) => {
+    setFormData((prev) => ({ ...prev, ...data }));
+    setCurrentStep(currentStep + 1);
   };
 
   const handlePrev = () => {
-    setCurrentStep((prev) => prev - 1);
+    // 뒤로갈 때, 특정 스텝에서만 초기화
+    if (currentStep === 2) {
+      setFormData((prev) => ({ ...prev, email: "" })); // 예시로 이메일 초기화
+    }
+    setCurrentStep(currentStep - 1);
   };
 
-  const handleComplete = async () => {
-    try {
-      // API 호출
-      // await submitSignupData(finalData);
-      // 성공 시 localStorage 정리
-      localStorage.removeItem('currentStep');
-      // 완료 페이지로 이동 또는 다른 처리
-    } catch (error) {
-      // 에러 처리
-    }
+  const handleComplete = () => {
+    console.log("가입 완료:", formData);
+    // 여기서 백엔드에 폼 데이터 전송 등을 처리할 수 있습니다.
   };
 
   return (
-    <main className='flex flex-col gap-4 max-w-2xl mx-auto'>
-      <div className='flex justify-between mb-8'>
+    <main className="flex flex-col gap-4 max-w-2xl mx-auto">
+      <div className="flex justify-between mb-8">
         <div
-          className={`w-1/3 h-1 ${currentStep >= 1 ? 'bg-[var(--helper-primary)]' : 'bg-gray-200'}`}
+          className={`w-1/3 h-1 ${
+            currentStep >= 1 ? "bg-[var(--helper-primary)]" : "bg-gray-200"
+          }`}
         />
         <div
-          className={`w-1/3 h-1 ${currentStep >= 2 ? 'bg-[var(--helper-primary)]' : 'bg-gray-200'}`}
+          className={`w-1/3 h-1 ${
+            currentStep >= 2 ? "bg-[var(--helper-primary)]" : "bg-gray-200"
+          }`}
         />
         <div
-          className={`w-1/3 h-1 ${currentStep >= 3 ? 'bg-[var(--helper-primary)]' : 'bg-gray-200'}`}
+          className={`w-1/3 h-1 ${
+            currentStep >= 3 ? "bg-[var(--helper-primary)]" : "bg-gray-200"
+          }`}
         />
       </div>
 
       {currentStep === 1 && <FirstStep onNext={handleNext} />}
-      {currentStep === 2 && <SecondStep onNext={handleNext} onPrev={handlePrev} />}
-      {currentStep === 3 && <ThirdStep onPrev={handlePrev} onComplete={handleComplete} />}
+      {currentStep === 2 && (
+        <SecondStep onNext={handleNext} onPrev={handlePrev} />
+      )}
+      {currentStep === 3 && (
+        <ThirdStep onPrev={handlePrev} onComplete={handleComplete} />
+      )}
     </main>
   );
 }

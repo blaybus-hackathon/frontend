@@ -1,28 +1,31 @@
 import { create } from 'zustand';
 
 const usePayStore = create((set, get) => ({
-    selectedPay: null,
-    payType: 'hourly',
+  pay: {
+    type: 'hourly', // 기본값
+    amount: 10000,     // 기본값
+  },
 
-    setPay: ({ amount, type }) => {
+  setPay: ({ amount, type }) => {
+    console.log('PayStore setPay 호출:', { amount, type });
+    console.log('이전 상태:', get().pay);
 
-        console.log('PayStore setPay 호출:', { amount, type });  // 로그 추가
-        console.log('이전 상태:', get());  // 이전 상태 확인
+    set({
+      pay: {
+        type,
+        amount,
+      },
+    });
+  },
 
-
-
-        set({
-            selectedPay: amount,
-            payType: type
-        });
-    },
-
-    resetPay: () => {
-        set({
-            selectedPay: null,
-            payType: 'hourly'
-        });
-    }
+  resetPay: () => {
+    set({
+      pay: {
+        type: 'hourly',
+        amount: '',
+      },
+    });
+  },
 }));
 
 export default usePayStore;

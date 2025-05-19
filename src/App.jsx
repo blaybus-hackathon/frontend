@@ -15,12 +15,15 @@ import "./App.css";
 import Home from "./pages/Home";
 import Matching from "./pages/center/Matching";
 import MatchingStatus from "./pages/center/MatchingStatus";
-
 import SignTest from "./components/Auth/SignUp/SignTest";
 import ModifyInfo from "./pages/center/ModifyInfo";
 import CaregiverInfo from "./pages/center/CaregiverInfo";
 
 import Test from "./pages/Test";
+
+import ElderRegister from "./pages/center/ElderRegister";
+import MatchingInfo from "./pages/center/MatchingInfo";
+import ElderAddress from "./pages/center/ElderAddress";
 
 function App() {
   return (
@@ -30,6 +33,11 @@ function App() {
         <Route path="/test" element={<Test />} />
         {/* 공통 */}
         <Route path="/signIn" element={<SignIn />} />
+
+        {/* Center */}
+        <Route path="/center/register" element={<ElderRegister />} />
+        <Route path="/center/matching-info" element={<MatchingInfo />} />
+        <Route path="center/register/address" element={<ElderAddress />} />
 
         {/* Helper */}
         <Route path="/helpler/signUp" element={<SignUp />} />

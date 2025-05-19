@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import backBtn from '@/assets/images/back-arrow.png';
 import Progress from './Progress';
 
-export default function Header({ title }) {
+export default function Header({ title, currentPage = 1, totalPage = 5 }) {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -14,7 +14,7 @@ export default function Header({ title }) {
         <img src={backBtn} alt='back button' />
       </button>
       <p className='text-[var(--header-gray)] font-semibold text-xl'>{title}</p>
-      <Progress currentPage={1} TotalPages={5} />
+      <Progress currentPage={currentPage} TotalPages={totalPage} />
     </header>
   );
 }

@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 .prettierrc
 *storybook.log
+
+# Environment variables
+.env
+.env.development
+.env.production
+

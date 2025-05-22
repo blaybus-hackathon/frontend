@@ -1,7 +1,10 @@
 import profile from '@/assets/images/elder-basic-profile.png';
 import { Button } from '@/components/ui/custom/Button';
+import { getGenderLabel, getAgeFromBirth } from '@/utils/format';
 
-export default function MatchedCaregiver() {
+export default function MatchedCaregiver({ caregiverInfo }) {
+  if (!caregiverInfo) return null;
+
   return (
     <>
       <div className='border-b-1 border-[var(--outline)] pb-[1.19rem]'>
@@ -13,15 +16,20 @@ export default function MatchedCaregiver() {
         <section className='flex w-full h-[3.56rem] sm: justify-between  xl:gap-[1.88rem]'>
           <img src={profile} alt='요양보호사 이미지' className='w-[3.5rem] h-auto' />
           <div className='flex flex-col justify-between items-start'>
-            <p className='text-[1.125rem] font-semibold text-[var(--text)]'>김한나 요양사</p>
-            <p className='text-[1.125rem] font-normal text-[var(--text)]'>여성 / 50세</p>
+            <p className='text-[1.125rem] font-semibold text-[var(--text)]'>
+              {caregiverInfo.name} 요양사
+            </p>
+            <p className='text-[1.125rem] font-normal text-[var(--text)]'>
+              {getGenderLabel(caregiverInfo.gender)} / {getAgeFromBirth(caregiverInfo.age)}세
+            </p>
           </div>
           <div className='flex items-center'>
+            {/* TODO: 추후 상세보기 페이지로 이동 */}
             <Button
               variant='white'
               className={`w-[5.44rem] h-[1.19rem] font-semibold text-[0.88rem] xl:text-[1rem] lg:w-[9rem]`}
             >
-              매칭 요청하기
+              상세보기
             </Button>
           </div>
         </section>

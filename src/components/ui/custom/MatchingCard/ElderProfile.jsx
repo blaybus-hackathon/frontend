@@ -1,7 +1,23 @@
+import { useMemo } from 'react';
 import profile from '@/assets/images/elder-basic-profile.png';
+import { getGenderLabel, getAgeFromBirth } from '@/utils/format';
+import { useElderFormData } from '@/hooks/center/service/useElderFormData';
 
 // TODO: 추후 어르신 프로필 사진 설정 필요
 export default function ElderProfile({ elderInfo }) {
+  const address = `${elderInfo.tblAddressFirst} ${elderInfo.tblAddressSecond} ${elderInfo.tblAddressThird}`;
+  const { workTypeList } = useElderFormData();
+
+  const workTypeMap = useMemo(() => {
+    const map = new Map();
+    for (const item of workTypeList) {
+      map.set(item.careVal, item.careName);
+    }
+    return map;
+  }, [workTypeList]);
+
+  const workTypeLabel = workTypeMap.get(elderInfo.workType) ?? '알 수 없음';
+
   return (
     <>
       <div className='flex border-b-1 border-[var(--outline)] pb-[1.19rem]'>
@@ -11,7 +27,7 @@ export default function ElderProfile({ elderInfo }) {
             {elderInfo.name} 어르신
           </p>
           <p className='text-[1.125rem] font-normal text-[var(--text)]'>
-            {elderInfo.gender} / {elderInfo.age}세
+            {getGenderLabel(elderInfo.gender)} / {getAgeFromBirth(elderInfo.birth)}세
           </p>
         </div>
       </div>
@@ -22,9 +38,10 @@ export default function ElderProfile({ elderInfo }) {
           <span className='font-semibold text-[var(--button-black)]'>장기요양등급</span>
         </div>
         <div className='flex flex-col gap-[0.62rem] items-start'>
-          <span className='font-normal text-[var(--text)]'>{elderInfo.serviceType}</span>
-          <span className='font-normal text-[var(--text)]'>{elderInfo.address}</span>
-          <span className='font-normal text-[var(--text)]'>{elderInfo.careLevel}</span>
+          <span className='font-normal text-[var(--text)]'>{workTypeLabel}</span>
+          <span className='font-normal text-[var(--text)]'>{address}</span>
+          {/* TODO: 장기요양등급 라벨 추가 필요 */}
+          <span className='font-normal text-[var(--text)]'>등급없음</span>
         </div>
       </div>
     </>

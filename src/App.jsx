@@ -23,6 +23,7 @@ import CaregiverInfo from './pages/center/CaregiverInfo';
 
 import ElderRegister from './pages/center/ElderRegister';
 import MyPage from './pages/center/MyPage';
+import ElderInfo from './pages/center/ElderInfo';
 import MatchingInfo from './pages/center/MatchingInfo';
 import ElderAddress from './pages/center/ElderAddress';
 import ChatRoomsPage from './pages/center/ChatRoomsPage';
@@ -42,6 +43,7 @@ function App() {
           {/* Center */}
           <Route path='center/register' element={<ElderRegister />} />
           <Route path='center/mypage' element={<MyPage />} />
+          <Route path='center/elder-info' element={<ElderInfo />} />
           <Route path='center/matching-info' element={<MatchingInfo />} />
           <Route path='center/register/address' element={<ElderAddress />} />
 

@@ -4,7 +4,7 @@
 let stompClient = null;
 
 export const connectSocket = async (callbackFunc) => {
-  if (typeof window === 'undefined') return;
+  if (typeof global === 'undefined') window.global = window;
 
   const SockJS = (await import('sockjs-client')).default;
   const { Client } = await import('@stomp/stompjs');
@@ -32,7 +32,12 @@ export const connectSocket = async (callbackFunc) => {
 export const subscribe = (url, callbackFunc) => {
   if (stompClient && stompClient.connected) {
     stompClient.subscribe(url, (msg) => {
-      callbackFunc(JSON.parse(msg.body));
+      try {
+        const res = JSON.parse(msg.body);
+        callbackFunc(res);
+      } catch {
+        callbackFunc(msg.body);
+      }
     });
   } else {
     console.error('WebSocket이 연결되지 않았습니다.');

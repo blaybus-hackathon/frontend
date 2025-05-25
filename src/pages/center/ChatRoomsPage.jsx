@@ -1,39 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/custom/input';
 import { request } from '@/api';
+import chatStore from '@/store/jbStore/chatStore';
 
 import searchImg from '@/assets/images/search.png';
 import { useNavigate } from 'react-router-dom';
 
-const DUMMYLIST = [
-  {
-    chatRoomId: 2,
-    partnerId: 2,
-    partnerName: '김요양 요양보호사',
-    patientLogId: 1,
-    patientLogName: '어르신2',
-  },
-  {
-    chatRoomId: 3,
-    partnerId: 1,
-    partnerName: '김민수 요양보호사',
-    patientLogId: 1,
-    patientLogName: '어르신2',
-  },
-  {
-    chatRoomId: 1,
-    partnerId: 3,
-    partnerName: '밍밍밍 요양보호사',
-    patientLogId: 3,
-    patientLogName: '어르신3',
-  },
-];
 const DUMMYNEGOBOOL = true;
 
 function ChatRoomsPage() {
-  const [chatRoomList, setChatRoomList] = useState(DUMMYLIST);
-  const [firstChats, setFirstChats] = useState({});
+  const [chatRoomList, setChatRoomList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const { setChatInfo } = chatStore();
 
   useEffect(() => {
     getChatRooms();
@@ -61,6 +40,7 @@ function ChatRoomsPage() {
           key={chatRoom.chatRoomId}
           className='py-6 flex relative'
           onClick={() => {
+            setChatInfo(chatRoom);
             gotoChatRoom(chatRoom.chatRoomId);
           }}
         >

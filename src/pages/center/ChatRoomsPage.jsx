@@ -22,7 +22,6 @@ function ChatRoomsPage() {
 
   const getChatRooms = () => {
     request('get', '/chat/find-list')
-      // request('get', '/sign/token/refresh-token')
       .then((res) => {
         console.log(res);
         setChatRoomList(res);
@@ -45,7 +44,10 @@ function ChatRoomsPage() {
           }}
         >
           <div>
-            <div className='rounded-[50%] bg-[var(--button-inactive)] size-15 mr-3.5'></div>
+            <img
+              src={chatRoom.partnerImgAddress}
+              className='rounded-[50%] bg-[var(--button-inactive)] size-15 mr-3.5'
+            />
           </div>
           <div className='flex flex-col gap-4'>
             <p className='font-semibold text-lg'>
@@ -54,11 +56,13 @@ function ChatRoomsPage() {
                 <span className='font-normal text-[var(--main)] ml-3'>조율 완료</span>
               )}
             </p>
-            <p className='text-start'>Last Content...</p>
+            {chatRoom.lastChatContent && <p className='text-start'>{chatRoom.lastChatContent}</p>}
           </div>
-          <span className='bg-[var(--main)] rounded-[50%] size-5.5 text-white absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center text-sm'>
-            3
-          </span>
+          {chatRoom.notReadCnt !== 0 && (
+            <span className='bg-[var(--main)] rounded-[50%] size-5.5 text-white absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center text-sm'>
+              {chatRoom.notReadCnt}
+            </span>
+          )}
         </div>
       ));
 

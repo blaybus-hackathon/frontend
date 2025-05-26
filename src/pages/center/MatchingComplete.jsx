@@ -1,4 +1,4 @@
-import patientStore from '@/store/patientStore';
+import patientStore from '@/store/jbStore/patientStore';
 import profile from '@/assets/images/default-profile.png';
 
 import { Button } from '@/components/ui/custom/Button';

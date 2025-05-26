@@ -18,7 +18,7 @@ export default function InfoCard({ isChecked, onCheck, showCheck = true, user })
           </div>
           <div className='flex flex-col items-start gap-1 py-2'>
             <p className='font-semibold'>{user && user.name} 어르신</p>
-            <p className='font-normal'>{user && `${user.gender} / ${user.age}`}세</p>
+            <p className='font-normal'>{user && `${user.genderStr} / ${user.age}`}세</p>
           </div>
           <div className={`absolute top-0 right-0 ${!showCheck ? 'hidden' : ''}`}>
             <svg
@@ -54,7 +54,7 @@ export default function InfoCard({ isChecked, onCheck, showCheck = true, user })
           </p>
           <p className='text-start pl-2'>
             <span className='w-2/5 inline-block'>장기요양등급</span>
-            <span className='font-normal'>{user && user.grade}</span>
+            <span className='font-normal'>{user && user.careLevelStr}</span>
           </p>
         </div>
       </div>

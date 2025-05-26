@@ -6,7 +6,7 @@ import addImg from '@/assets/images/add.png';
 import chatStore from '@/store/jbStore/chatStore';
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
-// import { connectSocket, subscribe, sendMessage, disconnectSocket } from './ChatSocket';
+import { connectSocket, subscribe, sendMessage, disconnectSocket } from './ChatSocket';
 
 // chat 입력창 최대 높이
 const MAX_HEIGHT = 120;
@@ -35,7 +35,6 @@ function PrivateChatRoom() {
   useEffect(() => {
     //최초 채팅 세팅
     const setupSocket = async () => {
-      const { connectSocket, subscribe } = await import('./ChatSocket');
       connectSocket(() => {
         // 개인 메세지 구독 (상대 -> 나)
         subscribe('/user/queue/private', (message) => {
@@ -67,7 +66,6 @@ function PrivateChatRoom() {
       container?.removeEventListener('scroll', handleScroll);
 
       //언마운트 시 소켓 통신 해제
-      const { disconnectSocket } = await import('./ChatSocket');
       disconnectSocket();
     };
   }, []);
@@ -106,7 +104,6 @@ function PrivateChatRoom() {
   };
 
   const sendChatMessage = async () => {
-    const { sendMessage } = await import('./ChatSocket');
     const message = {
       content: msgInput,
       senderId: SENDERID,

@@ -1,14 +1,9 @@
-// import SockJS from 'sockjs-client';
-// import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 
 let stompClient = null;
 
 export const connectSocket = async (callbackFunc) => {
-  if (typeof global === 'undefined') window.global = window;
-
-  const SockJS = (await import('sockjs-client')).default;
-  const { Client } = await import('@stomp/stompjs');
-
   const socket = new SockJS('http://localhost:8080/ws-chat', null, { withCredentials: true });
 
   stompClient = new Client({

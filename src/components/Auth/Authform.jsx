@@ -1,10 +1,10 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const AuthForm = ({ type, onSubmit, setLoginType }) => {
+  const navigate = useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = e.target.elements;
@@ -69,9 +69,9 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
 
         <div>
           {/* 아이디 - 비밀번호 찾기 추가 필요. */}
-          <Link className="block text-[#6C6C6C] text-right cursor-pointer hover:underline">
+          <div className="block text-[#6C6C6C] text-right cursor-pointer hover:underline">
             아이디 비밀번호 찾기
-          </Link>
+          </div>
         </div>
         <Button
           type="submit"
@@ -79,15 +79,14 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
             type === "helper"
               ? "bg-[#275280] hover:bg-[#275280]/90"
               : "bg-[#522E9A] hover:bg-[#522E9A]/90"
-
           } text-white`}
         >
           로그인
         </Button>
       </form>
 
-
       <Button
+        onClick={() => navigate("/helpler/signUp")}
         className={`mt-2 w-full bg-white hover:bg-white/90 rounded-xs border-1 border-[#522E9A]
         } text-[#522E9A]`}
       >
@@ -107,7 +106,6 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
 };
 
 AuthForm.propTypes = {
-
   type: PropTypes.oneOf(["helper", "company"]).isRequired,
   onSubmit: PropTypes.func.isRequired,
   setLoginType: PropTypes.func.isRequired,
@@ -117,7 +115,6 @@ function NavigationIcon(prop) {
   return (
     <svg
       {...prop}
-
       width="24"
       height="24"
       viewBox="0 0 24 24"
@@ -136,7 +133,6 @@ function HomeControlsIcon(prop) {
   return (
     <svg
       {...prop}
-
       width="24"
       height="24"
       viewBox="0 0 24 24"

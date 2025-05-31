@@ -38,7 +38,7 @@ export default function ElderAdditionalInfo({ formOptions }) {
   );
 
   return (
-    <div className='w-[88%] mx-auto'>
+    <>
       <FormField label='치매 증상' required isMultiple={true}>
         <div className='grid grid-cols-2 gap-[1.12rem]'>
           {formOptions.dementiaSymptomList?.map((symptom) => (
@@ -77,6 +77,6 @@ export default function ElderAdditionalInfo({ formOptions }) {
       </FormField>
 
       <ElderNextButton />
-    </div>
+    </>
   );
 }

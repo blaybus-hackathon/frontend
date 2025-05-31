@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import Navbar from "@/components/ui/temp/Navbar";
-import Footer from "@/components/ui/temp/Footer";
 import useProfileStore from "@/store/useProfileStore";
+import Navbar from '@/components/ui/temp/Navbar';
 
 export default function Home() {
   const { profile } = useProfileStore();
@@ -54,8 +53,6 @@ export default function Home() {
           </div>
         </main>
       </div>
-
-      {/* <Footer /> */}
     </>
   );
 }

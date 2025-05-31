@@ -62,7 +62,7 @@ export default function ElderCareInfo({ formOptions }) {
   const selectedDays = careInfo.timeList?.map((t) => t.ptDate) || [];
 
   return (
-    <div className='w-[88%] mx-auto'>
+    <>
       <FormField label='근무 종류' required isMultiple={false}>
         <Radio onValueChange={(value) => updateField('workType', value)}>
           {formOptions.workTypeList.map((workType) => (
@@ -138,6 +138,6 @@ export default function ElderCareInfo({ formOptions }) {
       </FormField>
 
       <ElderNextButton />
-    </div>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/custom/input';
 import { Button } from '@/components/ui/custom/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Select,
   SelectTrigger,
@@ -8,25 +8,14 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/custom/select';
-// import patientStore from '@/store/patientStore';
+import patientStore from '@/store/jbStore/patientStore';
 import { request } from '@/api';
 
 export default function MatchingManage3({ handleMatchingPage }) {
-  // const { patientData } = patientStore();
+  const { patientData, setRecruit } = patientStore();
+
+  //날짜, 시간 값
   const DAYS = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
-  const BENEFIT = [
-    '4대보험',
-    '교통비 지원',
-    '퇴직급여',
-    '경조사비',
-    '명절선물',
-    '식사(비)지원',
-    '장기근속 장려금',
-    '정부지원금',
-    '중증가산수당',
-    '운전 수당',
-  ];
-  const WORKTYPE = ['방문요양', '입주요양', '방문목욕', '주야간보호', '요양원', '병원', '병원동행'];
   const WORKTIME = [
     '00:00',
     '01:00',
@@ -54,7 +43,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
     '23:00',
   ];
 
-  // select buttons
+  // selected buttons
   const [selectedDays, setSelectedDays] = useState({
     0: false,
     1: false,
@@ -64,63 +53,39 @@ export default function MatchingManage3({ handleMatchingPage }) {
     5: false,
     6: false,
   });
-  // const [selectedBenefits, setSelectedBenefits] = useState({
-  //   0: false,
-  //   1: false,
-  //   2: false,
-  //   3: false,
-  //   4: false,
-  //   5: false,
-  //   6: false,
-  //   7: false,
-  //   8: false,
-  //   9: false,
-  // });
   const [selectedWorkType, setSelectedWorkType] = useState();
   const [selectedBenefits, setSelectedBenefits] = useState([]);
 
   // 날짜, 급여, 협의가능, 복리후생
-  const [ptDateBit, setPtDateBit] = useState(0);
   const [wage, setWage] = useState(0);
-  // const [payNego, setPayNego] = useState(false);
-  // const [ptBeneBit, setPtBeneBit] = useState(0);
+  const [wageState, setWageState] = useState(1);
+  const [payNego, setPayNego] = useState(false);
+  const [benefits, setBenefits] = useState([]);
+  const [workTypes, setWorkTypes] = useState([]);
   const [timeNego, setTimeNego] = useState(false);
-  const [sBoxTime, setSBoxTime] = useState();
-  const [sBoxEndVal, setSBoxEndVal] = useState();
+  const [workStartTimes, setWorkStartTimes] = useState({});
+  const [workEndTimes, setWorkEndTimes] = useState({});
 
-  const [recruit, setRecruit] = useState({
-    afSeq: 9007199254740991,
-    asSeq: 9007199254740991,
-    atSeq: 9007199254740991,
-    careLevel: 1073741824,
-    inmateState: 1073741824,
-    workType: 1073741824,
-    gender: 1073741824,
-    dementiaSymptom: 1073741824,
-    serviceMeal: 1073741824,
-    serviceToilet: 1073741824,
-    serviceMobility: 1073741824,
-    serviceDaily: 1073741824,
-    name: 'string',
-    birthDate: 'string',
-    weight: 0.1,
-    diseases: 'string',
-    timeNegotiation: true,
-    requestContents: 'string',
-    timeList: [
-      {
-        ptDate: 0,
-        ptStartTime: 'string',
-        ptEndTime: 'string',
-      },
-    ],
-    patientSeq: 9007199254740991,
-    welfare: 1073741824,
-    wageNegotiation: false,
-    wageState: 1073741824,
-    wage: 1073741824,
-  });
+  //비트값
+  const [ptDateBit, setPtDateBit] = useState(0);
+  const [benefitBit, setBenefitBit] = useState(0);
+  const [workTypeBit, setWorkTypeBit] = useState(0);
 
+  useEffect(() => {
+    console.log(patientData.afSeq, typeof patientData.afSeq);
+    request('post', '/cmn/part-request-care-list', {
+      careTopEnumList: ['WORK_TYPE', 'WELFARE'],
+    })
+      .then((res) => {
+        setWorkTypes(res.workTypeList);
+        setBenefits(res.welfareList);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  //요일 선택 렌더링
   const renderDays = () =>
     DAYS.map((day, idx) => (
       <Button
@@ -129,27 +94,17 @@ export default function MatchingManage3({ handleMatchingPage }) {
         className='h-16 text-lg font-medium w-full mb-0'
         onClick={() => {
           if (selectedDays[idx] === false) {
-            setRecruit((prev) => ({
-              ...prev,
-              timeList: prev.timeList.map((timeListObj, objIdx) =>
-                objIdx === 0
-                  ? { ...timeListObj, ptDate: timeListObj.ptDate + idx + 1 }
-                  : timeListObj,
-              ),
-            }));
-            console.log(recruit.timeList[0]);
             setPtDateBit((prev) => prev + idx + 1);
           } else {
-            setRecruit((prev) => ({
-              ...prev,
-              timeList: prev.timeList.map((timeListObj, objIdx) =>
-                objIdx === 0
-                  ? { ...timeListObj, ptDate: timeListObj.ptDate - idx - 1 }
-                  : timeListObj,
-              ),
-            }));
-            console.log(recruit.timeList[0]);
             setPtDateBit((prev) => prev - idx - 1);
+            setWorkStartTimes((prev) => {
+              const { [idx]: _, ...rest } = prev;
+              return rest;
+            });
+            setWorkEndTimes((prev) => {
+              const { [idx]: _, ...rest } = prev;
+              return rest;
+            });
           }
 
           setSelectedDays((prev) => ({ ...prev, [idx]: !prev[idx] }));
@@ -159,65 +114,97 @@ export default function MatchingManage3({ handleMatchingPage }) {
       </Button>
     ));
 
+  //복리후생 렌더링
   const renderBenefit = () =>
-    BENEFIT.map((benefit, idx) => (
+    benefits.map((benefit, idx) => (
       <Button
         key={idx}
         variant={selectedBenefits.includes(idx) ? 'default' : 'outline'}
-        // variant={selectedBenefits[idx] === true ? 'default' : 'outline'}
         className='w-full mb-0 h-16'
         onClick={() => {
+          if (selectedBenefits.includes(idx)) {
+            setBenefitBit((prev) => prev - benefit.careVal);
+          } else {
+            setBenefitBit((prev) => prev + benefit.careVal);
+          }
           setSelectedBenefits((prev) =>
             prev.includes(idx) ? prev.filter((x) => x !== idx) : [...prev, idx],
           );
-
-          // if (selectedBenefits[idx] === false) {
-          //   setRecruit((prev) => ({ ...prev, welfare: ptBeneBit + idx + 1 }));
-          //   setPtBeneBit((prev) => prev + idx + 1);
-          // } else {
-          //   setRecruit((prev) => ({ ...prev, welfare: ptBeneBit - idx - 1 }));
-          //   setPtBeneBit((prev) => prev - idx - 1);
-          // }
-          // console.log(recruit.welfare);
-          // setSelectedBenefits((prev) => ({ ...prev, [idx]: !prev[idx] }));
         }}
       >
-        {benefit}
+        {benefit.careName}
       </Button>
     ));
 
-  const postRecruit = async () => {
-    try {
-      console.log(recruit);
-      const response = await request('post', '/patient/save', recruit);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+  //공고 등록
+  const postRecruit = () => {
+    const timeList = Object.entries(selectedDays)
+      .filter(([_, isSelected]) => isSelected === true)
+      .map(([dayIdx]) => ({
+        ptDate: dayIdx + 1,
+        ptStartTime: WORKTIME[workStartTimes[dayIdx]],
+        ptEndTime: WORKTIME[workEndTimes[dayIdx]],
+      }));
+    const data = {
+      linkingYn: true,
+      welfare: benefitBit,
+      wageNegotiation: payNego,
+      wageState,
+      wage: parseInt(wage),
+      requestContents: '',
+      patientSeq: patientData.patientSeq,
+      name: patientData.name,
+      afSeq: patientData.afSeq,
+      asSeq: patientData.asSeq,
+      atSeq: patientData.atSeq,
+      gender: patientData.genderStr === '남성' ? 1 : 2,
+      birthDate: patientData.birthDate,
+      weight: patientData.weight,
+      diseases: patientData.diseases,
+      careLevel: getSelectionBit(patientData.careChoice.careLevelList, 21),
+      workType: workTypeBit,
+      timeNegotiation: timeNego,
+      timeList,
+      dementiaSymptom: getSelectionBit(patientData.careChoice.dementiaSymptomList, 29),
+      inmateState: getSelectionBit(patientData.careChoice.inmateStateList, 38),
+      serviceMeal: getSelectionBit(patientData.careChoice.serviceMealList, 45),
+      serviceToilet: getSelectionBit(patientData.careChoice.serviceToiletList, 50),
+      serviceMobility: getSelectionBit(patientData.careChoice.serviceMobilityList, 55),
+      serviceDaily: getSelectionBit(patientData.careChoice.serviceDailyList, 60),
+    };
+    console.log(data);
+
+    setRecruit(data);
+
+    request('post', '/patient/recruit-helper', data)
+      .then((res) => {
+        console.log(res);
+        handleMatchingPage((prev) => {
+          return prev + 1;
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   };
 
+  //근무형태 렌더링
   const renderWorkType = () =>
-    // const req = { careTopEnumList: ['WORK_TYPE'] };
-    // const res = await request('post', '/cmn/part-request-care-list', req);
-
-    WORKTYPE.map((wt, idx) => (
+    workTypes.map((wt, idx) => (
       <Button
         variant={selectedWorkType === idx ? 'default' : 'outline'}
         onClick={() => {
           setSelectedWorkType(idx);
+          setWorkTypeBit(wt.careVal);
         }}
         key={idx}
         className='mb-0 w-full h-16'
       >
-        {wt}
+        {wt.careName}
       </Button>
     ));
 
-  // const renderWelfare = async () => {
-  //   const req = { careTopEnumList: ['WELFARE'] };
-  //   const res = await request('post', '/cmn/part-request-care-list', req);
-  // };
-
+  //근무시간 select box 내부 시간 렌더링
   const renderWorkTime = () =>
     WORKTIME.map((time, idx) => (
       <SelectItem key={idx} value={idx}>
@@ -225,26 +212,73 @@ export default function MatchingManage3({ handleMatchingPage }) {
       </SelectItem>
     ));
 
-  const checkInvalid = (from, val) => {
+  //근무시간 유효성 확인
+  const checkInvalid = (from, val, index) => {
     //from == 0 -> 시작시간 선택 시 유효성 판단
     //from == 1 -> 종료시간 선택 시 유효성 판단
     if (from === 0) {
-      if (val >= sBoxEndVal) {
+      if (val >= workEndTimes[index]) {
         alert('종료시간은 시작시간보다 늦어야합니다.');
-        setSBoxTime(sBoxEndVal - 1);
+        setWorkStartTimes((prev) => ({ ...prev, [index]: workEndTimes[index] - 1 }));
       } else {
-        setSBoxTime(val);
+        setWorkStartTimes((prev) => ({ ...prev, [index]: val }));
       }
     }
     if (from === 1) {
-      if (val <= sBoxTime) {
+      if (val <= workStartTimes[index]) {
         alert('종료시간은 시작시간보다 늦어야합니다.');
-        setSBoxEndVal(sBoxTime + 1);
+        setWorkEndTimes((prev) => ({ ...prev, [index]: workStartTimes[index] + 1 }));
       } else {
-        setSBoxEndVal(val);
+        setWorkEndTimes((prev) => ({ ...prev, [index]: val }));
       }
     }
   };
+
+  //요일별 시간 설정
+  const renderTimeSet = () =>
+    Object.entries(selectedDays)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([dayIdx], idx) => (
+        <div key={idx} className='w-full text-start'>
+          <label className='inline-block mb-2'>{DAYS[dayIdx]}</label>
+          <div className='flex w-full mb-7'>
+            <Select
+              value={workStartTimes[dayIdx]}
+              onValueChange={(startVal) => {
+                if (dayIdx in workEndTimes) {
+                  checkInvalid(0, startVal, dayIdx);
+                } else {
+                  setWorkStartTimes((prev) => ({ ...prev, [dayIdx]: startVal }));
+                }
+              }}
+            >
+              <SelectTrigger className='flex-1 border-[var(--outline)] border-2 h-16 text-xl'>
+                <SelectValue placeholder='시작시간' />
+              </SelectTrigger>
+              <SelectContent>{renderWorkTime()}</SelectContent>
+            </Select>
+            <span className='mx-4 inline-flex items-center'>~</span>
+            <Select
+              value={workEndTimes[dayIdx]}
+              onValueChange={(endVal) => {
+                if (dayIdx in workStartTimes) {
+                  checkInvalid(1, endVal, dayIdx);
+                } else {
+                  setWorkEndTimes((prev) => ({ ...prev, [dayIdx]: endVal }));
+                }
+              }}
+            >
+              <SelectTrigger className='flex-1 border-[var(--outline)] border-2 h-16 text-xl'>
+                <SelectValue placeholder='종료시간' />
+              </SelectTrigger>
+              <SelectContent>{renderWorkTime()}</SelectContent>
+            </Select>
+          </div>
+        </div>
+      ));
+
+  // 선택 항목들 비트 합 구하기 (arr = 선택값 배열, base = 가장 낮은 id값)
+  const getSelectionBit = (arr, base) => arr.reduce((acc, cur) => acc + 2 ** (cur - base), 0);
 
   return (
     <>
@@ -284,41 +318,9 @@ export default function MatchingManage3({ handleMatchingPage }) {
 
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>구인 시간</label>
-          <div className='flex w-full mb-7'>
-            <Select
-              value={sBoxTime}
-              onValueChange={(startVal) => {
-                if (sBoxEndVal) {
-                  checkInvalid(0, startVal);
-                } else {
-                  setSBoxTime(startVal);
-                }
-              }}
-            >
-              <SelectTrigger className='flex-1 border-[var(--outline)] border-2 h-16 text-xl'>
-                <SelectValue placeholder='시작시간' />
-              </SelectTrigger>
-              <SelectContent>{renderWorkTime()}</SelectContent>
-            </Select>
-            <span className='mx-4 inline-flex items-center'>~</span>
-            <Select
-              value={sBoxEndVal}
-              onValueChange={(endVal) => {
-                if (sBoxTime) {
-                  checkInvalid(1, endVal);
-                } else {
-                  setSBoxEndVal(endVal);
-                }
-              }}
-            >
-              <SelectTrigger className='flex-1 border-[var(--outline)] border-2 h-16 text-xl'>
-                <SelectValue placeholder='종료시간' />
-              </SelectTrigger>
-              <SelectContent>{renderWorkTime()}</SelectContent>
-            </Select>
-          </div>
+          {renderTimeSet()}
 
-          <p
+          <div
             className='flex text-xl'
             onClick={() => {
               setTimeNego((prev) => !prev);
@@ -345,21 +347,27 @@ export default function MatchingManage3({ handleMatchingPage }) {
               />
             </svg>
             협의 가능
-          </p>
+          </div>
         </div>
 
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>희망급여</label>
           {/* <p className='text-[var(--required-red)]'>시급 기준 최저 13000원 이상</p> */}
           <div className='flex w-full mb-7 gap-4'>
-            <Select defaultValue={'hour'}>
+            <Select
+              defaultValue={1}
+              value={wageState}
+              onValueChange={(val) => {
+                setWageState(val);
+              }}
+            >
               <SelectTrigger className='flex-1 border-[var(--outline)] border-2 h-16 text-xl'>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='hour'>시급</SelectItem>
-                <SelectItem value='day'>일급</SelectItem>
-                <SelectItem value='month'>월급</SelectItem>
+                <SelectItem value={1}>시급</SelectItem>
+                <SelectItem value={2}>일급</SelectItem>
+                <SelectItem value={3}>주급</SelectItem>
               </SelectContent>
             </Select>
             <span className='inline-flex items-center'>~</span>
@@ -368,7 +376,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
                 width='auto'
                 className='border-0 px-0 py-0 h-11.5 text-xl'
                 onChange={(e) => {
-                  setWage(e);
+                  setWage(e.target.value);
                 }}
                 type='number'
               />
@@ -378,7 +386,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
           <p
             className='flex text-xl'
             onClick={() => {
-              setTimeNego((prev) => !prev);
+              setPayNego((prev) => !prev);
             }}
           >
             <svg
@@ -393,7 +401,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
                 width='29'
                 height='29'
                 rx='14.5'
-                fill={timeNego ? 'var(--company-primary)' : '#B6B6B6'}
+                fill={payNego ? 'var(--company-primary)' : '#B6B6B6'}
                 className='!size-7'
               />
               <path
@@ -414,19 +422,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
           className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
           disabled={ptDateBit === 0 || wage === 0}
           onClick={() => {
-            // setRecruit((prev) => ({
-            //   ...prev,
-            //   timeList: prev.timeList.map((timeListObj, idx) =>
-            //     idx === 0 ? { ...timeListObj, ptDate: ptDateBit } : timeListObj,
-            //   ),
-            //   wage: wage,
-            //   wageNegotiation: payNego,
-            //   welfare: ptBeneBit,
-            // }));
             postRecruit();
-            handleMatchingPage((prev) => {
-              return prev + 1;
-            });
           }}
         >
           다음

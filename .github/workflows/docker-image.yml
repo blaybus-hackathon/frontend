@@ -25,9 +25,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Use .env.production as .env
-        run: cp .env.production .env
         
       - name: Build frontend
         run: npm run build

@@ -1,39 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/custom/input';
 import { request } from '@/api';
+import chatStore from '@/store/jbStore/chatStore';
 
 import searchImg from '@/assets/images/search.png';
 import { useNavigate } from 'react-router-dom';
 
-const DUMMYLIST = [
-  {
-    chatRoomId: 2,
-    partnerId: 2,
-    partnerName: '김요양 요양보호사',
-    patientLogId: 1,
-    patientLogName: '어르신2',
-  },
-  {
-    chatRoomId: 3,
-    partnerId: 1,
-    partnerName: '김민수 요양보호사',
-    patientLogId: 1,
-    patientLogName: '어르신2',
-  },
-  {
-    chatRoomId: 1,
-    partnerId: 3,
-    partnerName: '밍밍밍 요양보호사',
-    patientLogId: 3,
-    patientLogName: '어르신3',
-  },
-];
 const DUMMYNEGOBOOL = true;
 
 function ChatRoomsPage() {
-  const [chatRoomList, setChatRoomList] = useState(DUMMYLIST);
-  const [firstChats, setFirstChats] = useState({});
+  const [chatRoomList, setChatRoomList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const { setChatInfo } = chatStore();
 
   useEffect(() => {
     getChatRooms();
@@ -60,11 +39,15 @@ function ChatRoomsPage() {
           key={chatRoom.chatRoomId}
           className='py-6 flex relative'
           onClick={() => {
+            setChatInfo(chatRoom);
             gotoChatRoom(chatRoom.chatRoomId);
           }}
         >
           <div>
-            <div className='rounded-[50%] bg-[var(--button-inactive)] size-15 mr-3.5'></div>
+            <img
+              src={chatRoom.partnerImgAddress}
+              className='rounded-[50%] bg-[var(--button-inactive)] size-15 mr-3.5'
+            />
           </div>
           <div className='flex flex-col gap-4'>
             <p className='font-semibold text-lg'>
@@ -73,11 +56,13 @@ function ChatRoomsPage() {
                 <span className='font-normal text-[var(--main)] ml-3'>조율 완료</span>
               )}
             </p>
-            <p className='text-start'>Last Content...</p>
+            {chatRoom.lastChatContent && <p className='text-start'>{chatRoom.lastChatContent}</p>}
           </div>
-          <span className='bg-[var(--main)] rounded-[50%] size-5.5 text-white absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center text-sm'>
-            3
-          </span>
+          {chatRoom.notReadCnt !== 0 && (
+            <span className='bg-[var(--main)] rounded-[50%] size-5.5 text-white absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center text-sm'>
+              {chatRoom.notReadCnt}
+            </span>
+          )}
         </div>
       ));
 

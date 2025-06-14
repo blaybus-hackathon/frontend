@@ -3,20 +3,17 @@ import Layout from './components/ui/Layout';
 
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
-import Account from './pages/helper/Account';
-import AccountEdit from './pages/helper/AccountEdit';
-import HelperLocation from './pages/helper/HelperLocation';
-import HelperLocationDetail from './pages/helper/HelperLocationDetail';
-import AccountSchedule from './pages/helper/AccountSchedule';
-import AccountPay from './pages/helper/AccountPay';
-import AccountCareType from './pages/helper/AccountCareType';
+import Account from './pages/helper/Account/Account';
+import AccountEdit from './pages/helper/AccountEdit/AccountEdit';
+import HelperLocation from './pages/helper/AccountEdit/navigate/HelperLocation';
 
-import './App.css';
+import AccountSchedule from './pages/helper/AccountEdit/navigate/AccountSchedule';
+import AccountPay from './pages/helper/AccountEdit/navigate/AccountPay';
+import AccountCareType from './pages/helper/AccountEdit/navigate/AccountCareType';
 
 import Home from './pages/Home';
 import Matching from './pages/center/Matching';
 import RecriutDetail from './pages/center/RecriutDetail';
-
 import SignTest from './components/Auth/SignUp/SignTest';
 import ModifyInfo from './pages/center/ModifyInfo';
 import CaregiverInfo from './pages/center/CaregiverInfo';
@@ -35,7 +32,6 @@ function App() {
       <Routes>
         {/* 공통 */}
         <Route path='/signIn' element={<SignIn />} />
-        <Route path='/signUp' element={<SignUp />} />
 
         <Route path='/' element={<Layout />}>
           <Route index element={<Home />} />
@@ -54,8 +50,10 @@ function App() {
           <Route path='helper/account/pay' element={<AccountPay />} />
           <Route path='helper/account/care-type' element={<AccountCareType />} />
           <Route path='helper/location' element={<HelperLocation />} />
-          <Route path='helper/location/:city' element={<HelperLocationDetail />} />
+          {/* <Route path='helper/location/:city' element={<HelperLocationDetail />} /> */}
 
+          {/* <Route path="/center/register" element={} /> */}
+          {/* <Route path="/center/signUp" element={} /> */}
           <Route path='matching' element={<Matching />} />
           <Route path='status' element={<RecriutDetail />} />
           <Route path='modify' element={<ModifyInfo />} />
@@ -64,6 +62,10 @@ function App() {
 
           <Route path='chatrooms' element={<ChatRoomsPage />} />
           <Route path='chatroom/:roomid' element={<PrivateChatRoom />} />
+
+          {/* <Route path="/center" element={} /> */}
+          {/* <Route path="/center/(helper)search" element={<Matching />} /> */}
+          {/* <Route path="/center/(helper)search/result" element={<Matching />} /> */}
         </Route>
       </Routes>
     </Router>

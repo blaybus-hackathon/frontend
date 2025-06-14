@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Button } from '@/components/ui/custom/button';
+import { Button } from '@/components/ui/custom/Button';
 import { FormField } from '@/components/ui/custom/FormField';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 

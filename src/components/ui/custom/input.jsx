@@ -2,9 +2,19 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const Input = React.forwardRef(
-  ({ className, type = "text", placeholder, label, maxLength, width, ...props }, ref) => {
-
-    const widthStyle = width ? { width: width } : { width: '16rem' };
+  (
+    {
+      className,
+      type = "text",
+      placeholder,
+      label,
+      maxLength,
+      width,
+      ...props
+    },
+    ref
+  ) => {
+    const widthStyle = width ? { width: width } : { width: "100%" };
 
     return (
       <div className={`relative`} style={widthStyle}>

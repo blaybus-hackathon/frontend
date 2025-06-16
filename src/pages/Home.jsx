@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import Navbar from '@/components/ui/temp/Navbar';
+import Navbar from '@/components/ui/custom/Navbar';
 import { Button } from '@/components/ui/custom/Button';
 // import useProfileStore from '@/store/useProfileStore';
 import {

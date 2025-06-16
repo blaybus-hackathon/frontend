@@ -49,13 +49,13 @@ export default function Navbar() {
                 className='text-lg px-6 py-3'
                 onClick={() => {
                   clearProfile();
-                  navigate('/signIn');
+                  navigate('/');
                 }}
               >
                 로그아웃
               </Button>
             ) : (
-              <Button className='text-lg px-10 py-3' onClick={() => navigate('/signIn')}>
+              <Button className='text-lg px-10 py-3' onClick={() => navigate('/signin')}>
                 로그인
               </Button>
             )}

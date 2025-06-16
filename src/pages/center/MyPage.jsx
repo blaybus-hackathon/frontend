@@ -1,7 +1,8 @@
-import Header from '@/components/ui/temp/Header';
+import { useEffect } from 'react';
 import Profile from '@/assets/images/elder-basic-profile.png';
 import { useManagerProfile } from '@/hooks/center/service/useManagerProfile';
 import { useManagerProfileStore } from '@/store/center/useManagerProfileStore';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import { useNavigate } from 'react-router-dom';
 import ManagerInfoDisplay from '@/components/Center/MyPage/ManagerInfoDisplay';
 import ManagerInfoEdit from '@/components/Center/MyPage/ManagerInfoEdit';
@@ -10,13 +11,26 @@ import { Button } from '@/components/ui/custom/Button';
 export default function MyPage() {
   const { data: managerProfile, isLoading, saveManagerProfile } = useManagerProfile();
   const { isEditMode, toggleEditMode, setFormData, formData } = useManagerProfileStore();
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setHeaderProps({
+      type: 'logo',
+      hasBorder: false,
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, [clearHeaderProps, setHeaderProps]);
 
   // TODO: 로딩 컴포넌트 필요
   if (isLoading) return <div>Loading...</div>;
   if (!managerProfile) {
     alert('관리자 정보를 불러오지 못했습니다.');
-    navigate('/signin');
+    navigate('/signIn');
   }
 
   // save formData when edit mode is true
@@ -46,7 +60,6 @@ export default function MyPage() {
 
   return (
     <div className='h-screen max-w-2xl mx-auto'>
-      <Header variant='logo' hasBorder={false} />
       {/* 헤더 밑 공간 */}
       <div className='pt-[1.88rem] bg-[#f5f5f5]'>
         {/* 마이페이지 전체 컨테이너 */}

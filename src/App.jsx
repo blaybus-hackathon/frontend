@@ -33,12 +33,12 @@ function App() {
       <Routes>
         {/* 공통 */}
         <Route index element={<Home />} />
-        <Route path='/signIn' element={<SignIn />} />
         <Route path='/signUp' element={<SignUp />} />
         <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
 
         {/* 레이아웃 */}
         <Route path='/' element={<Layout />}>
+          <Route path='/signin' element={<SignIn />} />
           {/* <Route index element={<Home />} /> */}
 
           {/* Center */}

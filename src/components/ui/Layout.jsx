@@ -8,7 +8,7 @@ export default function Layout() {
   const headerProps = useHeaderPropsStore((state) => state.headerProps);
 
   const hideHeaderRoutes = ['/signin'];
-  const hideFooterRoutes = ['/center/register', '/center/mypage', '/signin'];
+  const hideFooterRoutes = ['/center/elder-register', '/center/mypage', '/signin'];
 
   const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));
   const isFooterVisible = !hideFooterRoutes.some((route) => location.pathname.startsWith(route));

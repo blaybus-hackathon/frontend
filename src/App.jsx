@@ -3,6 +3,7 @@ import Layout from './components/ui/Layout';
 
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import KakaoCallback from './components/Auth/KakaoCallback';
 import Account from './pages/helper/Account/Account';
 import AccountEdit from './pages/helper/AccountEdit/AccountEdit';
 import HelperLocation from './pages/helper/AccountEdit/navigate/HelperLocation';
@@ -18,6 +19,7 @@ import SignTest from './components/Auth/SignUp/SignTest';
 import ModifyInfo from './pages/center/ModifyInfo';
 import CaregiverInfo from './pages/center/CaregiverInfo';
 
+import CenterRegister from './pages/center/CenterRegister';
 import ElderRegister from './pages/center/ElderRegister';
 import MyPage from './pages/center/MyPage';
 import ElderInfo from './pages/center/ElderInfo';
@@ -25,7 +27,6 @@ import MatchingInfo from './pages/center/MatchingInfo';
 import ElderAddress from './pages/center/ElderAddress';
 import ChatRoomsPage from './pages/center/ChatRoomsPage';
 import PrivateChatRoom from './pages/center/PrivateChatRoom';
-import KakaoCallback from './components/Auth/KakaoCallback';
 
 function App() {
   return (
@@ -42,7 +43,8 @@ function App() {
           {/* <Route index element={<Home />} /> */}
 
           {/* Center */}
-          <Route path='center/register' element={<ElderRegister />} />
+          <Route path='center/register' element={<CenterRegister />} />
+          <Route path='center/elder-register' element={<ElderRegister />} />
           <Route path='center/mypage' element={<MyPage />} />
           <Route path='center/elder-info' element={<ElderInfo />} />
           <Route path='center/matching-info' element={<MatchingInfo />} />
@@ -57,7 +59,6 @@ function App() {
           <Route path='helper/location' element={<HelperLocation />} />
           {/* <Route path='helper/location/:city' element={<HelperLocationDetail />} /> */}
 
-          {/* <Route path="/center/register" element={} /> */}
           {/* <Route path="/center/signUp" element={} /> */}
           <Route path='matching' element={<Matching />} />
           <Route path='status' element={<RecriutDetail />} />

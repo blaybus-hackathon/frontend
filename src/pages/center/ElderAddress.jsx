@@ -10,7 +10,7 @@ export default function ElderAddress() {
   const setBasicInfoField = useElderRegiStore((s) => s.setBasicInfoField);
 
   const handleBackClick = useCallback(() => {
-    navigate('/center/register');
+    navigate('/center/elder-register');
   }, [navigate]);
 
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);

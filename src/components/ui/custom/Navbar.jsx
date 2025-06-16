@@ -49,7 +49,7 @@ export default function Navbar() {
                 className='text-lg px-6 py-3'
                 onClick={() => {
                   clearProfile();
-                  navigate('/signin');
+                  navigate('/');
                 }}
               >
                 로그아웃

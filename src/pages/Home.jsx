@@ -273,7 +273,7 @@ export default function Home() {
           </div>
 
           <div className='text-center mt-12'>
-            <Button className='text-xl px-12 py-6' onClick={() => navigate('/signIn')}>
+            <Button className='text-xl px-12 py-6' onClick={() => navigate('/signin')}>
               지금 시작하기
               <ChevronRight className='ml-2 w-6 h-6' />
             </Button>

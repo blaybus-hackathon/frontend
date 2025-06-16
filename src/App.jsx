@@ -25,16 +25,21 @@ import MatchingInfo from './pages/center/MatchingInfo';
 import ElderAddress from './pages/center/ElderAddress';
 import ChatRoomsPage from './pages/center/ChatRoomsPage';
 import PrivateChatRoom from './pages/center/PrivateChatRoom';
+import KakaoCallback from './components/Auth/KakaoCallback';
 
 function App() {
   return (
     <Router>
       <Routes>
         {/* 공통 */}
+        <Route index element={<Home />} />
         <Route path='/signIn' element={<SignIn />} />
+        <Route path='/signUp' element={<SignUp />} />
+        <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
 
+        {/* 레이아웃 */}
         <Route path='/' element={<Layout />}>
-          <Route index element={<Home />} />
+          {/* <Route index element={<Home />} /> */}
 
           {/* Center */}
           <Route path='center/register' element={<ElderRegister />} />

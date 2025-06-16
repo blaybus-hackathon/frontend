@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/custom/Button';
-import { Input } from '@/components/ui/custom/Input';
+import { Input } from '@/components/ui/custom/input';
 import { User, LockKeyholeOpen } from 'lucide-react';
 import Kakao from '/kakao_login_medium_wide.png';
 import Logo from '/blaybus_logo_icon_text.svg';

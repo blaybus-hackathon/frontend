@@ -28,7 +28,7 @@ export default function Footer() {
         <span className={textClass}>매칭 관리</span>
       </Link>
 
-      <Link to='/center/register' className={baseItemClass}>
+      <Link to='/center/elder-register' className={baseItemClass}>
         <img src={PillIcon} alt='pill' className={iconClass} />
         <span className={textClass}>어르신 관리</span>
       </Link>

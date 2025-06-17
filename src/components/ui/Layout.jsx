@@ -7,15 +7,15 @@ export default function Layout() {
   const location = useLocation();
   const headerProps = useHeaderPropsStore((state) => state.headerProps);
 
-  // const hideHeaderRoutes = [];
-  const hideFooterRoutes = ['/center/register', '/center/mypage'];
+  const hideHeaderRoutes = ['/signin'];
+  const hideFooterRoutes = ['/center/elder-register', '/center/mypage', '/signin'];
 
-  // const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));
+  const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));
   const isFooterVisible = !hideFooterRoutes.some((route) => location.pathname.startsWith(route));
 
   return (
     <div className='h-screen max-w-2xl mx-auto'>
-      {headerProps && <Header {...headerProps} />}
+      {isHeaderVisible && <Header {...headerProps} />}
       <main className='w-[88%] mx-auto'>
         <Outlet />
       </main>

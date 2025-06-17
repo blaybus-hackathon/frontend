@@ -1,12 +1,12 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 
-import backArrow from '@/assets/images/back-arrow.png';
 import addImg from '@/assets/images/add.png';
 import chatStore from '@/store/jbStore/chatStore';
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
 import { connectSocket, subscribe, sendMessage, disconnectSocket } from './ChatSocket';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 // chat 입력창 최대 높이
 const MAX_HEIGHT = 120;
@@ -16,6 +16,9 @@ const SENDERID = 7;
 
 function PrivateChatRoom() {
   const roomId = useParams().roomid;
+  const navigate = useNavigate();
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
   const { chatInfo } = chatStore();
 
@@ -31,6 +34,22 @@ function PrivateChatRoom() {
   const firstRenderRef = useRef(true); // 최초 렌더링 여부
   const isFetching = useRef(true);
   const receiveMsg = useRef(false); // 메세지를 받는 경우 true
+
+  // 헤더 세팅
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      hasBorder: false,
+      title: chatInfo.partnerName,
+      onBack: () => {
+        navigate('/chatrooms');
+      },
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, []);
 
   useEffect(() => {
     //최초 채팅 세팅
@@ -169,10 +188,10 @@ function PrivateChatRoom() {
   return (
     <div className='max-w-md mx-auto px-5.5 pb-4 flex flex-col'>
       <div className='px-0.5 pt-6 pb-4.5 absolute top-0'>
-        <div className='flex items-center'>
+        {/* <div className='flex items-center'>
           <img src={backArrow} alt='back-arrow' className='mr-8 size-8' />
           <p className='text-3xl font-semibold'>{chatInfo.partnerName}</p>
-        </div>
+        </div> */}
       </div>
       <div
         className='mt-20 flex flex-col gap-7 h-4/5 overflow-y-auto'

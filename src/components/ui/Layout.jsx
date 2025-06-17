@@ -13,6 +13,11 @@ export default function Layout() {
     '/center/mypage',
     '/signin',
     '/center/register',
+    '/chatroom',
+    '/center/caregiver-info',
+    '/center/recruit-detail',
+    '/center/modify-info',
+    '/center/matching',
   ];
 
   const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));

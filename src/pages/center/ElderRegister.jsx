@@ -1,17 +1,28 @@
 import { useEffect, useCallback } from 'react';
 import { useElderRegiStepStore } from '@/store/center/useElderRegiStepStore.js';
-import { REGISTRATION_STEPS } from '@/constants/registrationSteps';
+import { ELDER_REGISTRATION_STEPS } from '@/constants/registrationSteps';
 import { useElderFormData } from '@/hooks/center/service/useElderFormData';
 import { useNavigate } from 'react-router-dom';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
+import ElderBasicInfo from '@/components/Center/ElderRegistration/ElderBasicInfo';
+import ElderCareInfo from '@/components/Center/ElderRegistration/ElderCareInfo';
+import ElderAdditionalInfo from '@/components/Center/ElderRegistration/ElderAdditionalInfo';
+import ElderServiceInfo from '@/components/Center/ElderRegistration/ElderServiceInfo';
+import ElderRegiComplete from '@/components/Center/ElderRegistration/ElderRegiComplete';
+
+const COMPONENTS = [
+  ElderBasicInfo,
+  ElderCareInfo,
+  ElderAdditionalInfo,
+  ElderServiceInfo,
+  ElderRegiComplete,
+];
+
 function CurrentStepComponent({ formOptions }) {
   const currentIndex = useElderRegiStepStore((state) => state.currentIndex);
-  const config = REGISTRATION_STEPS[currentIndex];
+  const StepComponent = COMPONENTS[currentIndex];
 
-  if (!config) return null;
-
-  const StepComponent = config.component;
   return <StepComponent formOptions={formOptions} />;
 }
 
@@ -36,7 +47,7 @@ export default function ElderRegister() {
   useEffect(() => {
     setHeaderProps({
       type: isFinalStep ? 'back' : 'back-progress',
-      title: REGISTRATION_STEPS[currentIndex].title,
+      title: ELDER_REGISTRATION_STEPS[currentIndex].title,
       progress: !isFinalStep ? { current: currentIndex + 1, total: totalSteps - 1 } : null,
       onBack: handleBackClick,
     });

@@ -1,6 +1,6 @@
-import { useState } from 'react';
-
-import Header from '@/components/ui/temp/Header';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 import { Button } from '@/components/ui/custom/Button';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
@@ -10,11 +10,28 @@ import card from '@/assets/images/card.png';
 import sun from '@/assets/images/sun.png';
 
 export default function CaregiverInfo() {
+  const navigate = useNavigate();
   const [censored, setCensored] = useState(true);
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+
+  // 헤더 세팅
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '요양사 상세 정보',
+      onBack: () => {
+        navigate(-1);
+      },
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, [clearHeaderProps, navigate, setHeaderProps]);
 
   return (
     <div>
-      <Header title='요양사 상세 정보' />
       <div className='max-w-2xl mx-auto px-6'>
         <div className='flex mt-10 items-center mb-13'>
           {/* <div className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7'>

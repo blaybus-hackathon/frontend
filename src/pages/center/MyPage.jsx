@@ -30,7 +30,7 @@ export default function MyPage() {
   if (isLoading) return <div>Loading...</div>;
   if (!managerProfile) {
     alert('관리자 정보를 불러오지 못했습니다.');
-    navigate('/signIn');
+    navigate('/signin');
   }
 
   // save formData when edit mode is true

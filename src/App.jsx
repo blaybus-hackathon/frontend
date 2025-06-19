@@ -39,8 +39,8 @@ function App() {
 
         {/* 레이아웃 */}
         <Route path='/' element={<Layout />}>
-          <Route path='/signin' element={<SignIn />} />
           {/* <Route index element={<Home />} /> */}
+          <Route path='/signin' element={<SignIn />} />
 
           {/* Center */}
           <Route path='center/register' element={<CenterRegister />} />

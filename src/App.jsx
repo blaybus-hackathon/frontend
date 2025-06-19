@@ -39,15 +39,19 @@ function App() {
 
         {/* 레이아웃 */}
         <Route path='/' element={<Layout />}>
-          <Route path='/signin' element={<SignIn />} />
           {/* <Route index element={<Home />} /> */}
+          <Route path='/signin' element={<SignIn />} />
 
           {/* Center */}
           <Route path='center/register' element={<CenterRegister />} />
           <Route path='center/elder-register' element={<ElderRegister />} />
           <Route path='center/mypage' element={<MyPage />} />
           <Route path='center/elder-info' element={<ElderInfo />} />
+          <Route path='center/matching' element={<Matching />} />
+          <Route path='center/recruit-detail' element={<RecriutDetail />} />
+          <Route path='center/modify-info' element={<ModifyInfo />} />
           <Route path='center/matching-info' element={<MatchingInfo />} />
+          <Route path='center/caregiver-info' element={<CaregiverInfo />} />
           <Route path='center/register/address' element={<ElderAddress />} />
 
           {/* Helper */}
@@ -60,10 +64,6 @@ function App() {
           {/* <Route path='helper/location/:city' element={<HelperLocationDetail />} /> */}
 
           {/* <Route path="/center/signUp" element={} /> */}
-          <Route path='matching' element={<Matching />} />
-          <Route path='status' element={<RecriutDetail />} />
-          <Route path='modify' element={<ModifyInfo />} />
-          <Route path='caredetail' element={<CaregiverInfo />} />
           <Route path='test' element={<SignTest />} />
 
           <Route path='chatrooms' element={<ChatRoomsPage />} />

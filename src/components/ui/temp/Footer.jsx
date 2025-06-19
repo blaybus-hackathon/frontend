@@ -12,7 +12,7 @@ export default function Footer() {
   const textClass = 'text-white text-[0.82rem] font-semibold';
 
   return (
-    <footer className='bottom-0 bg-[var(--main)] h-[4.44rem] rounded-t-[1.25rem] py-[0.8rem] grid grid-cols-5 items-center gap-[0.25rem]'>
+    <footer className='w-full bg-[var(--main)] h-[4.44rem] rounded-t-[1.25rem] py-[0.8rem] grid grid-cols-5 items-center gap-[0.25rem]'>
       <Link to='/' className={baseItemClass}>
         <img src={HomeIcon} alt='home' className={iconClass} />
         <span className={textClass}>홈</span>

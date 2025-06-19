@@ -1,13 +1,13 @@
 import { create } from 'zustand';
-import { ELDER_REGISTRATION_STEPS } from '@/constants/registrationSteps';
+import { CENTER_REGISTRATION_STEPS } from '@/constants/registrationSteps';
 
 const initialState = {
   currentIndex: 0,
-  totalSteps: ELDER_REGISTRATION_STEPS.length,
+  totalSteps: CENTER_REGISTRATION_STEPS.length,
   isCompleted: false,
 };
 
-export const useElderRegiStepStore = create((set) => ({
+export const useCenterRegiStepStore = create((set) => ({
   ...initialState,
 
   setStep: (index) => set({ currentIndex: index }),

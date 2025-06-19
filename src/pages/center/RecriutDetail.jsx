@@ -152,14 +152,10 @@ export default function PatientInfo() {
 
   const gotoModify = () => {
     window.scrollTo(0, 0);
-    navigate('/modify');
+    navigate('/center/modify-info');
   };
   return (
     <div>
-      <header className='h-22.5 px-7 flex items-center justify-between'>
-        <img src={logo} className='w-50.5 h-5.5' />
-      </header>
-
       <div className='h-4.5 bg-[var(--button-inactive)]'></div>
 
       <div className='px-6'>

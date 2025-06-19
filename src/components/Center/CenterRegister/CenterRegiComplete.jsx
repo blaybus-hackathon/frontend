@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/custom/button';
+import { Button } from '@/components/ui/custom/Button';
 import Building from '@/assets/images/building.png';
 import { useCenterRegiStore } from '@/store/center/useCenterRegiStore';
 

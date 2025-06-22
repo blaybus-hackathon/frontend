@@ -1,68 +1,68 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import useHelperLocationStore from "@/store/suho/useHelperLocationStore";
-import useScheduleStore from "@/store/suho/useScheduleStore"; // 스케줄 스토어 임포트
-import usePayStore from "@/store/suho/usePayStore"; // 스케줄 스토어 임포트
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import useHelperLocationStore from '@/store/suho/useHelperLocationStore';
+import useScheduleStore from '@/store/suho/useScheduleStore'; // 스케줄 스토어 임포트
+import usePayStore from '@/store/suho/usePayStore'; // 스케줄 스토어 임포트
 // Zustand Store 생성
 const useProfileStore = create(
   persist(
     (set, get) => ({
       profile: {
-        chatSenderId: "",
-        email: "",
-        userAuth: "",
-        introduction: "",
-        careExperience: "",
+        chatSenderId: '',
+        email: '',
+        userAuth: '',
+        introduction: '',
+        careExperience: '',
         schedule: {},
         consult: false,
         location: {},
         careTypes: {
           workTypes: [],
-          careGrade: "",
-          gender: "",
-          livingArrangement: "",
-          mealCare: "",
-          mobilitySupport: "",
+          careGrade: '',
+          gender: '',
+          livingArrangement: '',
+          mealCare: '',
+          mobilitySupport: '',
           dailyLife: [],
         },
         pay: {
-          type: "",
+          type: '',
           amount: 0,
         },
         selectedOptions: {},
         inputs: {},
-        name: "",
-        address: "",
-        profileImage: "",
+        name: '',
+        address: '',
+        profileImage: '',
       },
       profileEdit: {
-        introduction: "",
-        careExperience: "",
+        introduction: '',
+        careExperience: '',
         schedule: {},
         consult: false,
         location: {
           서울: {
-            은평구: ["불광"],
+            은평구: ['불광'],
           },
         },
         careTypes: {
           workTypes: [],
-          careGrade: "",
-          gender: "",
-          livingArrangement: "",
-          mealCare: "",
-          mobilitySupport: "",
+          careGrade: '',
+          gender: '',
+          livingArrangement: '',
+          mealCare: '',
+          mobilitySupport: '',
           dailyLife: [],
         },
         pay: {
-          type: "hourly",
+          type: 'hourly',
           amount: 1000,
         },
         selectedOptions: {},
         inputs: {},
-        name: "",
-        address: "",
-        profileImage: "",
+        name: '',
+        address: '',
+        profileImage: '',
       },
       // 상태 업데이트 함수
       updateProfile: (newProfile) => set({ profile: { ...newProfile } }),
@@ -72,54 +72,54 @@ const useProfileStore = create(
         set((state) => ({
           profile: {
             ...state.profile,
-            introduction: "",
-            careExperience: "",
+            introduction: '',
+            careExperience: '',
             schedule: {},
             consult: false,
             location: {},
             careTypes: {
               workTypes: [],
-              careGrade: "",
-              gender: "",
-              livingArrangement: "",
-              mealCare: "",
-              mobilitySupport: "",
+              careGrade: '',
+              gender: '',
+              livingArrangement: '',
+              mealCare: '',
+              mobilitySupport: '',
               dailyLife: [],
             },
             pay: {
-              type: "",
+              type: '',
               amount: 0,
             },
             selectedOptions: {},
             inputs: {},
-            name: "",
-            address: "",
-            profileImage: "",
+            name: '',
+            address: '',
+            profileImage: '',
           },
           profileEdit: {
-            introduction: "",
-            careExperience: "",
+            introduction: '',
+            careExperience: '',
             schedule: {},
             consult: false,
             location: {},
             careTypes: {
               workTypes: [],
-              careGrade: "",
-              gender: "",
-              livingArrangement: "",
-              mealCare: "",
-              mobilitySupport: "",
+              careGrade: '',
+              gender: '',
+              livingArrangement: '',
+              mealCare: '',
+              mobilitySupport: '',
               dailyLife: [],
             },
             pay: {
-              type: "",
+              type: '',
               amount: 0,
             },
             selectedOptions: {},
             inputs: {},
-            name: "",
-            address: "",
-            profileImage: "",
+            name: '',
+            address: '',
+            profileImage: '',
           },
         })),
 
@@ -145,8 +145,8 @@ const useProfileStore = create(
       updateProfileField: (field, value) =>
         set((state) => {
           const updatedProfileEdit = { ...state.profileEdit, [field]: value };
-          if (field === "profileImage") {
-            sessionStorage.setItem("profileImageUrl", value);
+          if (field === 'profileImage') {
+            sessionStorage.setItem('profileImageUrl', value);
           }
           return { profileEdit: updatedProfileEdit };
         }),
@@ -155,40 +155,40 @@ const useProfileStore = create(
         set((state) => ({
           profileEdit: {
             ...state.profileEdit,
-            profileImage: "",
+            profileImage: '',
           },
         })),
 
       clearProfile: () => {
-        sessionStorage.removeItem("profile-storage");
+        sessionStorage.removeItem('profile-storage');
         set(() => ({
           profile: {
-            chatSenderId: "",
-            email: "",
-            userAuth: "",
-            introduction: "",
-            careExperience: "",
+            chatSenderId: '',
+            email: '',
+            userAuth: '',
+            introduction: '',
+            careExperience: '',
             schedule: {},
             consult: false,
             location: {},
             careTypes: {
               workTypes: [],
-              careGrade: "",
-              gender: "",
-              livingArrangement: "",
-              mealCare: "",
-              mobilitySupport: "",
+              careGrade: '',
+              gender: '',
+              livingArrangement: '',
+              mealCare: '',
+              mobilitySupport: '',
               dailyLife: [],
             },
             pay: {
-              type: "",
+              type: '',
               amount: 0,
             },
             selectedOptions: {},
             inputs: {},
-            name: "",
-            address: "",
-            profileImage: "",
+            name: '',
+            address: '',
+            profileImage: '',
           },
         }));
       },
@@ -206,13 +206,11 @@ const useProfileStore = create(
       //   })),
 
       // profileEdit 초기화 액션 추가
-      initializeProfileEdit: (initialProfile) =>
-        set({ profileEdit: { ...initialProfile } }),
+      initializeProfileEdit: (initialProfile) => set({ profileEdit: { ...initialProfile } }),
 
       // 🔥  변경을 감지해서 profileEdit 업데이트
       syncLocation: () => {
-        const selectedDistricts =
-          useHelperLocationStore.getState().selectedDistricts;
+        const selectedDistricts = useHelperLocationStore.getState().selectedDistricts;
         const selectedSchedule = useScheduleStore.getState().schedule;
         const selectedConsult = useScheduleStore.getState().consult;
         const selectedPay = usePayStore.getState().pay;
@@ -229,7 +227,7 @@ const useProfileStore = create(
       },
     }),
     {
-      name: "profile-storage",
+      name: 'profile-storage',
       storage: {
         getItem: (name) => {
           const item = sessionStorage.getItem(name);
@@ -243,8 +241,8 @@ const useProfileStore = create(
         },
       },
       partialize: (state) => ({ profile: state.profile }), // profile만 persist
-    }
-  )
+    },
+  ),
 );
 
 export default useProfileStore;

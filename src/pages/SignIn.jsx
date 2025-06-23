@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthForm from '@/components/Auth/Authform';
-import axios from 'axios';
 import useProfileStore from '@/store/useProfileStore';
+import { signIn } from '@/services/signInService';
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -11,23 +11,10 @@ export default function SignIn() {
 
   const handleSubmit = async ({ email, password }) => {
     try {
-      console.log(email, password);
+      const response = await signIn({ email, password });
 
-      const response = await axios.post(
-        'http://localhost:8080/api/sign/in',
-        {
-          userId: email,
-          userPw: password,
-        },
-        {
-          withCredentials: true,
-        },
-      );
-
-      if (response.status === 200) {
-        console.log('로그인 성공 ', response);
-        //parse
-        const { chatSenderId, email, userAuth } = response.data;
+      if (response) {
+        const { chatSenderId, email, userAuth } = response;
         //Zustand에 저장
         updateAuth({
           chatSenderId,
@@ -35,6 +22,7 @@ export default function SignIn() {
           userAuth,
         });
         //zustand 프로필 내용도 저장 (세션에)
+        alert('로그인 되었습니다.');
         navigate('/');
       }
     } catch (error) {

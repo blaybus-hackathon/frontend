@@ -12,4 +12,10 @@ const CENTER_REGISTRATION_STEPS = [
   { id: 2, title: '센터 등록 완료' },
 ];
 
-export { ELDER_REGISTRATION_STEPS, CENTER_REGISTRATION_STEPS };
+const CENTER_SIGNUP_STEPS = [
+  { id: 0, title: '개인회원가입' },
+  { id: 1, title: '개인회원가입' },
+  { id: 2, title: '회원가입 완료' },
+];
+
+export { ELDER_REGISTRATION_STEPS, CENTER_REGISTRATION_STEPS, CENTER_SIGNUP_STEPS };

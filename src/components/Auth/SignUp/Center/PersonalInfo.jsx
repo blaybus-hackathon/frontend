@@ -6,8 +6,6 @@ import { Search } from 'lucide-react';
 import SignUpButton from '@/components/Auth/SignUp/Center/SignUpButton';
 
 export default function PersonalInfo() {
-  console.log('PersonalInfo Store', useSignUpStore.getState().signUpForm);
-
   const navigate = useNavigate();
   const { signUpForm, setPersonalInfoField } = useSignUpStore();
   const { centerName, name, position, centerSeq } = signUpForm.personalInfo;

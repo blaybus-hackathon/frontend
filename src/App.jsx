@@ -4,7 +4,7 @@ import Layout from './components/ui/Layout';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import CenterSignUp from './pages/center/SignUp';
-import SearchCenter from './components/common/SearchCenter';
+import SearchCenter from './pages/SearchCenter';
 
 import KakaoCallback from './components/Auth/KakaoCallback';
 import Account from './pages/helper/Account/Account';

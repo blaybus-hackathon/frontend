@@ -9,6 +9,8 @@ export default function Layout() {
 
   const hideHeaderRoutes = ['/signin', '/chatrooms'];
   const hideFooterRoutes = [
+    '/search-center',
+    '/center/signup',
     '/center/elder-register',
     '/center/mypage',
     '/signin',

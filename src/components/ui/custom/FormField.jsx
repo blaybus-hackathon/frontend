@@ -15,7 +15,7 @@
 
 export function FormField({ label, required, isMultiple, children }) {
   return (
-    <section className='mb-10'>
+    <section className='mb-8'>
       <div className='flex items-center mb-[1.25rem]'>
         <span className='text-[1.4375rem] font-semibold text-[var(--text)]'>{label}</span>
         {typeof isMultiple === 'boolean' && (

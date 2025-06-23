@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/ui/Layout';
+import NotFound from './pages/NotFound';
 
 import SignIn from './pages/SignIn';
-import SignUp from './pages/SignUp';
 import CenterSignUp from './pages/center/SignUp';
+import HelperSignUp from './pages/helper/SignUp';
 import SearchCenter from './pages/SearchCenter';
 
 import KakaoCallback from './components/Auth/KakaoCallback';
@@ -18,7 +19,6 @@ import AccountCareType from './pages/helper/AccountEdit/navigate/AccountCareType
 import Home from './pages/Home';
 import Matching from './pages/center/Matching';
 import RecriutDetail from './pages/center/RecriutDetail';
-import SignTest from './components/Auth/SignUp/SignTest';
 import ModifyInfo from './pages/center/ModifyInfo';
 import CaregiverInfo from './pages/center/CaregiverInfo';
 
@@ -37,12 +37,11 @@ function App() {
       <Routes>
         {/* 공통 */}
         <Route index element={<Home />} />
-        <Route path='/signUp' element={<SignUp />} />
         <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
+        <Route path='/*' element={<NotFound />} />
 
         {/* 레이아웃 */}
         <Route path='/' element={<Layout />}>
-          {/* <Route index element={<Home />} /> */}
           <Route path='/signin' element={<SignIn />} />
           <Route path='/search-center' element={<SearchCenter />} />
 
@@ -60,23 +59,18 @@ function App() {
           <Route path='center/register/address' element={<ElderAddress />} />
 
           {/* Helper */}
+          <Route path='helper/signup' element={<HelperSignUp />} />
           <Route path='helper/account' element={<Account />} />
           <Route path='helper/account/edit' element={<AccountEdit />} />
           <Route path='helper/account/schedule' element={<AccountSchedule />} />
           <Route path='helper/account/pay' element={<AccountPay />} />
           <Route path='helper/account/care-type' element={<AccountCareType />} />
           <Route path='helper/location' element={<HelperLocation />} />
-          {/* <Route path='helper/location/:city' element={<HelperLocationDetail />} /> */}
-
-          {/* <Route path="/center/signUp" element={} /> */}
-          <Route path='test' element={<SignTest />} />
 
           <Route path='chatrooms' element={<ChatRoomsPage />} />
           <Route path='chatroom/:roomid' element={<PrivateChatRoom />} />
 
           {/* <Route path="/center" element={} /> */}
-          {/* <Route path="/center/(helper)search" element={<Matching />} /> */}
-          {/* <Route path="/center/(helper)search/result" element={<Matching />} /> */}
         </Route>
       </Routes>
     </Router>

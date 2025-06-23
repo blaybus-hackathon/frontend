@@ -3,6 +3,9 @@ import Layout from './components/ui/Layout';
 
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import CenterSignUp from './pages/center/SignUp';
+import SearchCenter from './components/common/SearchCenter';
+
 import KakaoCallback from './components/Auth/KakaoCallback';
 import Account from './pages/helper/Account/Account';
 import AccountEdit from './pages/helper/AccountEdit/AccountEdit';
@@ -41,8 +44,10 @@ function App() {
         <Route path='/' element={<Layout />}>
           {/* <Route index element={<Home />} /> */}
           <Route path='/signin' element={<SignIn />} />
+          <Route path='/search-center' element={<SearchCenter />} />
 
           {/* Center */}
+          <Route path='center/signup' element={<CenterSignUp />} />
           <Route path='center/register' element={<CenterRegister />} />
           <Route path='center/elder-register' element={<ElderRegister />} />
           <Route path='center/mypage' element={<MyPage />} />

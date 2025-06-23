@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/ui/Layout';
 
 import SignIn from './pages/SignIn';
-import SignUp from './pages/SignUp';
 import CenterSignUp from './pages/center/SignUp';
+import HelperSignUp from './pages/helper/SignUp';
 import SearchCenter from './pages/SearchCenter';
 
 import KakaoCallback from './components/Auth/KakaoCallback';
@@ -37,7 +37,6 @@ function App() {
       <Routes>
         {/* 공통 */}
         <Route index element={<Home />} />
-        <Route path='/signUp' element={<SignUp />} />
         <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
 
         {/* 레이아웃 */}
@@ -60,6 +59,7 @@ function App() {
           <Route path='center/register/address' element={<ElderAddress />} />
 
           {/* Helper */}
+          <Route path='helper/signup' element={<HelperSignUp />} />
           <Route path='helper/account' element={<Account />} />
           <Route path='helper/account/edit' element={<AccountEdit />} />
           <Route path='helper/account/schedule' element={<AccountSchedule />} />

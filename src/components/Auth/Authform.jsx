@@ -88,7 +88,7 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
 
       <Button
         variant='white'
-        onClick={() => navigate('/helpler/signUp')}
+        onClick={() => navigate(type === 'helper' ? '/helper/signup' : '/center/signup')}
         className='mt-2 w-full h-[3.4rem] rounded-[0.31rem] text-lg  font-medium'
       >
         돌봄워크 회원가입

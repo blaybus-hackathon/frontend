@@ -1,14 +1,16 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
-import { useSignUpStepStore } from '@/store/auth/center/useSignUpStepStore';
-import { CENTER_SIGNUP_STEPS } from '@/constants/registrationSteps';
+import { useSignUpStepStore } from '@/store/auth/helper/useSignUpStepStore';
+import { useSignUpStore } from '@/store/auth/helper/useSignUpStore';
+import { HELPER_SIGNUP_STEPS } from '@/constants/registrationSteps';
 
-import EmailAuth from '@/components/Auth/SignUp/center/EmailAuth';
-import PersonalInfo from '@/components/Auth/SignUp/center/PersonalInfo';
-import SignUpComplete from '@/components/Auth/SignUp/center/SignUpComplete';
+import EmailAuth from '@/components/Auth/SignUp/helper/EmailAuth';
+import HelperInfo from '@/components/Auth/SignUp/helper/HelperInfo';
+import LicenseInfo from '@/components/Auth/SignUp/helper/LicenseInfo';
+import SignUpComplete from '@/components/Auth/SignUp/helper/SignUpComplete';
 
-const COMPONENTS = [EmailAuth, PersonalInfo, SignUpComplete];
+const COMPONENTS = [EmailAuth, HelperInfo, LicenseInfo, SignUpComplete];
 
 function CurrentStepComponent({ formOptions }) {
   const currentIndex = useSignUpStepStore((state) => state.currentIndex);
@@ -36,7 +38,7 @@ export default function SignUp() {
   useEffect(() => {
     setHeaderProps({
       type: isFinalStep ? 'back' : 'back-progress',
-      title: CENTER_SIGNUP_STEPS[currentIndex].title,
+      title: HELPER_SIGNUP_STEPS[currentIndex].title,
       progress: !isFinalStep ? { current: currentIndex + 1, total: totalSteps - 1 } : null,
       onBack: handleBackClick,
     });
@@ -57,6 +59,7 @@ export default function SignUp() {
 
   return (
     <>
+      {console.log(useSignUpStore.getState().signUpForm)}
       <div className='mt-8'>
         <CurrentStepComponent />
       </div>

@@ -1,91 +1,29 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 
-import backArrow from '@/assets/images/back-arrow.png';
 import addImg from '@/assets/images/add.png';
 import chatStore from '@/store/jbStore/chatStore';
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
-// import { connectSocket, subscribe, sendMessage, disconnectSocket } from './ChatSocket';
+import { connectSocket, subscribe, sendMessage, disconnectSocket } from './ChatSocket';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 // chat 입력창 최대 높이
 const MAX_HEIGHT = 120;
 
-const DUMMYMSG = [
-  {
-    senderYn: true,
-    content: '이것은 가장 최신 메세지입니다.',
-    sendTime: '2025-03-22T00:25:49.293944',
-  },
-  {
-    senderYn: true,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:48.696625',
-  },
-  {
-    senderYn: false,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:47.312854',
-  },
-  {
-    senderYn: false,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:46.363419',
-  },
-  {
-    senderYn: true,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:49.293944',
-  },
-  {
-    senderYn: true,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:48.696625',
-  },
-  {
-    senderYn: false,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:47.312854',
-  },
-  {
-    senderYn: false,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:46.363419',
-  },
-  {
-    senderYn: true,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:49.293944',
-  },
-  {
-    senderYn: true,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:48.696625',
-  },
-  {
-    senderYn: false,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:47.312854',
-  },
-  {
-    senderYn: false,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:46.363419',
-  },
-  {
-    senderYn: false,
-    content: '안녕하세요, private-message 테스트!',
-    sendTime: '2025-03-22T00:25:46.363419',
-  },
-];
+//temporary code
+const SENDERID = 7;
 
 function PrivateChatRoom() {
-  const roomId = useParams();
+  const roomId = useParams().roomid;
+  const navigate = useNavigate();
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
   const { chatInfo } = chatStore();
 
   const [isVisible, setIsvisible] = useState(false); //하단 토글바 visible 여부
-  const [messages, setMessages] = useState(DUMMYMSG);
+  const [messages, setMessages] = useState([]);
   const [page, setPage] = useState(0);
   const [hasNext, setHasNext] = useState(true); //다음 페이지 유무
   const [msgInput, setMsgInput] = useState('');
@@ -93,23 +31,50 @@ function PrivateChatRoom() {
 
   const msgContainerRef = useRef();
   const prevScrollHeight = useRef(0);
+  const firstRenderRef = useRef(true); // 최초 렌더링 여부
+  const isFetching = useRef(true);
+  const receiveMsg = useRef(false); // 메세지를 받는 경우 true
+
+  // 헤더 세팅
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      hasBorder: false,
+      title: chatInfo.partnerName,
+      onBack: () => {
+        navigate('/chatrooms');
+      },
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, []);
 
   useEffect(() => {
     //최초 채팅 세팅
     const setupSocket = async () => {
-      const { connectSocket, subscribe } = await import('./ChatSocket');
       connectSocket(() => {
+        // 개인 메세지 구독 (상대 -> 나)
         subscribe('/user/queue/private', (message) => {
-          console.log('받은 개인 메시지:', message);
+          const newMsg = {
+            senderYn: false,
+            content: message.content,
+            readYn: false,
+          };
+          receiveMsg.current = true;
+          setMessages((prev) => [newMsg, ...prev]);
+        });
+
+        // 오류 메세지 구독
+        subscribe('/user/queue/error', (error) => {
+          console.error('오류 발생:', error);
         });
       });
     };
     if (typeof window !== 'undefined') {
       setupSocket();
     }
-
-    //최초 채팅 가져오기
-    // getMessages();
 
     // 무한 스크롤 - 스크롤 상단에서 message fetch
     const container = msgContainerRef.current;
@@ -120,57 +85,77 @@ function PrivateChatRoom() {
       container?.removeEventListener('scroll', handleScroll);
 
       //언마운트 시 소켓 통신 해제
-      const { disconnectSocket } = await import('./ChatSocket');
       disconnectSocket();
     };
   }, []);
 
+  // 메세지 fetch 후 스크롤 고정
   useEffect(() => {
     if (msgContainerRef.current) {
       const container = msgContainerRef.current;
-      const newScrollHeight = container.scrollHeight;
-      console.log(newScrollHeight);
-      const heightDiff = newScrollHeight - prevScrollHeight.current;
-      container.scrollTop += heightDiff;
-      if (container.scrollHeight !== prevScrollHeight.current) {
-        container.scrollTop = container.scrollHeight - prevScrollHeight.current;
+      if (isFetching.current || receiveMsg.current) {
+        const newScrollHeight = container.scrollHeight;
+        const heightDiff = newScrollHeight - prevScrollHeight.current;
+        container.scrollTop += heightDiff;
+        if (container.scrollHeight !== prevScrollHeight.current) {
+          container.scrollTop = container.scrollHeight - prevScrollHeight.current;
+        }
+
+        isFetching.current = false;
+        receiveMsg.current = false;
+      } else {
+        container.scrollTop = container.scrollHeight;
       }
     }
   }, [messages]);
 
+  // 페이지 변동 시 메세지 추가 fetch
   useEffect(() => {
     getMessages();
   }, [page]);
 
-  useEffect(() => {}, [hasNext]);
-
+  // 컨테이너 최상단 도달 시 page up
   const handleScroll = () => {
     const container = msgContainerRef.current;
-    if (container.scrollTop === 0) {
-      _getMessages();
+    if (hasNext && container.scrollTop === 0) {
+      setPage((prev) => prev + 1);
     }
   };
 
   const sendChatMessage = async () => {
-    const { sendMessage } = await import('./ChatSocket');
     const message = {
       content: msgInput,
-      senderId: 0, // 메시지를 보낼 사용자
-      receiverId: chatInfo.partnerId, // 메시지를 받을 사용자
-      patientLogId: chatInfo.patientLogId, // 메시지를 환자
+      senderId: SENDERID,
+      receiverId: chatInfo.partnerId,
+      patientLogId: chatInfo.patientLogId,
+    };
+    const newMsg = {
+      senderYn: true,
+      content: msgInput,
+      readYn: false,
     };
     sendMessage('/app/private-message', message);
+    setMessages((prev) => [newMsg, ...prev]);
   };
 
+  // 메세지 fetch
   const getMessages = () => {
     if (isLoading) return;
     if (!hasNext) return;
 
     setIsLoading(true);
 
-    request(`/chat/find-detail?pageNo=${page}&chatRoomId=${roomId}`)
+    // fetch 시 스크롤 위치 기억 (마운트 시 fetch 제외)
+    if (!firstRenderRef.current) {
+      prevScrollHeight.current = msgContainerRef.current;
+    } else {
+      firstRenderRef.current = false;
+    }
+    isFetching.current = true;
+
+    request('get', `/chat/find-detail?pageNo=${page}&chatRoomId=${roomId}`)
       .then((res) => {
-        setMessages((prev) => [...res.list, ...prev]);
+        setMessages((prev) => [...prev, ...res.list]);
         setHasNext(res.hasNext);
       })
       .catch(() => {
@@ -179,14 +164,6 @@ function PrivateChatRoom() {
       .finally(() => {
         setIsLoading(false);
       });
-  };
-
-  //temporary function
-  const _getMessages = () => {
-    const container = msgContainerRef.current;
-    prevScrollHeight.current = container.scrollHeight;
-    console.log(prevScrollHeight.current);
-    setMessages((prev) => [...prev, ...prev]);
   };
 
   const renderMessages = () =>
@@ -211,10 +188,10 @@ function PrivateChatRoom() {
   return (
     <div className='max-w-md mx-auto px-5.5 pb-4 flex flex-col'>
       <div className='px-0.5 pt-6 pb-4.5 absolute top-0'>
-        <div className='flex items-center'>
+        {/* <div className='flex items-center'>
           <img src={backArrow} alt='back-arrow' className='mr-8 size-8' />
           <p className='text-3xl font-semibold'>{chatInfo.partnerName}</p>
-        </div>
+        </div> */}
       </div>
       <div
         className='mt-20 flex flex-col gap-7 h-4/5 overflow-y-auto'
@@ -252,12 +229,14 @@ function PrivateChatRoom() {
                 e.target.style.height = `${Math.min(e.target.scrollHeight, MAX_HEIGHT)}px`;
                 setMsgInput(e.target.value);
               }}
+              value={msgInput}
             />
           </div>
           <div
             className='rounded-[100px] bg-[var(--button-inactive)] px-4 py-3 text-[var(--main)] h-12'
             onClick={() => {
               sendChatMessage();
+              setMsgInput('');
             }}
           >
             전송

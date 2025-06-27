@@ -1,41 +1,68 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+const useScheduleStore = create((set, get) => ({
+  consult: false,
 
-const useScheduleStore = create(
-    persist(
-        (set) => ({
-            // 스케줄 데이터
-            schedules: {},  // { "월": { start: "9", end: "18" }, ... }
+  setConsult: (value) => set({ consult: value }),
 
-            // 요일별 스케줄 설정
-            setDaySchedule: (day, schedule) =>
-                set((state) => ({
-                    schedules: {
-                        ...state.schedules,
-                        [day]: schedule
-                    }
-                })),
+  schedule: {
+    월: { start: "", end: "" },
+    화: { start: "", end: "" },
+    수: { start: "", end: "" },
+    목: { start: "", end: "" },
+    금: { start: "", end: "" },
+    토: { start: "", end: "" },
+    일: { start: "", end: "" },
+  },
+  updateSchedule: (day, type, time) =>
+    set((state) => ({
+      schedule: {
+        ...state.schedule,
+        [day]: {
+          ...state.schedule[day],
+          [type]: time,
+        },
+      },
+    })),
+  resetSchedule: () =>
+    set({
+      schedule: {
+        월: { start: "", end: "" },
+        화: { start: "", end: "" },
+        수: { start: "", end: "" },
+        목: { start: "", end: "" },
+        금: { start: "", end: "" },
+        토: { start: "", end: "" },
+        일: { start: "", end: "" },
+      },
+    }),
+  optimizedSchedule: () => {
+    const { schedule } = get();
+    const timeBasedSchedule = {}; // 시간대별로 요일 그룹화
 
-            // 요일 스케줄 삭제
-            removeDaySchedule: (day) =>
-                set((state) => {
-                    const newSchedules = { ...state.schedules };
-                    delete newSchedules[day];
-                    return { schedules: newSchedules };
-                }),
-
-            // 전체 스케줄 설정
-            setAllSchedules: (schedules) =>
-                set({ schedules }),
-
-            // 스케줄 초기화
-            resetSchedules: () =>
-                set({ schedules: {} })
-        }),
-        {
-            name: 'schedule-storage'
+    for (const day in schedule) {
+      if (schedule[day].start && schedule[day].end) {
+        const timeRange = `${schedule[day].start}~${schedule[day].end}`;
+        if (!timeBasedSchedule[timeRange]) {
+          timeBasedSchedule[timeRange] = [];
         }
-    )
-);
+        timeBasedSchedule[timeRange].push(day);
+      }
+    }
+
+    const result = Object.entries(timeBasedSchedule).map(([time, days]) => {
+      // 요일 순서대로 정렬
+      const sortedDays = days.sort((a, b) => {
+        const dayOrder = ["월", "화", "수", "목", "금", "토", "일"];
+        return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+      });
+      return {
+        days: sortedDays.join(", "),
+        time: time,
+      };
+    });
+
+    return result;
+  },
+}));
 
 export default useScheduleStore;

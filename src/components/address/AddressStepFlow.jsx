@@ -1,7 +1,7 @@
-import { useAddressFlow } from "@/hooks/useAddressFlow";
-import { AddressButtons } from "./AddressButtons";
+import { useAddressFlow } from '@/hooks/useAddressFlow';
+import { AddressButtons } from './AddressButtons';
 
-export default function AddressStepFlow({onComplete}) {
+export default function AddressStepFlow({ onComplete }) {
   const { step, stepButtons } = useAddressFlow();
   const currentStep = stepButtons[step];
 
@@ -19,8 +19,8 @@ export default function AddressStepFlow({onComplete}) {
         afSeq: Number(afSeq),
         asSeq: Number(asSeq),
         atSeq: Number(atSeq),
-        addressLabel
-      })
+        addressLabel,
+      });
     }
   };
 
@@ -30,21 +30,21 @@ export default function AddressStepFlow({onComplete}) {
       threshold: 7,
       splitIndex: 2,
       longClass: 'text-[1.1rem]',
-      className: 'whitespace-pre-line'
+      className: 'whitespace-pre-line',
     },
     2: {
       threshold: 6,
       splitIndex: 3,
       longClass: 'text-[1.1rem]',
-      className: 'whitespace-pre-line'  
+      className: 'whitespace-pre-line',
     },
     3: {
       threshold: 6,
       splitIndex: 3,
       longClass: 'text-[1rem]',
-      className: 'whitespace-pre-line'  
-    }
-  }
+      className: 'whitespace-pre-line',
+    },
+  };
 
   const handleClick = (id) => {
     currentStep.onClick(id);
@@ -54,7 +54,7 @@ export default function AddressStepFlow({onComplete}) {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-4 w-[88%] mx-auto">
+    <div className='grid grid-cols-3 gap-4 mx-auto mb-8'>
       <AddressButtons
         list={currentStep.list}
         onClick={handleClick}
@@ -62,5 +62,5 @@ export default function AddressStepFlow({onComplete}) {
         formatConfig={formatConfig[step] || {}}
       />
     </div>
-  )
+  );
 }

@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import { REGISTRATION_STEPS } from '@/constants/registrationSteps';
+import { ELDER_REGISTRATION_STEPS } from '@/constants/registrationSteps';
 
 const initialState = {
   currentIndex: 0,
-  totalSteps: REGISTRATION_STEPS.length,
+  totalSteps: ELDER_REGISTRATION_STEPS.length,
   isCompleted: false,
 };
 

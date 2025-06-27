@@ -1,13 +1,32 @@
-import Header from '@/components/ui/temp/Header';
 import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 import { request } from '@/api';
 import recruitStore from '@/store/jbStore/recruitStore';
 
 export default function ModifyInfo() {
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+
+  // 헤더 세팅
+  // TODO: 뒤로가기 시 수정 사항 취소 처리
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '공고 수정하기',
+      onBack: () => {
+        navigate('/center/recruit-detail');
+      },
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, []);
+
   const GRADE = ['등급 없음', '1등급', '2등급', '3등급', '4등급', '5등급', '인지지원등급'];
   const DEMEN = [
     '정상 (치매 증상 없음)',
@@ -191,7 +210,7 @@ export default function ModifyInfo() {
     };
     request('post', '/recruit-patient/update', updateData)
       .then(() => {
-        navigate('/status');
+        navigate('/center/recruit-detail');
       })
       .catch((e) => {
         console.error(`공고 수정 실패 : ${e}`);
@@ -200,7 +219,6 @@ export default function ModifyInfo() {
 
   return (
     <div>
-      <Header title='공고 수정하기' />
       <div className='max-w-2xl mx-auto px-6 mt-8 gap-10 flex flex-col mb-40'>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-5'>

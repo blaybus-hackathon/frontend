@@ -11,7 +11,7 @@ import KakaoCallback from './components/Auth/KakaoCallback';
 import Account from './pages/helper/Account/Account';
 import AccountEdit from './pages/helper/AccountEdit/AccountEdit';
 import HelperLocation from './pages/helper/AccountEdit/navigate/HelperLocation';
-
+import HelperAddress from './pages/helper/HelperAddress';
 import AccountSchedule from './pages/helper/AccountEdit/navigate/AccountSchedule';
 import AccountPay from './pages/helper/AccountEdit/navigate/AccountPay';
 import AccountCareType from './pages/helper/AccountEdit/navigate/AccountCareType';
@@ -66,6 +66,7 @@ function App() {
           <Route path='helper/account/pay' element={<AccountPay />} />
           <Route path='helper/account/care-type' element={<AccountCareType />} />
           <Route path='helper/location' element={<HelperLocation />} />
+          <Route path='helper/address' element={<HelperAddress />} />
 
           <Route path='chatrooms' element={<ChatRoomsPage />} />
           <Route path='chatroom/:roomid' element={<PrivateChatRoom />} />

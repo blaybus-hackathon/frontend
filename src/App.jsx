@@ -17,6 +17,7 @@ import AccountPay from './pages/helper/AccountEdit/navigate/AccountPay';
 import AccountCareType from './pages/helper/AccountEdit/navigate/AccountCareType';
 
 import Home from './pages/Home';
+import Dashboard from './pages/center/Dashboard';
 import Matching from './pages/center/Matching';
 import RecriutDetail from './pages/center/RecriutDetail';
 import ModifyInfo from './pages/center/ModifyInfo';
@@ -38,6 +39,7 @@ function App() {
         {/* 공통 */}
         <Route index element={<Home />} />
         <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
+        <Route path='/center' element={<Dashboard />} />
         <Route path='/*' element={<NotFound />} />
 
         {/* 레이아웃 */}

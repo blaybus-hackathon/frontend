@@ -46,6 +46,7 @@
 
   --main: #522e9a;
   --main-hover: #3b216f;
+  --main-light: #c9c1de;
   --outline: #c8c8c8;
   --disabled: #b8b8b8;
   --black: #171d1b;
@@ -53,7 +54,6 @@
 
   --company-primary: #522e9a;
   --helper-primary: #275280;
-  --header-gray: #191919;
   --required-red: #e40000;
   --button-black: #171d1b;
   --button-inactive: #f6f6f6;
@@ -93,7 +93,6 @@
   --black: #171d1b;
   --company-primary: #522e9a;
   --helper-primary: #275280;
-  --header-gray: #191919;
   --required-red: #e40000;
   --button-black: #171d1b;
   --button-inactive: #f6f6f6;

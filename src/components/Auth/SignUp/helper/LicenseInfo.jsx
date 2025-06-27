@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { RadioItem } from '@/components/ui/custom/multiRadio';
-import { Input } from '@/components/ui/custom/Input';
+import { Input } from '@/components/ui/custom/input';
 import { FormField } from '@/components/ui/custom/FormField';
 import { useSignUpStore } from '@/store/auth/helper/useSignUpStore';
 import SignUpButton from '@/components/Auth/SignUp/helper/SignUpButton';

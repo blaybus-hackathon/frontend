@@ -4,9 +4,9 @@ import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import { useSignUpStepStore } from '@/store/auth/center/useSignUpStepStore';
 import { CENTER_SIGNUP_STEPS } from '@/constants/registrationSteps';
 
-import EmailAuth from '@/components/Auth/SignUp/center/EmailAuth';
-import PersonalInfo from '@/components/Auth/SignUp/center/PersonalInfo';
-import SignUpComplete from '@/components/Auth/SignUp/center/SignUpComplete';
+import EmailAuth from '@/components/Auth/SignUp/center/EmailAuth.jsx';
+import PersonalInfo from '@/components/Auth/SignUp/center/PersonalInfo.jsx';
+import SignUpComplete from '@/components/Auth/SignUp/center/SignUpComplete.jsx';
 
 const COMPONENTS = [EmailAuth, PersonalInfo, SignUpComplete];
 

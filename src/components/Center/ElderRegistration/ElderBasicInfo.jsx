@@ -62,7 +62,6 @@ export default function ElderBasicInfo({ formOptions }) {
         />
       </FormField>
 
-      {/* TODO: 주소지 추가 기능 구현 필요 */}
       <FormField label='주소지' required>
         <div
           className='flex items-center gap-4'

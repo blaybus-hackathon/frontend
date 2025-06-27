@@ -1,7 +1,17 @@
-import { request } from '@/api';
+import { request, requestMultipart } from '@/api';
 
-export const signUpCenter = async (data) => {
-  const response = await request('POST', '/sign-up/manager', data);
+export const signUpHelper = async (data) => {
+  const response = await request('POST', '/sign-up/helper', data);
+  return response;
+};
+
+export const uploadHelperImg = async (data) => {
+  const response = await requestMultipart('POST', '/sign-up/helper-image', data);
+  return response;
+};
+
+export const signUpCenter = async (formData) => {
+  const response = await requestMultipart('POST', '/sign-up/manager', formData);
   return response;
 };
 

@@ -4,7 +4,7 @@ import { useEmailAuthMutation } from '@/hooks/auth/useEmailAuth';
 import { Input } from '@/components/ui/custom/input';
 import { FormField } from '@/components/ui/custom/FormField';
 import { Button } from '@/components/ui/custom/Button';
-import SignUpButton from '@/components/Auth/SignUp/Center/SignUpButton';
+import SignUpButton from '@/components/Auth/SignUp/center/SignUpButton';
 
 export default function EmailAuth() {
   const emailCodeRef = useRef(null);

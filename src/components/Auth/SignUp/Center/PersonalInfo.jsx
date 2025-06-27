@@ -3,7 +3,7 @@ import { useSignUpStore } from '@/store/auth/center/useSignUpStore';
 import { FormField } from '@/components/ui/custom/FormField';
 import { Input } from '@/components/ui/custom/input';
 import { Search } from 'lucide-react';
-import SignUpButton from '@/components/Auth/SignUp/Center/SignUpButton';
+import SignUpButton from '@/components/Auth/SignUp/center/SignUpButton';
 
 export default function PersonalInfo() {
   const navigate = useNavigate();

@@ -1,10 +1,10 @@
 import { useRef } from 'react';
-import { useSignUpStore } from '@/store/auth/center/useSignUpStore';
+import { useSignUpStore } from '@/store/auth/helper/useSignUpStore';
 import { useEmailAuthMutation } from '@/hooks/auth/useEmailAuth';
 import { Input } from '@/components/ui/custom/input';
 import { FormField } from '@/components/ui/custom/FormField';
 import { Button } from '@/components/ui/custom/Button';
-import SignUpButton from '@/components/Auth/SignUp/center/SignUpButton';
+import SignUpButton from '@/components/Auth/SignUp/helper/SignUpButton';
 
 export default function EmailAuth() {
   const emailCodeRef = useRef(null);
@@ -12,15 +12,15 @@ export default function EmailAuth() {
   const { sendEmail, verifyEmail, sendEmailStatus, verifyEmailStatus } = useEmailAuthMutation();
   const { email, emailCode, isVerified, mailSeq, password, passwordConfirm } = signUpForm.emailAuth;
 
-  // 이메일 인증 번호 발송
+  // send email auth
   const handleSendEmailAuth = async () => {
     const mailSeq = await sendEmail(email);
     setEmailAuthField('mailSeq', mailSeq);
-    // 인증번호 입력 칸으로 포커스 이동
+    // focus to email code input
     emailCodeRef.current.focus();
   };
 
-  // 이메일 인증 번호 확인
+  // verify email auth
   const handleVerifyEmail = async () => {
     const verified = await verifyEmail({ mailSeq, email, code: emailCode });
     if (verified) setEmailAuthField('isVerified', true);
@@ -38,7 +38,6 @@ export default function EmailAuth() {
             onChange={(e) => setEmailAuthField('email', e.target.value)}
             className='rounded-lg h-[4.0625rem] text-base font-normal text-[var(--button-black)] border border-[var(--outline)] placeholder:text-[var(--placeholder-gray)] w-[100%]'
           />
-          {/* 발송 버튼 클릭 시 인증번호 입력 칸으로 이동 */}
           <Button
             onClick={handleSendEmailAuth}
             disabled={isVerified || sendEmailStatus.isPending}

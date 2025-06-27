@@ -21,6 +21,7 @@ export default function Layout() {
     '/center/recruit-detail',
     '/center/modify-info',
     '/center/matching',
+    '/helper/address',
   ];
 
   const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));

@@ -1,14 +1,6 @@
 import { create } from 'zustand';
+import { omit } from '@/utils/omit';
 import { submitElderData, uploadElderProfile } from '@/services/center/elderFormService';
-
-// function for clean selectedList
-function omit(obj, keys) {
-  const newObj = { ...obj };
-  keys.forEach((key) => {
-    delete newObj[key];
-  });
-  return newObj;
-}
 
 const createElderDataSlice = (set) => ({
   registerElder: {
@@ -22,7 +14,7 @@ const createElderDataSlice = (set) => ({
       weight: '',
       diseases: '',
       careLevel: 0,
-      addressLabel: ''
+      addressLabel: '',
     },
     careInfo: {
       workType: 0,
@@ -46,7 +38,7 @@ const createElderDataSlice = (set) => ({
     },
     patientImage: null,
     patientSeq: null,
-    profileOption: null // default is icon
+    profileOption: null, // default is icon
   },
   setBasicInfo: (data) =>
     set((state) => ({
@@ -55,7 +47,7 @@ const createElderDataSlice = (set) => ({
         basicInfo: data,
       },
     })),
-  
+
   // for single field update
   setBasicInfoField: (field, value) =>
     set((state) => ({
@@ -64,10 +56,10 @@ const createElderDataSlice = (set) => ({
         basicInfo: {
           ...state.registerElder.basicInfo,
           [field]: value,
-        }
-      }
+        },
+      },
     })),
-    
+
   setCareInfo: (data) =>
     set((state) => ({
       registerElder: {
@@ -118,7 +110,7 @@ const createElderDataSlice = (set) => ({
   // state for image upload
   isUploading: false,
   uploadError: null,
-  
+
   // function for image upload
   uploadProfileImage: async (file, patientSeq) => {
     set({ isUploading: true, uploadError: null });
@@ -126,7 +118,7 @@ const createElderDataSlice = (set) => ({
       const formData = new FormData();
       formData.append('photoFile', file);
       formData.append('patientSeq', String(patientSeq));
-      
+
       const response = await uploadElderProfile(formData);
       set({ isUploading: false });
       return response;

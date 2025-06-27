@@ -5,7 +5,7 @@ import { Search } from 'lucide-react';
 import { useSignUpStore } from '@/store/auth/center/useSignUpStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import { useCenterList } from '@/hooks/center/service/useCenterList';
-import SignUpButton from '@/components/Auth/SignUp/center/SignUpButton';
+import SignUpButton from '@/components/Auth/SignUp/center/SignUpButton.jsx';
 
 function CenterListComponent({ center }) {
   const navigate = useNavigate();

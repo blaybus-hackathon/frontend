@@ -2,11 +2,19 @@ import { Button } from '@/components/ui/custom/Button';
 import { useNavigate } from 'react-router-dom';
 import { Phone, Menu } from 'lucide-react';
 import useProfileStore from '@/store/useProfileStore';
+import useAuthStore from '@/store/auth/useAuthStore';
 import Logo from '/blaybus_logo_icon_text.svg';
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { profile, clearProfile } = useProfileStore();
+  const { isLoggedIn, logout } = useAuthStore();
+  const { clearProfile } = useProfileStore();
+
+  const handleLogout = () => {
+    logout();
+    clearProfile();
+    navigate('/');
+  };
 
   return (
     <header className='bg-white shadow-sm border-b sticky top-0 z-50'>
@@ -44,14 +52,8 @@ export default function Navbar() {
             <span>1588-1234</span>
           </div>
           <div>
-            {profile && profile.email !== '' ? (
-              <Button
-                className='text-lg px-6 py-3'
-                onClick={() => {
-                  clearProfile();
-                  navigate('/');
-                }}
-              >
+            {isLoggedIn ? (
+              <Button className='text-lg px-6 py-3' onClick={handleLogout}>
                 로그아웃
               </Button>
             ) : (

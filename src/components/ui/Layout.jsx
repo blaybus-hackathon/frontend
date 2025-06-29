@@ -16,7 +16,7 @@ export default function Layout() {
     '/center/mypage',
     '/signin',
     '/center/register',
-    '/chatroom',
+    '/chatroom/',
     '/center/caregiver-info',
     '/center/recruit-detail',
     '/center/modify-info',

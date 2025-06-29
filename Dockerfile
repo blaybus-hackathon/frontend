@@ -5,6 +5,14 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+# 환경변수 받기
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
+# .env.production 파일 생성
+RUN echo "VITE_API_BASE_URL=$VITE_API_BASE_URL" > .env.production
+
 RUN npm run build
 
 # Nginx를 사용하여 정적 파일 제공

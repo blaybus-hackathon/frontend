@@ -1,43 +1,82 @@
-import Header from '@/components/ui/temp/Header';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/custom/Button';
+import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 
-import profInit from '@/assets/images/default-profile.png';
 import map_pin from '@/assets/images/map-pin.png';
 import card from '@/assets/images/card.png';
 import sun from '@/assets/images/sun.png';
 
 export default function CaregiverInfo() {
+  const navigate = useNavigate();
+  const [censored, setCensored] = useState(true);
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+
+  // 헤더 세팅
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '요양사 상세 정보',
+      onBack: () => {
+        navigate(-1);
+      },
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, [clearHeaderProps, navigate, setHeaderProps]);
+
   return (
     <div>
-      <Header title='요양사 상세 정보' />
       <div className='max-w-2xl mx-auto px-6'>
-        <div className='flex mt-10 items-center pb-5 border-b mb-6'>
-          <div className='bg-gray-500 rounded-[50%] size-25 flex items-center justify-center mr-7'>
-            <img src={profInit} className='items-center size-10' />
-          </div>
-          <div className='flex flex-col items-start gap-4'>
-            <p className='text-2xl font-semibold'>김길동</p>
+        <div className='flex mt-10 items-center mb-13'>
+          {/* <div className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7'>
+          </div> */}
+          <img className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7' />
+          <div className='flex flex-col items-start gap-5'>
+            <p className='text-2xl font-bold'>김길동</p>
             <p className='text-lg'>서울특별시 용산구 거주</p>
           </div>
         </div>
-        <div className='flex gap-5 flex-col mb-40'>
+        <div className='flex gap-10 flex-col mb-40'>
           <div className='flex flex-col items-start w-full'>
-            <label className='font-semibold text-xl mb-4'>자기소개</label>
-            <div className='border border-[#C8C8C8] w-full rounded-md h-34 px-2 py-3 text-left'>
-              내가 최고야
+            <label className='font-semibold text-xl mb-5'>자기소개</label>
+            <div className='border border-[#C8C8C8] w-full rounded-md h-34 px-2 py-3 text-left relative'>
+              <div className={`h-full ${censored && 'blur-lg'}`}>내가 최고야</div>
+              {censored && (
+                <p className='font-semibold absolute top-1/2 left-1/2 -translate-1/2'>
+                  매칭 후 열람 가능합니다
+                </p>
+              )}
             </div>
           </div>
-          <div className='flex h-16 w-full'>
-            <label className='font-semibold text-xl flex-1 h-full flex items-center'>
+          <div className='flex flex-col w-full'>
+            <label className='font-semibold text-xl flex-1 h-full flex items-center mb-5'>
               간병경력
             </label>
-            <div className='h-16 flex-1 border border-[#C8C8C8] rounded-md flex items-center justify-center text-xl'>
-              경력 있음
+            <div className='relative'>
+              <Radio cols={2} className={`${censored && 'blur-3xl'}`}>
+                <RadioItem>신입</RadioItem>
+                <RadioItem>경력</RadioItem>
+              </Radio>
+              {censored && (
+                <p
+                  className='font-semibold absolute top-1/2 left-1/2 -translate-1/2'
+                  onClick={() => {
+                    setCensored(false);
+                  }}
+                >
+                  매칭 후 열람 가능합니다
+                </p>
+              )}
             </div>
           </div>
           <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>희망 근무 지역</label>
+            <label className='font-semibold text-xl mb-5'>나의 선호 지역</label>
             <div className='h-16 w-full rounded-md flex border border-[#C8C8C8] font-medium text-lg'>
               <div className='flex items-center ml-5 text-xl'>
                 <img src={map_pin} className='size-6 mr-5' />
@@ -46,27 +85,17 @@ export default function CaregiverInfo() {
             </div>
           </div>
           <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>자격증</label>
-            <div className='flex flex-col w-full gap-2'>
-              <div className='h-16 border border-[#C8C8C8] font-medium text-lg flex justify-center items-center rounded-md'>
-                요양보호사
-              </div>
-              <div className='h-16 border border-[#C8C8C8] font-medium text-lg flex justify-center items-center rounded-md'>
-                병원동행매니저
+            <label className='font-semibold text-xl mb-4'>나의 근무 가능 일정</label>
+            <div className='border border-[#C8C8C8] font-medium text-lg flex justify-center items-center rounded-md w-full p-5 flex'>
+              <img src={map_pin} className='size-6 mr-5' />
+              <div className='flex-1'>
+                <p>월,화,수 &gt; 13:00~20:00</p>
+                <p>목,금,토 &gt; 12:00~18:00</p>
               </div>
             </div>
           </div>
           <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>근무 가능 일정</label>
-            <div className='h-16 border border-[#C8C8C8] font-medium text-lg flex justify-center items-center rounded-md w-full p-5'>
-              <p>
-                월, 수, 금<br />
-                월, 수, 금
-              </p>
-            </div>
-          </div>
-          <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>희망 시급</label>
+            <label className='font-semibold text-xl mb-5'>희망 급여</label>
             <div className='h-16 border border-[#C8C8C8] font-medium text-lg flex rounded-md w-full'>
               <div className='flex items-center ml-5 text-xl'>
                 <img src={card} className='size-6 mr-5' />
@@ -75,7 +104,7 @@ export default function CaregiverInfo() {
             </div>
           </div>
           <div className='flex flex-col items-start'>
-            <label className='font-semibold text-xl mb-4'>희망 돌봄유형</label>
+            <label className='font-semibold text-xl mb-5'>희망 돌봄유형</label>
             <div className='h-16 border border-[#C8C8C8] font-medium text-lg flex rounded-md w-full'>
               <div className='flex items-center ml-5 text-xl'>
                 <img src={sun} className='size-6 mr-5' />
@@ -83,12 +112,26 @@ export default function CaregiverInfo() {
               </div>
             </div>
           </div>
-          <div className='flex h-16 w-full'>
-            <label className='font-semibold text-xl h-full flex items-center mr-3'>주소지</label>
-            <div className='h-16 flex-1 border border-[#C8C8C8] rounded-md flex items-center justify-center text-xl'>
-              서울 강남구 서초동
+          <div className='flex flex-col items-start'>
+            <label className='font-semibold text-xl mb-5'>주소지</label>
+            <div className='h-16 w-full rounded-md flex border border-[#C8C8C8] font-medium text-lg'>
+              <div className='flex items-center ml-5 text-xl'>
+                <img src={map_pin} className='size-6 mr-5' />
+                서울 강남구 서초동
+              </div>
             </div>
           </div>
+          <div className='flex flex-col items-start'>
+            <label className='font-semibold text-xl mb-4'>자격증</label>
+            <Radio multiple={true}>
+              <RadioItem>요양보호사</RadioItem>
+              <RadioItem>간병사</RadioItem>
+              <RadioItem>병원동행매니저</RadioItem>
+              <RadioItem>산후관리사</RadioItem>
+              <RadioItem>기타</RadioItem>
+            </Radio>
+          </div>
+
           <Button className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'>
             매칭 요청하기
           </Button>

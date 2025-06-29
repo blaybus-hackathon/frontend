@@ -23,9 +23,9 @@ export function StatsCards() {
   return (
     <>
       {/* Mobile Layout */}
-      <div className='lg:hidden flex flex-col h-full space-y-4'>
+      <div className='lg:hidden flex flex-col space-y-4 h-full'>
         {/* Top */}
-        <div className='grid grid-cols-2 grid-rows-2 gap-4 h-64'>
+        <div className='grid grid-cols-2 grid-rows-2 gap-4'>
           <StatCard title='신규 매칭 건수' value={statsData.newMatches} className='p-3' />
 
           <DonutChart
@@ -47,27 +47,33 @@ export function StatsCards() {
             showGrid={true}
             showLegend={true}
             showXAxis={true}
+            showYAxis={false}
+            gridInterval={50}
             className='h-full p-3'
           />
         </div>
       </div>
+
       {/* Desktop Layout */}
-      <div className='hidden lg:grid lg:grid-cols-3 lg:grid-rows-2 lg:gap-6 lg:h-full'>
-        <StatCard title='신규 매칭 건수' value={statsData.newMatches} className='' />
-        <StatCard title='전체 매칭 건수' value={statsData.totalMatches} className='' />
+      <div className='hidden lg:grid lg:gap-8 lg:h-full lg:grid-rows-[auto_1fr] lg:grid-cols-[1fr_1fr_auto]'>
+        <StatCard title='신규 매칭 건수' value={statsData.newMatches} className='p-6' />
+        <StatCard title='전체 매칭 건수' value={statsData.totalMatches} className='p-6' />
         <DonutChart
           title='매칭 비율'
           acceptRate={statsData.matching.acceptanceRate}
           rejectRate={statsData.matching.rejectionRate}
-          className='row-span-2'
+          className='row-span-2 p-6 min-h-[20vh] min-w-[50vh]'
         />
-        <BarChart
-          title='상태별 매칭 건수'
-          data={statsData.statusData}
-          showGrid={true}
-          showLegend={true}
-          className='col-span-2'
-        />
+        <div className='col-span-2 flex-1 min-h-[30vh]'>
+          <BarChart
+            title='상태별 매칭 건수'
+            data={statsData.statusData}
+            showGrid={true}
+            showLegend={true}
+            showYAxis={true}
+            className='h-full p-6 min-h-[20vh]'
+          />
+        </div>
       </div>
     </>
   );

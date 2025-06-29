@@ -1,4 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { useBreakpoint } from '@/hooks/useBreakpoint';
 
 export function DonutChart({
   title,
@@ -7,8 +8,9 @@ export function DonutChart({
   acceptColor = 'var(--main)',
   rejectColor = 'var(--main-light)',
   className = '',
-  size = 'md',
 }) {
+  const breakpoint = useBreakpoint(false);
+
   const data = [
     {
       name: '수락률',
@@ -24,11 +26,22 @@ export function DonutChart({
 
   // 차트 크기 매핑
   const sizeMap = {
+    base: {
+      container: 'h-35',
+      outerRadius: 55,
+      innerRadius: 33,
+      titleMargin: 'mb-0',
+      centerText: 'text-xl',
+      centerPercent: 'text-sm',
+      legendText: 'text-xs',
+      legendMargin: 'mt-1',
+    },
     sm: {
       container: 'h-40',
       outerRadius: 45,
       innerRadius: 25,
-      centerText: 'text-lg',
+      centerText: 'text-xl',
+      centerPercent: 'text-sm',
       legendText: 'text-xs',
     },
     md: {
@@ -37,26 +50,51 @@ export function DonutChart({
       innerRadius: 33,
       centerText: 'text-xl',
       legendText: 'text-[0.69rem]',
+      legendMargin: 'mt-2',
     },
     lg: {
-      container: 'h-52',
-      outerRadius: 80,
-      innerRadius: 50,
-      centerText: 'text-3xl',
-      legendText: 'text-base',
+      container: 'h-70',
+      outerRadius: 110,
+      innerRadius: 60,
+      centerText: 'text-4xl',
+      centerPercent: 'text-2xl',
+      legendText: 'text-xl',
+      legendMargin: 'mt-10',
+    },
+    xl: {
+      container: 'h-80',
+      outerRadius: 130,
+      innerRadius: 70,
+      titleMargin: 'mb-10',
+      centerText: 'text-5xl',
+      centerPercent: 'text-3xl',
+      legendText: 'text-xl',
+      legendMargin: 'mt-10',
+    },
+    '2xl': {
+      container: 'h-100',
+      outerRadius: 180,
+      innerRadius: 105,
+      titleMargin: 'mb-15',
+      centerText: 'text-7xl',
+      centerPercent: 'text-4xl',
+      legendText: 'text-2xl',
+      legendMargin: 'mt-14',
     },
   };
 
   // 현재 크기 선택
-  const currentSize = sizeMap[size];
+  const currentSize = sizeMap[breakpoint];
 
   // render legend
   const renderCustomLegend = (props) => {
     const { payload } = props;
     return (
-      <div className='flex justify-between w-full mt-4'>
+      <div
+        className={`flex justify-between md:justify-center md:gap-4 lg:justify-center lg:gap-10 w-full ${currentSize.legendMargin}`}
+      >
         {payload.map((entry, index) => (
-          <div key={index} className='flex items-center gap-1'>
+          <div key={index} className='flex items-center gap-1 lg:gap-2'>
             <div
               className='w-4 h-4 lg:w-5 lg:h-5 rounded-full'
               style={{ backgroundColor: entry.color }}
@@ -77,15 +115,14 @@ export function DonutChart({
       dominantBaseline='middle'
       className={`${currentSize.centerText} font-semibold text-[var(--main)] flex gap-[0.1rem] items-center`}
     >
-      {acceptRate} <span className='text-sm'>%</span>
+      {acceptRate} <span className={`${currentSize.centerPercent}`}>%</span>
     </text>
   );
 
   return (
     <div className={`bg-white rounded-2xl box-shadow flex flex-col ${className}`}>
       <h3
-        className='text-start text-base text-[var(--text)] font-medium mb-2
-      '
+        className={`text-start text-base text-[var(--text)] font-medium lg:text-2xl lg:font-semibold ${currentSize.titleMargin}`}
       >
         {title}
       </h3>
@@ -101,10 +138,10 @@ export function DonutChart({
                 data={data}
                 innerRadius={currentSize.innerRadius}
                 outerRadius={currentSize.outerRadius}
-                paddingAngle={2}
+                paddingAngle={1}
                 dataKey='value'
                 startAngle={90}
-                endAngle={450}
+                endAngle={470}
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />

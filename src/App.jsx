@@ -18,7 +18,7 @@ import Matching from './pages/center/Matching';
 import RecriutDetail from './pages/center/RecriutDetail';
 
 import SignTest from './components/Auth/SignUp/SignTest';
-import ModifyInfo from './pages/center/ModifyInfo';
+import ModifyRecruit from './pages/center/ModifyRecruit';
 import CaregiverInfo from './pages/center/CaregiverInfo';
 
 import ElderRegister from './pages/center/ElderRegister';
@@ -47,6 +47,11 @@ function App() {
           <Route path='center/matching-info' element={<MatchingInfo />} />
           <Route path='center/register/address' element={<ElderAddress />} />
 
+          <Route path='center/matching' element={<Matching />} />
+          <Route path='cneter/recruit/detail' element={<RecriutDetail />} />
+          <Route path='center/recruit/modify' element={<ModifyRecruit />} />
+          <Route path='center/care-info' element={<CaregiverInfo />} />
+
           {/* Helper */}
           <Route path='helper/account' element={<Account />} />
           <Route path='helper/account/edit' element={<AccountEdit />} />
@@ -56,12 +61,9 @@ function App() {
           <Route path='helper/location' element={<HelperLocation />} />
           <Route path='helper/location/:city' element={<HelperLocationDetail />} />
 
-          <Route path='matching' element={<Matching />} />
-          <Route path='recruit-detail' element={<RecriutDetail />} />
-          <Route path='modify' element={<ModifyInfo />} />
-          <Route path='caredetail' element={<CaregiverInfo />} />
           <Route path='test' element={<SignTest />} />
 
+          {/* Chatting */}
           <Route path='chatrooms' element={<ChatRoomsPage />} />
           <Route path='chatroom/:roomid' element={<PrivateChatRoom />} />
         </Route>

@@ -183,3 +183,9 @@
 .elder-service-grid-layout > button:nth-child(6) {
   @apply col-span-2;
 }
+
+@layer utilities {
+  .main-minus-footer {
+    min-height: calc(100vh - 4.44rem);
+  }
+}

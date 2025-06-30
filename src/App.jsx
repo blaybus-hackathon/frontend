@@ -19,7 +19,8 @@ import AccountCareType from './pages/helper/AccountEdit/navigate/AccountCareType
 import Home from './pages/Home';
 import Matching from './pages/center/Matching';
 import RecriutDetail from './pages/center/RecriutDetail';
-import ModifyInfo from './pages/center/ModifyInfo';
+
+import ModifyRecruit from './pages/center/ModifyRecruit';
 import CaregiverInfo from './pages/center/CaregiverInfo';
 
 import CenterRegister from './pages/center/CenterRegister';
@@ -58,6 +59,11 @@ function App() {
           <Route path='center/caregiver-info' element={<CaregiverInfo />} />
           <Route path='center/register/address' element={<ElderAddress />} />
 
+          <Route path='center/matching' element={<Matching />} />
+          <Route path='cneter/recruit/detail' element={<RecriutDetail />} />
+          <Route path='center/recruit/modify' element={<ModifyRecruit />} />
+          <Route path='center/care-info' element={<CaregiverInfo />} />
+
           {/* Helper */}
           <Route path='helper/signup' element={<HelperSignUp />} />
           <Route path='helper/account' element={<Account />} />
@@ -67,7 +73,9 @@ function App() {
           <Route path='helper/account/care-type' element={<AccountCareType />} />
           <Route path='helper/location' element={<HelperLocation />} />
           <Route path='helper/address' element={<HelperAddress />} />
+          <Route path='helper/location/:city' element={<HelperLocationDetail />} />
 
+          {/* Chatting */}
           <Route path='chatrooms' element={<ChatRoomsPage />} />
           <Route path='chatroom/:roomid' element={<PrivateChatRoom />} />
 

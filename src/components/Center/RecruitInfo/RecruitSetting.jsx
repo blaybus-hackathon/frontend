@@ -1,3 +1,4 @@
+// === Post Recruit Page 3 ===
 import { Input } from '@/components/ui/custom/input';
 import { Button } from '@/components/ui/custom/Button';
 import { useState, useEffect } from 'react';
@@ -176,7 +177,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
 
     setRecruit(data);
 
-    request('post', '/patient/recruit-helper', data)
+    request('post', '/patient-recruit/helper', data)
       .then((res) => {
         console.log(res);
         handleMatchingPage((prev) => {
@@ -280,9 +281,11 @@ export default function MatchingManage3({ handleMatchingPage }) {
   // 선택 항목들 비트 합 구하기 (arr = 선택값 배열, base = 가장 낮은 id값)
   const getSelectionBit = (arr, base) => arr.reduce((acc, cur) => acc + 2 ** (cur - base), 0);
 
+  const getAddressSeq = () => {};
+
   return (
     <>
-      <div className='mx-auto flex flex-col items-center max-w-2xl px-[1.5rem] mb-12'>
+      <div className='mx-auto flex flex-col items-center max-w-2xl mb-12'>
         <p className='font-bold text-xl tracking-[-0.1rem] pt-8 pb-3 w-full mx-auto text-start'>
           구인정보를 입력해주세요
         </p>
@@ -291,7 +294,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
         </p>
       </div>
 
-      <div className='px-[1.5rem] mx-auto flex flex-col gap-10 max-w-2xl mb-40'>
+      <div className='mx-auto flex flex-col gap-10 max-w-2xl mb-20'>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>근무 종류</label>
           <div className='grid grid-cols-2 w-full gap-4'>{renderWorkType()}</div>
@@ -419,7 +422,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
           <div className='w-full grid grid-cols-2 gap-4'>{renderBenefit()}</div>
         </div>
         <Button
-          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
+          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-[5rem] left-1/2 -translate-x-1/2 font-bold'
           disabled={ptDateBit === 0 || wage === 0}
           onClick={() => {
             postRecruit();

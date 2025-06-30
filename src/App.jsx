@@ -70,7 +70,6 @@ function App() {
           <Route path='helper/account/care-type' element={<AccountCareType />} />
           <Route path='helper/location' element={<HelperLocation />} />
           <Route path='helper/address' element={<HelperAddress />} />
-          <Route path='helper/location/:city' element={<HelperLocationDetail />} />
 
           {/* Chatting */}
           <Route path='chatrooms' element={<ChatRoomsPage />} />

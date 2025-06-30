@@ -28,10 +28,19 @@ export const request = async (method, endpoint, data = {}) => {
       ...(method === 'GET' ? { params: data } : { data }),
     });
 
-    console.log('API 응답: ', response);
+    console.log('API 응답: ', {
+      message: response.data.message,
+      status: response.status,
+      data: response.data,
+    });
+
     return response.data;
   } catch (error) {
-    console.error('API 요청 오류: ', error);
+    console.error('API 요청 오류: ', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+    });
     throw error;
   }
 };
@@ -43,13 +52,18 @@ export const requestMultipart = async (method, endpoint, formData) => {
       url: `/api${endpoint}`,
       data: formData,
       headers: {
+        ...api.defaults.headers.common,
         'Content-Type': 'multipart/form-data',
       },
     });
 
     return response.data;
   } catch (error) {
-    console.error('API 요청 오류: ', error);
+    console.error('API 요청 오류: ', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+    });
     throw error;
   }
 };

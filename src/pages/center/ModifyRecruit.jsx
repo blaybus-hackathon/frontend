@@ -1,8 +1,8 @@
-import Header from '@/components/ui/temp/Header';
 import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 import { request } from '@/api';
 import recruitStore from '@/store/jbStore/recruitStore';
@@ -35,6 +35,9 @@ export default function ModifyInfo() {
 
   const [selectedWelfare, setSelectedWelfare] = useState([]);
   const [selectedWorkType, setSelectedWorkType] = useState([]);
+
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
   useEffect(() => {
     request('get', '/cmn/all-care-list')
@@ -97,6 +100,22 @@ export default function ModifyInfo() {
       .catch((e) => console.error(e));
   }, []);
 
+  // 헤더 세팅
+  // TODO: 뒤로가기 시 수정 사항 취소 처리
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '공고 수정하기',
+      onBack: () => {
+        navigate('/center/recruit-detail');
+      },
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, []);
+
   const renderButtons = (items, selectedList = null, setSelectedList = null) =>
     items.map((item, idx) => (
       <Button
@@ -146,7 +165,7 @@ export default function ModifyInfo() {
     };
     request('post', '/patient/recruit-update', updateData)
       .then(() => {
-        navigate('/recruit-detail');
+        navigate('/center/recruit-detail');
       })
       .catch((e) => {
         console.error(`공고 수정 실패 : ${e}`);
@@ -155,7 +174,6 @@ export default function ModifyInfo() {
 
   return (
     <div>
-      <Header title='공고 수정하기' />
       <div className='max-w-2xl mx-auto px-6 mt-8 gap-10 flex flex-col mb-40'>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-5'>

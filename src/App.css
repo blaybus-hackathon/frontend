@@ -5,7 +5,6 @@
 @custom-variant dark (&:is(.dark *));
 
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   text-align: center;
 }
@@ -36,7 +35,7 @@
   --destructive: hsl(0 84.2% 60.2%);
   --destructive-foreground: hsl(0 0% 98%);
   --border: hsl(0 0% 89.8%);
-  --input: hsl(0 0% 89.8%);
+  --input: #c8c8c8;
   --ring: hsl(0 0% 3.9%);
   --chart-1: hsl(12 76% 61%);
   --chart-2: hsl(173 58% 39%);
@@ -79,7 +78,7 @@
   --destructive: hsl(0 62.8% 30.6%);
   --destructive-foreground: hsl(0 0% 98%);
   --border: hsl(0 0% 14.9%);
-  --input: hsl(0 0% 14.9%);
+  --input: #c8c8c8;
   --ring: hsl(0 0% 83.1%);
   --chart-1: hsl(220 70% 50%);
   --chart-2: hsl(160 60% 45%);
@@ -135,6 +134,7 @@
 @layer base {
   html {
     font-family: 'Pretendard Variable', sans-serif;
+    scroll-behavior: smooth;
   }
 
   * {
@@ -182,6 +182,28 @@
 .elder-service-grid-layout > button:nth-child(5),
 .elder-service-grid-layout > button:nth-child(6) {
   @apply col-span-2;
+}
+
+/* ▼▼▼Helper▼▼▼ */
+.helper-title {
+  @apply text-[#191919] text-[23px] font-semibold leading-none;
+}
+.helper-title_sub {
+  @apply text-[#E40000]  text-[17px] font-normal leading-none ml-[10px];
+}
+.helper-subtitle {
+  @apply text-[#191919]  text-[17px] font-normal leading-none;
+}
+.helper-section {
+  @apply flex flex-col items-start gap-5;
+}
+
+.profile-section__content-text {
+  @apply text-[#191919] text-[20px] font-normal leading-none text-left;
+}
+
+.profile-section__content-box {
+  @apply flex w-full p-5 items-center self-stretch rounded-[10px] border border-[#C8C8C8] bg-white gap-3;
 }
 
 @layer utilities {

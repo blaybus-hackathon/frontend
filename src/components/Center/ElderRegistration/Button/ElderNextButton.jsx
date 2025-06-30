@@ -5,13 +5,13 @@ import {
   validateCareInfo,
   validateAddInfo,
   validateServiceInfo,
-} from '@/utils/validators/center/elderRegister';
+} from '@/utils/validators/center';
 import { fetchDefaultImage } from '@/utils/fetchDefaultImage';
 import NextButton from '@/components/ui/custom/Button/NextButton';
-import { REGISTRATION_STEPS } from '@/constants/registrationSteps';
+import { ELDER_REGISTRATION_STEPS } from '@/constants/registrationSteps';
 
 export function ElderNextButton() {
-  const currentStep = useElderRegiStepStore((state) => state.currentIndex) + 1;
+  const currentStep = useElderRegiStepStore((state) => state.currentIndex);
   const goNextStep = useElderRegiStepStore((state) => state.nextStep);
 
   const elderForm = useElderRegiStore((state) => state.registerElder);
@@ -26,7 +26,8 @@ export function ElderNextButton() {
 
   // check if last step
   // the length - 1 is the complete page
-  const isLastStep = REGISTRATION_STEPS[REGISTRATION_STEPS.length - 2].id === currentStep;
+  const isLastStep =
+    ELDER_REGISTRATION_STEPS[ELDER_REGISTRATION_STEPS.length - 1].id === currentStep;
 
   const handleNext = async () => {
     if (!validateCurrentStep()) {
@@ -72,13 +73,13 @@ export function ElderNextButton() {
 
   const validateCurrentStep = () => {
     switch (currentStep) {
-      case 1:
+      case 0:
         return validateBasicInfo(elderForm.basicInfo);
-      case 2:
+      case 1:
         return validateCareInfo(elderForm.careInfo);
-      case 3:
+      case 2:
         return validateAddInfo(elderForm.addInfo);
-      case 4:
+      case 3:
         return validateServiceInfo(elderForm.serviceInfo);
       default:
         return true;

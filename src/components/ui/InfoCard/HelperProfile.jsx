@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/custom/button';
+import { Button } from '@/components/ui/custom/Button';
 import profile from '/default_profile.png';
 
 export default function HelperProfile({ helperInfo, onClick, buttonText }) {

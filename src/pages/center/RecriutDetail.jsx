@@ -1,8 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import logo from '@/assets/images/logo.png';
-
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
 
@@ -31,7 +29,7 @@ export default function PatientInfo() {
         const age = new Date().getFullYear() - res.birthDate.slice(0, 4) + 1;
         setRecruit({ ...res, age, genderStr });
       })
-      .catch((e) => console.log(e));
+      .catch((e) => console.error(e));
   }, []);
 
   useEffect(() => {

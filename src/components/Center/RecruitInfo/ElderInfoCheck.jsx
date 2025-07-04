@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
 import { useState, useEffect } from 'react';
 import patientStore from '@/store/jbStore/patientStore';
+import defaultProfile from '@/assets/images/elder-basic-profile.png';
 
 // import profInit from '@/assets/images/default-profile.png';
 
@@ -83,7 +84,7 @@ export default function MatchingManage2({ handleMatchingPage }) {
         <div className='flex pb-5 border-b border-[var(--outline)]'>
           <div className='flex items-center justify-center mr-8'>
             <img
-              src={patientData.imgAddress}
+              src={patientData.imgAddress ? patientData.imgAddress : defaultProfile}
               className='size-25 bg-[var(--button-inactive)] rounded-[50%]'
             />
           </div>

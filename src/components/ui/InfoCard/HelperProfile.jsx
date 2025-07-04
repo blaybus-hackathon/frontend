@@ -14,19 +14,21 @@ export default function HelperProfile({ helperInfo, onClick, buttonText }) {
           />
         </div>
 
-        <div className='flex justify-end md:order-3 items-center'>
-          <Button
-            onClick={onClick}
-            variant='white'
-            className='hover:bg-[var(--main)] w-fit h-fit px-3.5 py-2 flex-shrink-0 cursor-pointer'
-          >
-            <p className='text-base font-semibold text-[var(--main)] hover:text-white lg:text-lg'>
-              {buttonText}
-            </p>
-          </Button>
-        </div>
+        {buttonText && (
+          <div className='flex justify-end md:order-3 items-center'>
+            <Button
+              onClick={onClick}
+              variant='white'
+              className='hover:bg-[var(--main)] w-fit h-fit px-3.5 py-2 flex-shrink-0 cursor-pointer'
+            >
+              <p className='text-base font-semibold text-[var(--main)] hover:text-white lg:text-lg'>
+                {buttonText}
+              </p>
+            </Button>
+          </div>
+        )}
 
-        <div className='col-span-2 md:col-span-1 md:order-2 flex flex-col items-start md:justify-center gap-y-2.5'>
+        <div className='col-span-2 md:col-span-1 md:order-2 flex flex-col items-start md:justify-center gap-y-1'>
           <h3 className='text-lg font-semibold text-[var(--text)] lg:text-xl text-start'>
             {helperInfo.helperName} 요양사
           </h3>

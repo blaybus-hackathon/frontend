@@ -6,7 +6,7 @@ export default function InfoCard({ children, className, ...props }) {
       className={`w-full h-fit rounded-[0.625rem] border-2 border-[var(--outline)] ${className}`}
       {...props}
     >
-      <CardContent>{children}</CardContent>
+      <CardContent className='w-full'>{children}</CardContent>
     </Card>
   );
 }

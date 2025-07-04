@@ -19,9 +19,8 @@ import AccountCareType from './pages/helper/AccountEdit/navigate/AccountCareType
 import Home from './pages/Home';
 import Matching from './pages/center/Matching';
 import RecriutDetail from './pages/center/RecriutDetail';
-import ModifyInfo from './pages/center/ModifyInfo';
+import ModifyRecruit from './pages/center/ModifyRecruit';
 import CaregiverInfo from './pages/center/CaregiverInfo';
-
 import CenterRegister from './pages/center/CenterRegister';
 import ElderRegister from './pages/center/ElderRegister';
 import MyPage from './pages/center/MyPage';
@@ -38,6 +37,7 @@ function App() {
         {/* 공통 */}
         <Route index element={<Home />} />
         <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
+        <Route path='/center/matching-info' element={<MatchingInfo />} />
         <Route path='/*' element={<NotFound />} />
 
         {/* 레이아웃 */}
@@ -53,10 +53,13 @@ function App() {
           <Route path='center/elder-info' element={<ElderInfo />} />
           <Route path='center/matching' element={<Matching />} />
           <Route path='center/recruit-detail' element={<RecriutDetail />} />
-          <Route path='center/modify-info' element={<ModifyInfo />} />
-          <Route path='center/matching-info' element={<MatchingInfo />} />
           <Route path='center/caregiver-info' element={<CaregiverInfo />} />
           <Route path='center/register/address' element={<ElderAddress />} />
+
+          <Route path='center/matching' element={<Matching />} />
+          <Route path='cneter/recruit/detail' element={<RecriutDetail />} />
+          <Route path='center/recruit/modify' element={<ModifyRecruit />} />
+          <Route path='center/care-info' element={<CaregiverInfo />} />
 
           {/* Helper */}
           <Route path='helper/signup' element={<HelperSignUp />} />
@@ -67,7 +70,9 @@ function App() {
           <Route path='helper/account/care-type' element={<AccountCareType />} />
           <Route path='helper/location' element={<HelperLocation />} />
           <Route path='helper/address' element={<HelperAddress />} />
+          <Route path='helper/location/:city' element={<HelperLocationDetail />} />
 
+          {/* Chatting */}
           <Route path='chatrooms' element={<ChatRoomsPage />} />
           <Route path='chatroom/:roomid' element={<PrivateChatRoom />} />
 

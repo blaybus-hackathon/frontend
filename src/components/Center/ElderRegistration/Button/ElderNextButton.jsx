@@ -27,7 +27,7 @@ export function ElderNextButton() {
   // check if last step
   // the length - 1 is the complete page
   const isLastStep =
-    ELDER_REGISTRATION_STEPS[ELDER_REGISTRATION_STEPS.length - 1].id === currentStep;
+    ELDER_REGISTRATION_STEPS[ELDER_REGISTRATION_STEPS.length - 2].id === currentStep;
 
   const handleNext = async () => {
     if (!validateCurrentStep()) {

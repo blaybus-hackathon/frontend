@@ -19,10 +19,8 @@ import AccountCareType from './pages/helper/AccountEdit/navigate/AccountCareType
 import Home from './pages/Home';
 import Matching from './pages/center/Matching';
 import RecriutDetail from './pages/center/RecriutDetail';
-
 import ModifyRecruit from './pages/center/ModifyRecruit';
 import CaregiverInfo from './pages/center/CaregiverInfo';
-
 import CenterRegister from './pages/center/CenterRegister';
 import ElderRegister from './pages/center/ElderRegister';
 import MyPage from './pages/center/MyPage';

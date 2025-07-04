@@ -14,3 +14,11 @@ export const uploadElderProfile = async (formData) => {
   const response = await requestMultipart('POST', '/cmn/upload-img/PATIENT', formData);
   return response;
 };
+
+export const getElderList = async ({ pageNo = '0', pageSize = '10' }) => {
+  const response = await request('GET', '/patient/list', {
+    pageNo,
+    pageSize,
+  });
+  return response;
+};

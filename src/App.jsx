@@ -54,7 +54,7 @@ function App() {
           <Route path='center/matching-info' element={<MatchingInfo />} />
           <Route path='center/register/address' element={<ElderAddress />} />
 
-          <Route path='cneter/recruit/detail' element={<RecriutDetail />} />
+          <Route path='center/recruit/detail' element={<RecriutDetail />} />
           <Route path='center/recruit/modify' element={<ModifyRecruit />} />
           <Route path='center/care-info' element={<CaregiverInfo />} />
 

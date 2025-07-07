@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
-import MatchingManage from './MatchingManage';
-import MatchingManage2 from './MatchingManage2';
-import MatchingManage3 from './MatchingManage3';
-import MatchingComplete from './MatchingComplete';
+import ElderSelect from '@/components/Center/RecruitInfo/ElderSelect';
+import ElderInfoCheck from '@/components/Center/RecruitInfo/ElderInfoCheck';
+import RecruitSetting from '@/components/Center/RecruitInfo/RecruitSetting';
+import MatchingComplete from '@/components/Center/RecruitInfo/MatchingComplete';
 
 export default function Matching() {
   const navigate = useNavigate();
@@ -41,21 +41,21 @@ export default function Matching() {
   return (
     <>
       {curMatchingPage === 1 && (
-        <MatchingManage
+        <ElderSelect
           handleMatchingPage={(pg) => {
             setCurMatchingPage(pg);
           }}
         />
       )}
       {curMatchingPage === 2 && (
-        <MatchingManage2
+        <ElderInfoCheck
           handleMatchingPage={(updatePn) => {
             setCurMatchingPage(updatePn);
           }}
         />
       )}
       {curMatchingPage === 3 && (
-        <MatchingManage3
+        <RecruitSetting
           handleMatchingPage={(updatePn) => {
             setCurMatchingPage(updatePn);
           }}

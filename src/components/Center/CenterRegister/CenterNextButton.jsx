@@ -27,7 +27,6 @@ export function CenterNextButton() {
         await submitCenter();
         goNextStep();
       } catch (error) {
-        console.error('센터 등록 실패: ', error);
         const ERROR_MESSAGES = {
           4004: '이미 같은 주소의 센터가 등록되어있습니다.',
           403: '센터 등록에 필요한 정보가 누락되었습니다.',

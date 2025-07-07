@@ -9,6 +9,9 @@ export default function Layout() {
 
   const hideHeaderRoutes = ['/signin', '/chatrooms'];
   const hideFooterRoutes = [
+    '/search-center',
+    '/helper/signup',
+    '/center/signup',
     '/center/elder-register',
     '/center/mypage',
     '/signin',
@@ -18,6 +21,7 @@ export default function Layout() {
     '/center/recruit-detail',
     '/center/modify-info',
     '/center/matching',
+    '/helper/address',
   ];
 
   const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));

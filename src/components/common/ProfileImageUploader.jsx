@@ -44,10 +44,10 @@ export default function ProfileImageUploader({
         {onOptionChange && (
           <Radio value={profileOption} onValueChange={onOptionChange} cols={2} className='gap-2'>
             <RadioItem value='1'>
-              <p className='text-[1.1rem]'>등록하기</p>
+              <p className='text-base lg:text-xl'>등록하기</p>
             </RadioItem>
             <RadioItem value='2'>
-              <p className='text-[1.1rem]'>아이콘 대체</p>
+              <p className='text-base lg:text-xl'>아이콘 대체</p>
             </RadioItem>
           </Radio>
         )}

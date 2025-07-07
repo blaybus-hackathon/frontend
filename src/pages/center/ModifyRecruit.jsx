@@ -163,9 +163,9 @@ export default function ModifyInfo() {
       serviceMobility: selectedMobile.reduce((acc, cur) => acc + cur, 0),
       serviceDaily: selectedDaily.reduce((acc, cur) => acc + cur, 0),
     };
-    request('post', '/patient/recruit-update', updateData)
+    request('post', '/patient-recruit/update', updateData)
       .then(() => {
-        navigate('/center/recruit-detail');
+        navigate('/center/recruit/detail');
       })
       .catch((e) => {
         console.error(`공고 수정 실패 : ${e}`);

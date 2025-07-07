@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import logo from '@/assets/images/logo.png';
-
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
+import defaultProfile from '@/assets/images/elder-basic-profile.png';
 
 import recruitStore from '@/store/jbStore/recruitStore';
 
@@ -23,7 +22,7 @@ export default function PatientInfo() {
 
   useEffect(() => {
     //temporary code
-    request('get', '/patient/1/recruit-detail')
+    request('get', '/patient-recruit/1/detail')
       .then((res) => {
         //성별 변경
         const genderStr = res.careChoice.genderList[0] - 67 === 0 ? '남성' : '여성';
@@ -31,7 +30,7 @@ export default function PatientInfo() {
         const age = new Date().getFullYear() - res.birthDate.slice(0, 4) + 1;
         setRecruit({ ...res, age, genderStr });
       })
-      .catch((e) => console.log(e));
+      .catch((e) => console.error(e));
   }, []);
 
   useEffect(() => {
@@ -90,17 +89,15 @@ export default function PatientInfo() {
 
   const gotoModify = () => {
     window.scrollTo(0, 0);
-    navigate('/center/modify-info');
+    navigate('/center/recruit/modify');
   };
   return (
     <div>
-      <div className='h-4.5 bg-[var(--button-inactive)]'></div>
-
-      <div className='px-6'>
+      <div>
         <p className='mt-10 font-semibold max-[412px]:text-base text-xl mb-10'>{`${recruitInfo.name} 어르신 - 요양보호사 구인합니다.`}</p>
         <div className='border-2 border-[var(--outline)] flex items-start px-9 py-4 rounded-2xl mb-7'>
           <img
-            src={recruitInfo.imgAddress}
+            src={recruitInfo.imgAddress ? recruitInfo.imgAddress : defaultProfile}
             className='bg-[var(--button-inactive)] size-19 rounded-[50%] mr-8'
           />
           <div className='flex flex-col items-start gap-1 py-2'>
@@ -110,7 +107,7 @@ export default function PatientInfo() {
         </div>
       </div>
 
-      <div className='pt-5 pb-13 px-6 font-bold flex flex-col gap-6 items-start text-lg'>
+      <div className='pt-5 pb-13 font-bold flex flex-col gap-6 items-start text-lg'>
         <p>
           {WAGESTATE[recruitInfo.wageState - 1]}
           <span className='font-normal pl-4'> {recruitInfo.wage}원</span>
@@ -141,9 +138,7 @@ export default function PatientInfo() {
         </div>
       </div>
 
-      <div className='h-7.5 bg-[var(--button-inactive)]'></div>
-
-      <div className='px-11 pt-8 flex flex-col gap-7.5 items-start mb-40'>
+      <div className='px-5 pt-8 flex flex-col gap-7.5 items-start mb-40'>
         <div className='w-full flex h-16'>
           <p className='flex flex-1 text-start font-semibold text-xl h-full items-center'>
             보유질병
@@ -186,7 +181,7 @@ export default function PatientInfo() {
         </div>
 
         <Button
-          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
+          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-20 left-1/2 -translate-x-1/2 font-bold'
           onClick={gotoModify}
         >
           수정하기

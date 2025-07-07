@@ -37,7 +37,6 @@ function App() {
         {/* 공통 */}
         <Route index element={<Home />} />
         <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
-        <Route path='/center/matching-info' element={<MatchingInfo />} />
         <Route path='/*' element={<NotFound />} />
 
         {/* 레이아웃 */}
@@ -52,12 +51,10 @@ function App() {
           <Route path='center/mypage' element={<MyPage />} />
           <Route path='center/elder-info' element={<ElderInfo />} />
           <Route path='center/matching' element={<Matching />} />
-          <Route path='center/recruit-detail' element={<RecriutDetail />} />
-          <Route path='center/caregiver-info' element={<CaregiverInfo />} />
+          <Route path='center/matching-info' element={<MatchingInfo />} />
           <Route path='center/register/address' element={<ElderAddress />} />
 
-          <Route path='center/matching' element={<Matching />} />
-          <Route path='cneter/recruit/detail' element={<RecriutDetail />} />
+          <Route path='center/recruit/detail' element={<RecriutDetail />} />
           <Route path='center/recruit/modify' element={<ModifyRecruit />} />
           <Route path='center/care-info' element={<CaregiverInfo />} />
 

@@ -4,7 +4,9 @@ import { Client } from '@stomp/stompjs';
 let stompClient = null;
 
 export const connectSocket = async (callbackFunc) => {
-  const socket = new SockJS('http://localhost:8080/ws-chat', null, { withCredentials: true });
+  const socket = new SockJS(`${import.meta.env.VITE_API_BASE_URL}/ws-chat`, null, {
+    withCredentials: true,
+  });
 
   stompClient = new Client({
     webSocketFactory: () => socket,

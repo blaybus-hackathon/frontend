@@ -5,7 +5,12 @@ import addImg from '@/assets/images/add.png';
 import chatStore from '@/store/jbStore/chatStore';
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
-import { connectSocket, subscribe, sendMessage, disconnectSocket } from './ChatSocket';
+import {
+  connectSocket,
+  subscribe,
+  sendMessage,
+  disconnectSocket,
+} from '@/components/chat/ChatSocket';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 // chat 입력창 최대 높이

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
+import defaultProfile from '@/assets/images/elder-basic-profile.png';
 
 import recruitStore from '@/store/jbStore/recruitStore';
 
@@ -96,7 +97,7 @@ export default function PatientInfo() {
         <p className='mt-10 font-semibold max-[412px]:text-base text-xl mb-10'>{`${recruitInfo.name} 어르신 - 요양보호사 구인합니다.`}</p>
         <div className='border-2 border-[var(--outline)] flex items-start px-9 py-4 rounded-2xl mb-7'>
           <img
-            src={recruitInfo.imgAddress}
+            src={recruitInfo.imgAddress ? recruitInfo.imgAddress : defaultProfile}
             className='bg-[var(--button-inactive)] size-19 rounded-[50%] mr-8'
           />
           <div className='flex flex-col items-start gap-1 py-2'>
@@ -180,7 +181,7 @@ export default function PatientInfo() {
         </div>
 
         <Button
-          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
+          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-20 left-1/2 -translate-x-1/2 font-bold'
           onClick={gotoModify}
         >
           수정하기

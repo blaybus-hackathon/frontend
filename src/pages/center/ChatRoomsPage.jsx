@@ -15,6 +15,7 @@ function ChatRoomsPage() {
   const { setChatInfo } = chatStore();
 
   useEffect(() => {
+    // request('post', '/sign/in', { userId: 'jb@gmail.com', userPw: '1234' });
     getChatRooms();
   }, []);
 
@@ -39,6 +40,7 @@ function ChatRoomsPage() {
           key={chatRoom.chatRoomId}
           className='py-6 flex relative'
           onClick={() => {
+            if (chatRoom.matchedFinYn) return;
             setChatInfo(chatRoom);
             gotoChatRoom(chatRoom.chatRoomId);
           }}
@@ -52,7 +54,7 @@ function ChatRoomsPage() {
           <div className='flex flex-col gap-4'>
             <p className='font-semibold text-lg'>
               {chatRoom.partnerName}
-              {DUMMYNEGOBOOL && (
+              {chatRoom.matchedFinYn && (
                 <span className='font-normal text-[var(--main)] ml-3'>조율 완료</span>
               )}
             </p>
@@ -71,7 +73,7 @@ function ChatRoomsPage() {
   };
 
   return (
-    <div className='max-w-md mx-auto p-6'>
+    <div className='max-w-md pt-6'>
       <div className='mb-4.5'>
         <div className='font-semibold text-2xl text-start mb-3'>채팅</div>
         <p className='text-start'>매칭 요청을 보낸 요양 보호사와 채팅을 할 수 있어요!</p>

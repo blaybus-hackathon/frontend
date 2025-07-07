@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 
 import backArrow from '@/assets/images/back-arrow.png';
@@ -6,7 +6,12 @@ import addImg from '@/assets/images/add.png';
 import chatStore from '@/store/jbStore/chatStore';
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
-import { connectSocket, subscribe, sendMessage, disconnectSocket } from './ChatSocket';
+import {
+  connectSocket,
+  subscribe,
+  sendMessage,
+  disconnectSocket,
+} from '../../components/chat/ChatSocket';
 
 // chat 입력창 최대 높이
 const MAX_HEIGHT = 120;
@@ -15,6 +20,7 @@ const MAX_HEIGHT = 120;
 const SENDERID = 7;
 
 function PrivateChatRoom() {
+  const navigate = useNavigate();
   const roomId = useParams().roomid;
 
   const { chatInfo } = chatStore();
@@ -166,9 +172,21 @@ function PrivateChatRoom() {
         </div>
       ));
 
+  const exitChatRoom = () => {
+    request('post', '/chat/out-room', { chatRoomId: chatInfo.chatRoomId })
+      .then(() => {
+        navigate('/chatrooms');
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
+  const tuningComplete = () => {};
+
   return (
-    <div className='max-w-md mx-auto px-5.5 pb-4 flex flex-col'>
-      <div className='px-0.5 pt-6 pb-4.5 absolute top-0'>
+    <div className='max-w-md mx-auto pb-4 flex flex-col'>
+      <div className='px-0.5 pt-6 pb-4.5 absolute top-6 bg-white'>
         <div className='flex items-center'>
           <img src={backArrow} alt='back-arrow' className='mr-8 size-8' />
           <p className='text-3xl font-semibold'>{chatInfo.partnerName}</p>
@@ -228,14 +246,17 @@ function PrivateChatRoom() {
       {/* 하단 조정바 */}
       {isVisible && (
         <div className='absolute bottom-4 right-0 left-0 flex flex-col gap-3.5 px-5.5'>
-          <Button variant={'white'} className='w-full'>
+          <Button variant={'white'} className='w-full' onClick={tuningComplete}>
             조율 완료
           </Button>
           <div>
             <Button className='bg-[var(--button-inactive)] text-[var(--text)] w-full border-0 border-b rounded-none rounded-t-md'>
               해당 어르신 프로필
             </Button>
-            <Button className='bg-[var(--button-inactive)] text-[var(--required-red)] w-full border-0 rounded-none rounded-b-md'>
+            <Button
+              className='bg-[var(--button-inactive)] text-[var(--required-red)] w-full border-0 rounded-none rounded-b-md'
+              onClick={exitChatRoom}
+            >
               채팅방 나가기
             </Button>
           </div>

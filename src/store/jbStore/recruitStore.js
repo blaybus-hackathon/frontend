@@ -2,6 +2,8 @@ import { create } from 'zustand';
 
 const recruitStore = create((set) => ({
   recruitInfo: {
+    patientLogSeq: 1,
+
     patientSeq: 7,
     imgAddress: null,
     name: '20250324',

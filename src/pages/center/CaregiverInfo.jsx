@@ -1,6 +1,6 @@
-import { useState } from 'react';
-
-import Header from '@/components/ui/temp/Header';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 import { Button } from '@/components/ui/custom/Button';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
@@ -10,15 +10,30 @@ import card from '@/assets/images/card.png';
 import sun from '@/assets/images/sun.png';
 
 export default function CaregiverInfo() {
+  const navigate = useNavigate();
   const [censored, setCensored] = useState(true);
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+
+  // 헤더 세팅
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '요양사 상세 정보',
+      onBack: () => {
+        navigate(-1);
+      },
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, [clearHeaderProps, navigate, setHeaderProps]);
 
   return (
     <div>
-      <Header title='요양사 상세 정보' />
-      <div className='max-w-2xl mx-auto px-6'>
+      <div className='max-w-2xl mx-auto'>
         <div className='flex mt-10 items-center mb-13'>
-          {/* <div className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7'>
-          </div> */}
           <img className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7' />
           <div className='flex flex-col items-start gap-5'>
             <p className='text-2xl font-bold'>김길동</p>
@@ -42,7 +57,7 @@ export default function CaregiverInfo() {
               간병경력
             </label>
             <div className='relative'>
-              <Radio cols={2} className={`${censored && 'blur-3xl'}`}>
+              <Radio cols={2} className={`${censored && 'blur-3xl'} gap-8`}>
                 <RadioItem>신입</RadioItem>
                 <RadioItem>경력</RadioItem>
               </Radio>
@@ -115,7 +130,7 @@ export default function CaregiverInfo() {
             </Radio>
           </div>
 
-          <Button className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'>
+          <Button className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-20 left-1/2 -translate-x-1/2 font-bold'>
             매칭 요청하기
           </Button>
         </div>

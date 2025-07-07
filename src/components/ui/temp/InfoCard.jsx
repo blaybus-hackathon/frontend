@@ -1,10 +1,8 @@
-import profInit from '@/assets/images/default-profile.png';
+import profInit from '@/assets/images/elder-basic-profile.png';
 
-export default function InfoCard({ isChecked, onCheck, showCheck = true, user }) {
+export default function InfoCard({ isChecked, onClick, showCheck = true, user }) {
   return (
-    // <div className='mx-[1.5rem] flex flex-col items-center'>
-
-    <div className={`w-full mb-2.5`}>
+    <div className={`w-full mb-2.5`} onClick={onClick}>
       <div
         className={`flex items-center max-w-2xl rounded-[1rem] flex-col px-4 mx-auto ${
           isChecked
@@ -14,7 +12,11 @@ export default function InfoCard({ isChecked, onCheck, showCheck = true, user })
       >
         <div className='flex mx-[1rem] w-full my-5 relative'>
           <div className='bg-white rounded-[50%] size-16 flex items-center justify-center mr-3'>
-            <img src={profInit} className='items-center size-5' />
+            <img
+              src={user.imgAddress ? user.imgAddress : profInit}
+              alt='profile'
+              className='items-center size-full'
+            />
           </div>
           <div className='flex flex-col items-start gap-1 py-2'>
             <p className='font-semibold'>{user && user.name} 어르신</p>
@@ -27,7 +29,7 @@ export default function InfoCard({ isChecked, onCheck, showCheck = true, user })
               viewBox='0 0 29 29'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
-              onClick={onCheck}
+              // onClick={onCheck}
             >
               <rect
                 width='29'
@@ -44,15 +46,15 @@ export default function InfoCard({ isChecked, onCheck, showCheck = true, user })
         </div>
         <hr className='h-[2px] w-full bg-[var(--outline)]' />
         <div className='bg-white mx-auto mt-7 mb-5 w-full rounded-[1rem] font-bold'>
-          <p className='text-start pl-2'>
+          <p className='text-start pl-2 flex'>
             <span className='w-2/5 inline-block'>근무종류</span>
             <span className='font-normal'>{user && user.workType}</span>
           </p>
-          <p className='text-start pl-2'>
+          <p className='text-start pl-2 flex'>
             <span className='w-2/5 inline-block'>주소지</span>
             <span className='font-normal'>{user && user.address}</span>
           </p>
-          <p className='text-start pl-2'>
+          <p className='text-start pl-2 flex'>
             <span className='w-2/5 inline-block'>장기요양등급</span>
             <span className='font-normal'>{user && user.careLevelStr}</span>
           </p>

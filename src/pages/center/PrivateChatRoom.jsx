@@ -11,7 +11,8 @@ import {
   subscribe,
   sendMessage,
   disconnectSocket,
-} from '../../components/chat/ChatSocket';
+} from '@/components/chat/ChatSocket';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 // chat 입력창 최대 높이
 const MAX_HEIGHT = 120;
@@ -20,8 +21,10 @@ const MAX_HEIGHT = 120;
 const SENDERID = 7;
 
 function PrivateChatRoom() {
-  const navigate = useNavigate();
   const roomId = useParams().roomid;
+  const navigate = useNavigate();
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
   const { chatInfo } = chatStore();
 
@@ -37,6 +40,22 @@ function PrivateChatRoom() {
   const firstRenderRef = useRef(true); // 최초 렌더링 여부
   const isFetching = useRef(true);
   const receiveMsg = useRef(false); // 메세지를 받는 경우 true
+
+  // 헤더 세팅
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      hasBorder: false,
+      title: chatInfo.partnerName,
+      onBack: () => {
+        navigate('/chatrooms');
+      },
+    });
+
+    return () => {
+      clearHeaderProps();
+    };
+  }, []);
 
   useEffect(() => {
     //최초 채팅 세팅

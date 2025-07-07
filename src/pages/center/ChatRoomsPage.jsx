@@ -24,7 +24,6 @@ function ChatRoomsPage() {
   const getChatRooms = () => {
     request('get', '/chat/find-list')
       .then((res) => {
-        console.log(res);
         setChatRoomList(res);
       })
       .catch(() => {

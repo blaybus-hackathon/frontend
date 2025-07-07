@@ -5,8 +5,7 @@ import chatStore from '@/store/jbStore/chatStore';
 
 import searchImg from '@/assets/images/search.png';
 import { useNavigate } from 'react-router-dom';
-
-const DUMMYNEGOBOOL = true;
+import defaultProfile from '@/assets/images/elder-basic-profile.png';
 
 function ChatRoomsPage() {
   const [chatRoomList, setChatRoomList] = useState([]);
@@ -15,7 +14,6 @@ function ChatRoomsPage() {
   const { setChatInfo } = chatStore();
 
   useEffect(() => {
-    // request('post', '/sign/in', { userId: 'jb@gmail.com', userPw: '1234' });
     getChatRooms();
   }, []);
 
@@ -46,7 +44,7 @@ function ChatRoomsPage() {
         >
           <div>
             <img
-              src={chatRoom.partnerImgAddress}
+              src={chatRoom.partnerImgAddress ? chatRoom.partnerImgAddress : defaultProfile}
               className='rounded-[50%] bg-[var(--button-inactive)] size-15 mr-3.5'
             />
           </div>

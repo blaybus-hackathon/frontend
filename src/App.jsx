@@ -36,7 +36,7 @@ function App() {
       <Routes>
         {/* 공통 */}
         <Route index element={<Home />} />
-        <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
+        <Route path='/login/oauth2/code/kakao' element={<KakaoCallback />} />
         <Route path='/*' element={<NotFound />} />
 
         {/* 레이아웃 */}

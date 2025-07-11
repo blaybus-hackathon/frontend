@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthForm from '@/components/Auth/Authform';
-import useProfileStore from '@/store/useProfileStore';
 import { signIn } from '@/services/signInService';
+import { AUTH_TYPE } from '@/constants/authType';
+import AuthForm from '@/components/Auth/Authform';
+import useAuthStore from '@/store/useAuthStore';
 
 export default function SignIn() {
   const navigate = useNavigate();
   const [loginType, setLoginType] = useState('helper');
-  const { updateAuth } = useProfileStore();
+  const { login } = useAuthStore();
 
   const handleSubmit = async ({ email, password }) => {
     try {
@@ -15,13 +16,19 @@ export default function SignIn() {
 
       if (response) {
         const { chatSenderId, email, userAuth } = response;
-        //Zustand에 저장
-        updateAuth({
+
+        // userAuth와 로그인 타입 일치하지 않으면
+        if (userAuth !== AUTH_TYPE[loginType]) {
+          alert('로그인 유형을 확인해주세요.\n해당 이메일과 로그인 유형이 일치하지 않습니다.');
+          return;
+        }
+
+        login({
           chatSenderId,
           email,
           userAuth,
         });
-        //zustand 프로필 내용도 저장 (세션에)
+
         alert('로그인 되었습니다.');
         navigate('/');
       }

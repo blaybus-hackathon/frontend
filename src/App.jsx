@@ -36,7 +36,7 @@ function App() {
       <Routes>
         {/* 공통 */}
         <Route index element={<Home />} />
-        <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
+        <Route path='/login/oauth2/code/kakao' element={<KakaoCallback />} />
         <Route path='/center/matching-info' element={<MatchingInfo />} />
         <Route path='/*' element={<NotFound />} />
 
@@ -70,7 +70,6 @@ function App() {
           <Route path='helper/account/care-type' element={<AccountCareType />} />
           <Route path='helper/location' element={<HelperLocation />} />
           <Route path='helper/address' element={<HelperAddress />} />
-          <Route path='helper/location/:city' element={<HelperLocationDetail />} />
 
           {/* Chatting */}
           <Route path='chatrooms' element={<ChatRoomsPage />} />

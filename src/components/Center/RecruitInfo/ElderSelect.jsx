@@ -62,7 +62,7 @@ export default function MatchingManage({ handleMatchingPage }) {
 
   return (
     <>
-      <div className='mx-auto flex flex-col items-center max-w-2xl mb-20'>
+      <div className='mx-auto flex flex-col items-center max-w-2xl mb-40'>
         <div className='w-full py-3.5 border-b border-[var(--main)] flex items-center pr-6'>
           <Input
             placeholder={'어르신 이름을 검색해 보세요'}

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
-import Header from '@/components/ui/temp/Header';
 import ElderSelect from '@/components/Center/RecruitInfo/ElderSelect';
 import ElderInfoCheck from '@/components/Center/RecruitInfo/ElderInfoCheck';
 import RecruitSetting from '@/components/Center/RecruitInfo/RecruitSetting';

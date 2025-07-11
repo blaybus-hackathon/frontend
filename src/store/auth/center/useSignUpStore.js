@@ -17,7 +17,9 @@ const createCenterDataSlice = (set) => ({
       centerName: '',
       name: '',
       position: '',
+      profileImage: '',
     },
+    kakaoInfo: null,
   },
 
   setEmailAuth: (data) =>
@@ -52,6 +54,23 @@ const createCenterDataSlice = (set) => ({
       },
     })),
 
+  setKakaoUser: (kakaoUser) =>
+    set((state) => ({
+      signUpForm: {
+        ...state.signUpForm,
+        kakaoUser,
+        emailAuth: {
+          ...state.signUpForm.emailAuth,
+          email: kakaoUser?.email || '',
+        },
+        personalInfo: {
+          ...state.signUpForm.personalInfo,
+          name: kakaoUser?.nickName || '',
+          profileImage: kakaoUser?.profileImage || '',
+        },
+      },
+    })),
+
   reset: () =>
     set({
       signUpForm: {
@@ -69,6 +88,7 @@ const createCenterDataSlice = (set) => ({
           name: '',
           position: '',
         },
+        kakaoUser: null,
       },
     }),
 });

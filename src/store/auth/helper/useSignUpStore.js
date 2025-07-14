@@ -58,6 +58,7 @@ const createHelperDataSlice = (set) => ({
       imgFile: null,
     },
     licenseInfo: {},
+    kakaoUser: null,
   },
 
   setEmailAuth: (data) =>
@@ -118,6 +119,23 @@ const createHelperDataSlice = (set) => ({
       };
     }),
 
+  setKakaoUser: (kakaoUser) =>
+    set((state) => ({
+      signUpForm: {
+        ...state.signUpForm,
+        kakaoUser,
+        emailAuth: {
+          ...state.signUpForm.emailAuth,
+          email: kakaoUser?.email || '',
+        },
+        helperInfo: {
+          ...state.signUpForm.helperInfo,
+          name: kakaoUser?.nickName || '',
+          profileImage: kakaoUser?.profileImage || '',
+        },
+      },
+    })),
+
   reset: () =>
     set({
       signUpForm: {
@@ -166,6 +184,7 @@ const createHelperDataSlice = (set) => ({
             certSerialNum: null,
           },
         },
+        kakaoUser: null,
       },
     }),
 });

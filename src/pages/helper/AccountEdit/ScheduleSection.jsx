@@ -1,53 +1,36 @@
-import React, { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import backarrow from "@/assets/images/back-arrow.png";
-import location_icon from "@/assets/images/location.png";
+import { useNavigate } from 'react-router-dom';
+import backarrow from '@/assets/images/back-arrow.png';
+import location_icon from '@/assets/images/location.png';
 
-function ScheduleSection({ optimize, consult }) {
+function ScheduleSection({ optimize }) {
   const optimized = optimize();
 
   const navigate = useNavigate();
 
   return (
     <section
-      className=" helper-section hover:cursor-pointer"
-      onClick={() => navigate("/helper/account/schedule")}
+      className=' helper-section hover:cursor-pointer'
+      onClick={() => navigate('/helper/account/schedule')}
     >
-      <div className="flex flex-col items-start gap-2.5 self-stretch">
-        <span className="helper-title">나의 근무 가능 일정</span>
-        <span className="helper-subtitle ">
-          나의 근무 가능한 날짜와 시간대를 설정해 보세요.
-        </span>
+      <div className='flex flex-col items-start gap-2.5 self-stretch'>
+        <span className='helper-title'>나의 근무 가능 일정</span>
+        <span className='helper-subtitle '>나의 근무 가능한 날짜와 시간대를 설정해 보세요.</span>
       </div>
 
-      <div className="profile-section__content-box">
-        <img
-          className="w-[24px] h-[24px] "
-          src={location_icon}
-          alt="location_icon"
-        />
+      <div className='profile-section__content-box'>
+        <img className='w-[24px] h-[24px] ' src={location_icon} alt='location_icon' />
 
         <div>
           {optimized.length > 0 ? (
             optimized.map((item, index) => (
-              <div key={index} className="flex items-center gap-4 py-1">
-                <span className="profile-section__content-text">
-                  {item.days}
-                </span>
-                <img
-                  src={backarrow}
-                  alt="backarrow"
-                  className="w-4 h-4 rotate-180"
-                />
-                <span className="profile-section__content-text">
-                  {item.time}
-                </span>
+              <div key={index} className='flex items-center gap-4 py-1'>
+                <span className='profile-section__content-text'>{item.days}</span>
+                <img src={backarrow} alt='backarrow' className='w-4 h-4 rotate-180' />
+                <span className='profile-section__content-text'>{item.time}</span>
               </div>
             ))
           ) : (
-            <span className="profile-section__content-text">
-              설정된 근무 가능 시간이 없습니다.
-            </span>
+            <span className='profile-section__content-text'>설정된 근무 가능 시간이 없습니다.</span>
           )}
         </div>
       </div>

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/custom/input';
 import { User, LockKeyholeOpen } from 'lucide-react';
 import Kakao from '/kakao_login_medium_wide.png';
 import Logo from '/blaybus_logo_icon_text.svg';
-import { AUTH_TYPE } from '@/constants/authType';
+import { CLIENT_ROLE, ROLE_MAP } from '@/constants/authType';
 
 const AuthForm = ({ type, onSubmit, setLoginType }) => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
       alert('이메일과 비밀번호를 모두 입력해주세요.');
       return;
     }
-    onSubmit({ email, password });
+    onSubmit({ email, password, loginType: type });
   }
 
   // 회원가입이 되어있지 않으면 navigate
@@ -32,8 +32,8 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
   }
 
   function handleKakaoLogin() {
-    const roleType = AUTH_TYPE[type];
-    const redirectUri = `${KAKAO_AUTH_URL}&state=${roleType}`;
+    const serverRole = ROLE_MAP.toServer[type];
+    const redirectUri = `${KAKAO_AUTH_URL}&state=${serverRole}`;
 
     window.location.href = redirectUri;
   }
@@ -51,9 +51,9 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
       {/* 로그인 타입 선택 */}
       <div className='grid grid-cols-2 mb-8 gap-4'>
         <Button
-          onClick={() => setLoginType('center')}
+          onClick={() => setLoginType(CLIENT_ROLE.CENTER)}
           className={`w-full h-[3.44rem] font-medium text-lg rounded-[0.31rem] border-none ${
-            type === 'center'
+            type === CLIENT_ROLE.CENTER
               ? 'bg-[var(--main)] text-white'
               : 'bg-[var(--button-inactive)] text-[var(--placeholder-gray)]'
           }`}
@@ -61,9 +61,9 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
           관리자용
         </Button>
         <Button
-          onClick={() => setLoginType('helper')}
+          onClick={() => setLoginType(CLIENT_ROLE.HELPER)}
           className={`w-full h-[3.44rem] font-medium text-lg rounded-[0.31rem] border-none ${
-            type === 'helper'
+            type === CLIENT_ROLE.HELPER
               ? 'bg-[var(--main)] text-white'
               : 'bg-[var(--button-inactive)] text-[var(--placeholder-gray)]'
           }`}

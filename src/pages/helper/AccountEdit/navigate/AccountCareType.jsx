@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/custom/Button';
-import Header from '@/components/ui/temp/Header';
 import useProfileStore from '@/store/useProfileStore';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 const CARE_TYPES = {
   workTypes: [
@@ -58,14 +57,20 @@ const CARE_TYPES = {
 
 export default function AccountCareType() {
   const navigate = useNavigate();
-  const {
-    profile,
-    profileEdit,
-    updateCareTypeWorkTypes,
-    initializeProfileEdit,
-    updateCareTypeField,
-  } = useProfileStore();
+  const { profile, profileEdit, initializeProfileEdit, updateCareTypeField } = useProfileStore();
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '돌봄유형 설정',
+      onBack: () => navigate(-1),
+    });
+    return () => {
+      clearHeaderProps();
+    };
+  }, []);
   useEffect(() => {
     if (!profileEdit) {
       initializeProfileEdit(profile);
@@ -136,7 +141,7 @@ export default function AccountCareType() {
                       width='29'
                       height='29'
                       rx='14.5'
-                      fill={isSelected ? '#9b4dff' : '#B6B6B6'} // 선택 시 색상 변경
+                      fill={isSelected ? 'var(--main)' : '#B6B6B6'} // 선택 시 색상 변경
                     />
                     <path
                       d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'

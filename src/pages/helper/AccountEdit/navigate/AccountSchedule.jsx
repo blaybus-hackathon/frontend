@@ -3,27 +3,23 @@ import { Button } from '@/components/ui/custom/Button';
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
-  SelectScrollDownButton,
-  SelectScrollUpButton,
-  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/custom/select';
-import { Input } from '@/components/ui/input';
-import Header from '@/components/ui/temp/Header';
 
 import { useNavigate } from 'react-router-dom';
 
 import useScheduleStore from '@/store/suho/useScheduleStore';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 const DAYS_DATA = ['월', '화', '수', '목', '금', '토', '일'];
 
 export default function AccountSchedule() {
   const navigate = useNavigate();
-  const { schedule, updateSchedule, resetSchedule, consult, setConsult } = useScheduleStore();
+  const { schedule, updateSchedule, consult, setConsult } = useScheduleStore();
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
   const [openDays, setOpenDays] = useState(() => {
     const initialOpenDays = {};
@@ -51,8 +47,36 @@ export default function AccountSchedule() {
   };
 
   const handleTimeChange = (day, type, value) => {
-    updateSchedule(day, type, value);
+    const anotherTime =
+      type === 'start' ? +schedule[day].end.slice(0, 2) : +schedule[day].start.slice(0, 2);
+    if ((type === 'start' && +value >= anotherTime) || (type === 'end' && +value <= anotherTime)) {
+      alert('시간을 다시 한번 확인해주세요');
+      return;
+    }
+    const strVal = numberStringToTimeString(value);
+    updateSchedule(day, type, strVal);
   };
+
+  function timeStringToNumber(time) {
+    const [hour] = time.split(':');
+    return String(+hour);
+  }
+  function numberStringToTimeString(numStr) {
+    const num = parseInt(numStr, 10);
+    const padded = num.toString().padStart(2, '0');
+    return `${padded}:00`;
+  }
+
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '근무 가능 일정',
+      onBack: () => navigate(-1),
+    });
+    return () => {
+      clearHeaderProps();
+    };
+  }, []);
 
   useEffect(() => {
     DAYS_DATA.forEach((day) => {
@@ -96,7 +120,7 @@ export default function AccountSchedule() {
                     width='29'
                     height='29'
                     rx='14.5'
-                    fill={openDays[day] ? '#9b4dff' : '#B6B6B6'}
+                    fill={openDays[day] ? 'var(--main)' : '#B6B6B6'}
                   />
                   <path
                     d='M8.39775 15.7273C8.17808 15.5076 7.82192 15.5076 7.60225 15.7273C7.38258 15.9469 7.38258 16.303 7.60225 16.5227L10.9773 19.8977C11.1969 20.1174 11.5531 20.1174 11.7727 19.8977L20.0227 11.6477C20.2424 11.4281 20.2424 11.0719 20.0227 10.8523C19.803 10.6326 19.4469 10.6326 19.2273 10.8523L11.375 18.7045L8.39775 15.7273Z'
@@ -110,8 +134,11 @@ export default function AccountSchedule() {
                 <div className='w-full flex flex-row items-center gap-[10px] mt-2'>
                   <div className='flex-1'>
                     <Select
-                      value={String(schedule[day]?.start || '')}
-                      onValueChange={(value) => handleTimeChange(day, 'start', value)}
+                      value={timeStringToNumber(schedule[day].start) || ''}
+                      defaultValue={timeStringToNumber(schedule[day]?.start)}
+                      onValueChange={(value) => {
+                        handleTimeChange(day, 'start', value);
+                      }}
                     >
                       <SelectTrigger className='h-[65px] flex gap-8 px-2 w-full justify-center items-center border-[#C8C8C8] border profile-section__content-text'>
                         <SelectValue placeholder='시작시간' />
@@ -137,7 +164,8 @@ export default function AccountSchedule() {
 
                   <div className='flex-1'>
                     <Select
-                      value={String(schedule[day]?.end || '')}
+                      value={timeStringToNumber(schedule[day].end) || ''}
+                      defaultValue={timeStringToNumber(schedule[day]?.end)}
                       onValueChange={(value) => handleTimeChange(day, 'end', value)}
                     >
                       <SelectTrigger className='h-[65px] flex gap-8 px-2 w-full justify-center items-center border-[#C8C8C8] border profile-section__content-text'>

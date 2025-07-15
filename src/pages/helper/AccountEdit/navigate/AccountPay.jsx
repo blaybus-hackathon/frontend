@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
-import Header from '@/components/ui/temp/Header';
 import usePayStore from '@/store/suho/usePayStore';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 import {
   Select,
@@ -17,7 +17,6 @@ const PAY_TYPES = [
   { id: 'hourly', label: '시급' },
   { id: 'daily', label: '일급' },
   { id: 'weekly', label: '주급' },
-  // { id: 'monthly', label: '월급' },
 ];
 
 export default function AccountPay() {
@@ -26,9 +25,23 @@ export default function AccountPay() {
   // store에서 직접 값과 함수 가져오기
   const { pay, setPay, consult, setConsult } = usePayStore();
 
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+
   // 로컬 상태로 관리
   const [inputPay, setInputPay] = useState(pay.amount);
   const [selectedType, setSelectedType] = useState(pay.type || 'hourly');
+
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '희망급여 설정',
+      onBack: () => navigate(-1),
+    });
+    return () => {
+      clearHeaderProps();
+    };
+  }, []);
 
   // PayStore의 현재 값으로 초기화
 

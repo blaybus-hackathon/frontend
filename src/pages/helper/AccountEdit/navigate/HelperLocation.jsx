@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Button } from '@/components/ui/custom/Button';
 import { useNavigate } from 'react-router-dom';
 import location_icon from '@/assets/images/location.png';
@@ -21,20 +20,19 @@ export default function LocationSelector() {
 
   const [selectedCity, setSelectedCity] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [selectedSubDistrict, setselectedSubDistrict] = useState(null);
 
   useEffect(() => {
-    // 도/시 가져오기
-    // axios
-    //   .get('http://localhost:8080/api/get-first-addr', {
-    //     withCredentials: true,
-    //   })
     request('get', '/get-first-addr')
       .then((res) => setCities(res))
       .catch((err) => console.error('도시 목록 불러오기 실패', err));
 
     // header 정보 저장
-    setHeaderProps({ type: 'back', title: '선호 지역', resetFunc: resetAll });
+    setHeaderProps({
+      type: 'back',
+      title: '선호 지역',
+      resetFunc: resetAll,
+      onBack: () => navigate(-1),
+    });
     return () => {
       clearHeaderProps();
     };
@@ -82,7 +80,7 @@ export default function LocationSelector() {
       <section className=''>
         <div className='flex flex-col items-start gap-2.5 self-stretch mb-14'>
           <span className='helper-title text-left'>나의 선호하는 지역을 설정해 주세요!</span>
-          <span className='helper-subtitle text-left '>
+          <span className='text-left leading-6'>
             돌봄워크가 나에게 맞는 일자리를 소개시켜 드릴게요. (최대 5개 지역 선택 가능)
           </span>
         </div>
@@ -91,13 +89,13 @@ export default function LocationSelector() {
             <div className='w-full grid grid-cols-3 gap-5'>
               {cities.map((city) => (
                 <Button
-                  variant='black'
+                  variant='outline'
                   key={city.id}
                   onClick={() => {
                     setSelectedCity(city);
                     fetchDistricts(city.id);
                   }}
-                  className={`font-normal rounded-[0.625rem] mb-0 w-full border border-[var(--outline)] ${
+                  className={`font-normal rounded-[0.625rem] mb-0 w-full ${
                     city.name.length > 5 ? 'text-sm' : 'text-lg'
                   }`}
                 >
@@ -117,15 +115,15 @@ export default function LocationSelector() {
                   name.includes('전체'),
                 );
 
-                const isSelected =
-                  selectedDistricts[selectedCity.name]?.[district.name]?.includes(district.name) &&
-                  !isWholeButton;
+                // const isSelected =
+                //   selectedDistricts[selectedCity.name]?.[district.name]?.includes(district.name) &&
+                //   !isWholeButton;
 
                 const isDisabled = !isWholeButton && isWholeAlreadySelected;
 
                 return (
                   <Button
-                    variant='black'
+                    variant='outline'
                     key={district.id}
                     disabled={isDisabled}
                     onClick={() => {
@@ -189,12 +187,12 @@ export default function LocationSelector() {
                 const isSubDistrictDisabled = isWholeSelected && !isSelected;
                 const isWholeSubDistrictButton = sub.name.includes('전체');
 
-                const isCityWholeSelectButton =
-                  sub.id === parseInt(`${selectedDistrict.id}000`, 10);
+                // const isCityWholeSelectButton =
+                //   sub.id === parseInt(`${selectedDistrict.id}000`, 10);
 
                 return (
                   <Button
-                    variant='black'
+                    variant='outline'
                     key={sub.id}
                     disabled={isSubDistrictDisabled}
                     onClick={() => {

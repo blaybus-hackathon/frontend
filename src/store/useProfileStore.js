@@ -6,7 +6,7 @@ import usePayStore from '@/store/suho/usePayStore'; // 스케줄 스토어 임�
 // Zustand Store 생성
 const useProfileStore = create(
   persist(
-    (set, get) => ({
+    (set) => ({
       profile: {
         chatSenderId: '',
         email: '',
@@ -35,6 +35,7 @@ const useProfileStore = create(
         address: '',
         profileImage: '',
       },
+
       profileEdit: {
         introduction: '',
         careExperience: '',
@@ -43,6 +44,7 @@ const useProfileStore = create(
         location: {
           서울: {
             은평구: ['불광'],
+            광진구: ['화양'],
           },
         },
         careTypes: {

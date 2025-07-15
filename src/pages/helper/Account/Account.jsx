@@ -3,19 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 // ✅ 2. 상태 관리 (스토어, 컨텍스트 등)
-import { CARE_TYPES } from '@/store/suho/useCareTypeStore';
-import useAccountStore from '@/store/suho/useAccountStore';
 import useScheduleStore from '@/store/suho/useScheduleStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 // ✅ 3. UI 컴포넌트 (공통 UI → 커스텀 컴포넌트 순)
 import { Button } from '@/components/ui/custom/Button';
 
-// ✅ 4. 레이아웃 컴포넌트 (Header, Footer 등)
-import Header from '@/components/ui/temp/Header';
-import Footer from '@/components/ui/temp/Footer';
-
-// ✅ 5. 이미지 및 정적 파일
+// ✅ 4. 이미지 및 정적 파일
 import location_icon from '@/assets/images/location.png';
 import overview from '@/assets/images/overview.png';
 import backarrow from '@/assets/images/back-arrow.png';
@@ -23,14 +17,9 @@ import homecontrols from '@/assets/images/home-controls.png';
 
 //temp
 import useProfileStore from '@/store/useProfileStore';
-import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 
 export default function Account() {
-  //temp
-  const handleTest = () => {
-    console.log('profileEdit 상태:', profileEdit);
-  };
-  const { schedule, consult, optimizedSchedule } = useScheduleStore();
+  const { optimizedSchedule } = useScheduleStore();
   const PAY_TYPES = [
     { id: 'hourly', label: '시급' },
     { id: 'daily', label: '일급' },
@@ -39,32 +28,23 @@ export default function Account() {
   ];
 
   const navigate = useNavigate();
-  const profile = useAccountStore((state) => state.profile);
 
-  const { profileEdit, updateProfileField } = useProfileStore();
+  const { profileEdit } = useProfileStore();
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
   useEffect(() => {
-    setHeaderProps({ type: 'back', title: '나의 계정' });
+    setHeaderProps({
+      type: 'back',
+      title: '나의 계정',
+      onBack: () => {
+        navigate(-1);
+      },
+    });
     return () => {
       clearHeaderProps();
     };
-  });
-
-  const getCareTypeLabel = (category) => {
-    if (category === 'workTypes') {
-      return (
-        profile.careTypes?.workTypes
-          ?.map((type) => CARE_TYPES.workTypes.find((t) => t.id === type)?.label)
-          .join(', ') || '미설정'
-      );
-    }
-    const selected = CARE_TYPES[category]?.find(
-      (item) => item.id === profile.careTypes?.[category],
-    );
-    return selected?.label || '미설정';
-  };
+  }, []);
 
   const handleEdit = () => {
     navigate('/helper/account/edit', {
@@ -75,8 +55,6 @@ export default function Account() {
   return (
     <>
       <main className='max-w-md mx-auto flex flex-col '>
-        {/* <Header title='나의 계정' /> */}
-
         {/* 기본 정보 */}
         <section className='flex flex-col items-stretch gap-12 mt-6'>
           {/* 프로필 이미지 */}
@@ -89,11 +67,9 @@ export default function Account() {
               />
             </div>
             <div className='flex flex-col gap-5 items-start'>
-              {/* <span>{profileEdit.name || "홍길동"}</span> */}
               <span className='text-[#191919] text-[23px] font-bold leading-none h-auto '>
                 {profileEdit.name || '알수 없음'}
               </span>
-              {/* <span>{profileEdit.address || "서울특별시 용산구 거주"}</span> */}
               <span className='text-[#191919] font-pretendard text-[20px] font-medium leading-none '>
                 {profileEdit.address || '주소 불명'}
               </span>
@@ -139,7 +115,6 @@ export default function Account() {
 
             <div className='profile-section__content-box'>
               <img className='w-[24px] h-[24px]' src={location_icon} alt='location_icon' />
-              {/* TODO : 긴 문장 처리시 overflow 처리 필요. */}
               <div className='flex items-center gap-1 py-1'>
                 {Object.entries(profileEdit.location).length > 0 ? (
                   <span className='flex flex-col  gap-2'>
@@ -168,14 +143,12 @@ export default function Account() {
           </section>
 
           {/* 나의 근무 가능 일정 섹션 */}
-          {/* TODO : 피그마 아이콘 변경 */}
           <section className='helper-section'>
             <span className='helper-title'>나의 근무 가능 일정</span>
             <div className='profile-section__content-box'>
               <img className='w-[24px] h-[24px] ' src={location_icon} alt='location_icon' />
 
               <div>
-                {console.log(optimizedSchedule().length)}
                 {optimizedSchedule().length > 0 ? (
                   optimizedSchedule().map((item, index) => (
                     <div key={index} className='flex items-center gap-4 py-1'>
@@ -235,14 +208,10 @@ export default function Account() {
             </div>
           </section>
         </section>
-        <Button variant='white' onClick={handleEdit} className='mt-6 mr-6 ml-6 '>
+        <Button variant='white' onClick={handleEdit} className='m-6'>
           수정하기
         </Button>
-
-        {/* <Button type='button' onClick={handleTest} /> */}
       </main>
-
-      {/* <Footer /> */}
     </>
   );
 }

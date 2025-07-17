@@ -38,10 +38,9 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
     window.location.href = redirectUri;
   }
 
-  // TODO: 이메일/비밀번호 찾기
   function handleFindAccount(e) {
     e.preventDefault();
-    alert('기능이 곧 추가될 예정입니다.');
+    navigate('/find-account');
   }
 
   return (
@@ -100,7 +99,6 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
         </div>
 
         <div className='flex justify-end mb-8'>
-          {/* TODO: 아이디 - 비밀번호 찾기 추가 필요. */}
           <button
             className='text-[1.06rem] font-medium text-[var(--placeholder-gray)] border-b border-[var(--outline)]'
             onClick={handleFindAccount}
@@ -121,9 +119,7 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
       >
         돌봄워크 회원가입
       </Button>
-      {/* 아이콘 추가 Label로 수정 필요. */}
 
-      {/* TODO: 카카오 로그인 psd 파일 편집 불가인 관계로 */}
       <button className={`w-full h-[3.4rem] mt-2`} onClick={handleKakaoLogin} type='button'>
         <img src={Kakao} alt='kakao' className='w-full h-full object-fit' />
       </button>

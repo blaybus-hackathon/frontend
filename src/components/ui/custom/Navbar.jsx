@@ -11,7 +11,7 @@ export default function Navbar() {
   return (
     <header className='bg-white shadow-sm border-b sticky top-0 z-50'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-10 flex justify-between items-center py-4'>
-        <div className='flex justify-between items-center py-2 lg:py-4'>
+        <div className='flex justify-between items-center py-2 lg:py-4 cursor-pointer'>
           <div className='flex items-center space-x-3'>
             <img src={Logo} alt='logo' className='h-10 lg:h-12 w-auto' />
           </div>

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/custom/input';
 import { User, LockKeyholeOpen } from 'lucide-react';
 import Kakao from '/kakao_login_medium_wide.png';
 import Logo from '/blaybus_logo_icon_text.svg';
-import { AUTH_TYPE } from '@/constants/authType';
+import { CLIENT_ROLE, ROLE_MAP } from '@/constants/authType';
 
 const AuthForm = ({ type, onSubmit, setLoginType }) => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
       alert('이메일과 비밀번호를 모두 입력해주세요.');
       return;
     }
-    onSubmit({ email, password });
+    onSubmit({ email, password, loginType: type });
   }
 
   // 회원가입이 되어있지 않으면 navigate
@@ -32,16 +32,15 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
   }
 
   function handleKakaoLogin() {
-    const roleType = AUTH_TYPE[type];
-    const redirectUri = `${KAKAO_AUTH_URL}&state=${roleType}`;
+    const serverRole = ROLE_MAP.toServer[type];
+    const redirectUri = `${KAKAO_AUTH_URL}&state=${serverRole}`;
 
     window.location.href = redirectUri;
   }
 
-  // TODO: 이메일/비밀번호 찾기
   function handleFindAccount(e) {
     e.preventDefault();
-    alert('기능이 곧 추가될 예정입니다.');
+    navigate('/find-account');
   }
 
   return (
@@ -51,9 +50,9 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
       {/* 로그인 타입 선택 */}
       <div className='grid grid-cols-2 mb-8 gap-4'>
         <Button
-          onClick={() => setLoginType('center')}
+          onClick={() => setLoginType(CLIENT_ROLE.CENTER)}
           className={`w-full h-[3.44rem] font-medium text-lg rounded-[0.31rem] border-none ${
-            type === 'center'
+            type === CLIENT_ROLE.CENTER
               ? 'bg-[var(--main)] text-white'
               : 'bg-[var(--button-inactive)] text-[var(--placeholder-gray)]'
           }`}
@@ -61,9 +60,9 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
           관리자용
         </Button>
         <Button
-          onClick={() => setLoginType('helper')}
+          onClick={() => setLoginType(CLIENT_ROLE.HELPER)}
           className={`w-full h-[3.44rem] font-medium text-lg rounded-[0.31rem] border-none ${
-            type === 'helper'
+            type === CLIENT_ROLE.HELPER
               ? 'bg-[var(--main)] text-white'
               : 'bg-[var(--button-inactive)] text-[var(--placeholder-gray)]'
           }`}
@@ -100,7 +99,6 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
         </div>
 
         <div className='flex justify-end mb-8'>
-          {/* TODO: 아이디 - 비밀번호 찾기 추가 필요. */}
           <button
             className='text-[1.06rem] font-medium text-[var(--placeholder-gray)] border-b border-[var(--outline)]'
             onClick={handleFindAccount}
@@ -121,9 +119,7 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
       >
         돌봄워크 회원가입
       </Button>
-      {/* 아이콘 추가 Label로 수정 필요. */}
 
-      {/* TODO: 카카오 로그인 psd 파일 편집 불가인 관계로 */}
       <button className={`w-full h-[3.4rem] mt-2`} onClick={handleKakaoLogin} type='button'>
         <img src={Kakao} alt='kakao' className='w-full h-full object-fit' />
       </button>

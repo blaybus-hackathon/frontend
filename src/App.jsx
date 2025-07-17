@@ -9,6 +9,7 @@ import Spinner from './components/loading/Spinner';
 const SignIn = lazy(() => import('./pages/SignIn'));
 const CenterSignUp = lazy(() => import('./pages/center/SignUp'));
 const HelperSignUp = lazy(() => import('./pages/helper/SignUp'));
+const FindAccount = lazy(() => import ('./pages/FindAccount'));
 const SearchCenter = lazy(() => import('./pages/SearchCenter'));
 const KakaoCallback = lazy(() => import('./components/Auth/KakaoCallback'));
 const Account = lazy(() => import('./pages/helper/Account/Account'));
@@ -44,6 +45,7 @@ function App() {
           {/* 레이아웃 */}
           <Route path='/' element={<Layout />}>
             <Route path='/signin' element={<SignIn />} />
+            <Route path='/find-account' element={<FindAccount />} />
             <Route path='/search-center' element={<SearchCenter />} />
 
             {/* Center */}

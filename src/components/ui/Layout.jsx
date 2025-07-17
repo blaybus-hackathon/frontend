@@ -22,6 +22,7 @@ export default function Layout() {
     '/center/modify-info',
     '/center/matching',
     '/helper/address',
+    '/find-account',
   ];
 
   const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));

@@ -2,6 +2,7 @@ import Logo from '@/assets/images/logo.svg';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../custom/Button';
+import ResetButton from '../resetButton';
 
 // TODO: 레이아웃 조정 필요
 function LogoHeader({ hasBorder = true }) {
@@ -13,17 +14,28 @@ function LogoHeader({ hasBorder = true }) {
 
   return (
     <header
-      className={`flex items-center px-7 w-full h-[5.625rem] ${hasBorder ? 'border-b border-b-[#C8C8C8]' : ''}`}
+      className={`flex items-center px-7 w-full h-[5.625rem] ${
+        hasBorder ? 'border-b border-b-[#C8C8C8]' : ''
+      }`}
     >
       <img src={Logo} alt='logo' className='w-[12.625rem] h-auto' onClick={handleLogoClick} />
     </header>
   );
 }
 
-function HeaderBackOrProgress({ type, title, progress, onBack, hasBorder = true }) {
+function HeaderBackOrProgress({
+  type,
+  title,
+  progress,
+  onBack,
+  hasBorder = true,
+  resetFunc = null,
+}) {
   return (
     <header
-      className={`flex justify-between items-center px-6 h-[4.875rem] ${hasBorder ? 'border-b border-b-[#C8C8C8]' : ''}`}
+      className={`flex justify-between items-center px-6 h-[4.875rem] ${
+        hasBorder ? 'border-b border-b-[#C8C8C8]' : ''
+      }`}
     >
       <div className='flex items-center gap-[0.625rem]'>
         {(type === 'back' || type === 'back-progress') && (
@@ -39,6 +51,8 @@ function HeaderBackOrProgress({ type, title, progress, onBack, hasBorder = true 
             {progress.current}/{progress.total}
           </p>
         )}
+
+        {type === 'back' && resetFunc && <ResetButton resetFunc={resetFunc} />}
       </div>
     </header>
   );
@@ -51,6 +65,7 @@ export default function Header({
   onBack = null,
   hidden = false,
   hasBorder = true,
+  resetFunc = null,
 }) {
   if (hidden || type === 'none') return null;
 
@@ -65,6 +80,7 @@ export default function Header({
       progress={progress}
       onBack={onBack}
       hasBorder={hasBorder}
+      resetFunc={resetFunc}
     />
   );
 }

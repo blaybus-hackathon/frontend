@@ -281,8 +281,6 @@ export default function MatchingManage3({ handleMatchingPage }) {
   // 선택 항목들 비트 합 구하기 (arr = 선택값 배열, base = 가장 낮은 id값)
   const getSelectionBit = (arr, base) => arr.reduce((acc, cur) => acc + 2 ** (cur - base), 0);
 
-  const getAddressSeq = () => {};
-
   return (
     <>
       <div className='mx-auto flex flex-col items-center max-w-2xl mb-12'>
@@ -294,7 +292,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
         </p>
       </div>
 
-      <div className='mx-auto flex flex-col gap-10 max-w-2xl mb-20'>
+      <div className='mx-auto flex flex-col gap-10 max-w-2xl mb-40'>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>근무 종류</label>
           <div className='grid grid-cols-2 w-full gap-4'>{renderWorkType()}</div>

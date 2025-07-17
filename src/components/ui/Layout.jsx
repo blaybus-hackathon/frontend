@@ -27,6 +27,7 @@ export default function Layout() {
 
   const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));
   const isFooterVisible = !hideFooterRoutes.some((route) => location.pathname.startsWith(route));
+  const isManager = location.pathname.startsWith('/center');
 
   return (
     <div className='min-h-screen flex flex-col max-w-2xl mx-auto'>
@@ -34,7 +35,7 @@ export default function Layout() {
       <main className='w-[88%] mx-auto flex-grow'>
         <Outlet />
       </main>
-      {isFooterVisible && <Footer />}
+      {isFooterVisible && <Footer isManger={isManager} />}
     </div>
   );
 }

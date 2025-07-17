@@ -1,4 +1,4 @@
-import profInit from '@/assets/images/default-profile.png';
+import profInit from '@/assets/images/elder-basic-profile.png';
 
 export default function InfoCard({ isChecked, onClick, showCheck = true, user }) {
   return (
@@ -12,7 +12,11 @@ export default function InfoCard({ isChecked, onClick, showCheck = true, user })
       >
         <div className='flex mx-[1rem] w-full my-5 relative'>
           <div className='bg-white rounded-[50%] size-16 flex items-center justify-center mr-3'>
-            <img src={user.imgAddress} alt='profile' className='items-center size-5' />
+            <img
+              src={user.imgAddress ? user.imgAddress : profInit}
+              alt='profile'
+              className='items-center size-full'
+            />
           </div>
           <div className='flex flex-col items-start gap-1 py-2'>
             <p className='font-semibold'>{user && user.name} 어르신</p>

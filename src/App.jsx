@@ -3,6 +3,7 @@ import Layout from './components/ui/Layout';
 import NotFound from './pages/NotFound';
 
 import SignIn from './pages/SignIn';
+import FindAccount from './pages/FindAccount';
 import CenterSignUp from './pages/center/SignUp';
 import HelperSignUp from './pages/helper/SignUp';
 import SearchCenter from './pages/SearchCenter';
@@ -43,6 +44,7 @@ function App() {
         {/* 레이아웃 */}
         <Route path='/' element={<Layout />}>
           <Route path='/signin' element={<SignIn />} />
+          <Route path='/find-account' element={<FindAccount />} />
           <Route path='/search-center' element={<SearchCenter />} />
 
           {/* Center */}

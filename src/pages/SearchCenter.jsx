@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDebounce } from '@/hooks/useDebounce';
-import { Search } from 'lucide-react';
+import { Search, ArrowUpLeft } from 'lucide-react';
 import { useSignUpStore } from '@/store/auth/center/useSignUpStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import { useCenterList } from '@/hooks/center/service/useCenterList';
+import { Button } from '@/components/ui/custom/Button';
 import SignUpButton from '@/components/Auth/SignUp/center/SignUpButton';
 
 function CenterListComponent({ center }) {
@@ -70,9 +71,24 @@ export default function SearchCenter() {
       {/* Search Result */}
       <div className='flex flex-col gap-4 overflow-y-auto h-[50vh]'>
         {centerList.length === 0 ? (
-          <p className='text-[var(--placeholder-gray)] text-base font-normal'>
-            검색 결과가 없습니다.
-          </p>
+          <div className='flex flex-col gap-15'>
+            <p className='text-[var(--text)] text-lg font-normal text-center pt-10'>
+              검색 결과가 존재하지 않습니다.
+            </p>
+            <div className='flex flex-col gap-2'>
+              <p className='text-[var(--placeholder-gray)] text-base font-normal text-center'>
+                찾으시는 센터가 없으신가요?
+              </p>
+              <Button
+                variant='white'
+                className='mx-auto text-lg font-normal p-3 flex items-center justify-center gap-1 w-fit'
+                onClick={() => navigate('/center/register')}
+              >
+                <ArrowUpLeft className='mt-1/2 w-6 h-6 text-[var(--main)]' />
+                센터 등록하러 가기
+              </Button>
+            </div>
+          </div>
         ) : (
           centerList.map((center) => <CenterListComponent key={center.centerSeq} center={center} />)
         )}

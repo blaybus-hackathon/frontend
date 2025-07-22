@@ -8,7 +8,9 @@ export default memo(function ElderProfile({ elderInfo, detailInfo = true }) {
 
   return (
     <>
-      <section className='grid grid-cols-[auto_1fr] gap-x-7 items-center text-start pb-5'>
+      <section
+        className={`grid grid-cols-[auto_1fr] gap-x-7 items-center text-start ${detailInfo ? 'pb-5' : 'pb-0'}`}
+      >
         <img
           src={elderInfo.profile ?? profile}
           alt={`${elderInfo.name || ''} 어르신`}
@@ -33,14 +35,14 @@ export default memo(function ElderProfile({ elderInfo, detailInfo = true }) {
             </div>
             <div className='flex flex-col items-start gap-y-2'>
               <p className='text-[0.94rem] font-normal text-[var(--text)] lg:text-lg'>
-                {elderInfo.workTypeText}
+                {elderInfo.workTypeText || elderInfo.workType}
               </p>
               <p className='text-[0.94rem] font-normal text-[var(--text)] lg:text-lg'>
-                {elderInfo.careLevelText}
+                {elderInfo.careLevelText || elderInfo.careLevel}
               </p>
             </div>
           </section>
-          <div className='grid grid-cols-[auto_1fr] items-start pt-2 gap-x-14'>
+          <div className='grid grid-cols-[auto_1fr] items-start pt-2 gap-x-14 lg:gap-x-15.5'>
             <p className='text-base font-semibold text-[var(--black)] lg:text-lg'>주소지</p>
             <p className='text-[0.94rem] break-keep font-normal text-[var(--text)] text-start lg:text-lg'>
               {elderInfo.fullAddress}

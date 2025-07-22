@@ -43,7 +43,7 @@ const RadioItem = ({ className, children, value, checked, ...props }) => {
   const radioValue = value || children;
   return (
     <button type='button' role='radio' className={className} value={radioValue} {...props}>
-      <div className='flex border border-[var(--outline)] rounded-md py-4.5 px-4 gap-3.5 text-xl items-center'>
+      <div className='flex border border-[var(--outline)] rounded-md py-4.5 px-3.5 lg:px-4 gap-2 lg:gap-3.5 text-lg lg:text-xl items-center'>
         <svg
           width='29'
           height='29'

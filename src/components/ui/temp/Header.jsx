@@ -43,11 +43,11 @@ function HeaderBackOrProgress({
             <ChevronLeft />
           </Button>
         )}
-        <p className='font-semibold text-[1.5rem] lg:text-[1.625rem]'>{title}</p>
+        <h1 className='font-semibold text-2xl lg:text-[1.625rem]'>{title}</h1>
       </div>
       <div className='flex items-center'>
         {type === 'back-progress' && (
-          <p className='text-[1.5rem] lg:text-[1.625rem] font-semibold text-[var(--main)]'>
+          <p className='text-2xl lg:text-[1.625rem] font-semibold text-[var(--main)]'>
             {progress.current}/{progress.total}
           </p>
         )}

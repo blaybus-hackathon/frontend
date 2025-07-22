@@ -11,7 +11,7 @@ const buttonVariants = cva(
         default:
           'bg-[var(--main)] text-white border border-[var(--outline)] active:bg-[var(--main-hover)] hover:bg-[var(--main-hover)]',
         white:
-          'bg-white text-[var(--main)] border border-[var(--main)] active:bg-[var(--main)] active:text-white hover:bg-[var(--main)] hover:text-white',
+          'bg-white text-[var(--main)] border border-[var(--main)] active:bg-[var(--main)] active:text-white hover:bg-[var(--main-hover)] hover:text-white',
         black:
           'bg-white text-black border border-[var(--main)] active:bg-[var(--main)] active:text-black hover:bg-[var(--main)] hover:text-white',
 

@@ -100,6 +100,7 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
 
         <div className='flex justify-end mb-8'>
           <button
+            type='button'
             className='text-[1.06rem] font-medium text-[var(--placeholder-gray)] border-b border-[var(--outline)]'
             onClick={handleFindAccount}
           >

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useOptimistic, startTransition } from 'react';
 
 import addImg from '@/assets/images/add.png';
 import chatStore from '@/store/jbStore/chatStore';
@@ -12,7 +12,6 @@ import {
   disconnectSocket,
 } from '@/components/chat/ChatSocket';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
-import useProfileStore from '@/store/useProfileStore';
 import useAuthStore from '@/store/useAuthStore';
 import defaultProfile from '@/assets/images/elder-basic-profile.png';
 
@@ -25,7 +24,6 @@ function PrivateChatRoom() {
 
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
-  const { profile } = useProfileStore();
   const { chatInfo } = chatStore();
   const { user } = useAuthStore();
 
@@ -35,6 +33,10 @@ function PrivateChatRoom() {
   const [hasNext, setHasNext] = useState(true); //다음 페이지 유무
   const [msgInput, setMsgInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [optMessages, setOptMessages] = useOptimistic(messages, (state, newMsg) => [
+    newMsg,
+    ...state,
+  ]);
 
   const msgContainerRef = useRef();
   const prevScrollHeight = useRef(0);
@@ -64,6 +66,7 @@ function PrivateChatRoom() {
       connectSocket(() => {
         // 개인 메세지 구독 (상대 -> 나)
         subscribe('/user/queue/private', (message) => {
+          console.log('come');
           const newMsg = {
             senderYn: false,
             content: message.content,
@@ -128,9 +131,14 @@ function PrivateChatRoom() {
 
   const sendChatMessage = async () => {
     if (!msgInput) return;
-    const message = {
+    // if (!user) {
+    //   alert('사용자 식별에 실패하였습니다. 다시 로그인해주세요.');
+    //   navigate('/signin');
+    // }
+    const payload = {
       content: msgInput,
       senderId: user.chatSenderId,
+      // senderId: 9,
       receiverId: chatInfo.partnerId,
       patientLogId: chatInfo.patientLogId,
     };
@@ -139,8 +147,12 @@ function PrivateChatRoom() {
       content: msgInput,
       readYn: false,
     };
-    sendMessage('/app/private-message', message);
-    setMessages((prev) => [newMsg, ...prev]);
+    setMsgInput('');
+    startTransition(async () => {
+      setOptMessages({ ...newMsg, isOpt: true });
+      sendMessage('/app/private-message', payload);
+      setMessages((prev) => [newMsg, ...prev]);
+    });
   };
 
   // 메세지 fetch
@@ -172,7 +184,7 @@ function PrivateChatRoom() {
   };
 
   const renderMessages = () =>
-    messages
+    optMessages
       .slice()
       .reverse()
       .map((msg, idx) => (
@@ -186,7 +198,7 @@ function PrivateChatRoom() {
           <p
             className={`${
               msg.senderYn ? 'bg-[rgba(82,46,154,0.1)]' : 'bg-[var(--button-inactive)]'
-            } flex items-center rounded-2xl py-3 px-5`}
+            } ${msg.isOpt && 'opacity-50'} flex items-center rounded-2xl py-3 px-5`}
           >
             {msg.content}
           </p>
@@ -272,7 +284,6 @@ function PrivateChatRoom() {
             className='rounded-[100px] bg-[var(--button-inactive)] px-4 py-3 text-[var(--main)] h-12'
             onClick={() => {
               sendChatMessage();
-              setMsgInput('');
             }}
           >
             전송

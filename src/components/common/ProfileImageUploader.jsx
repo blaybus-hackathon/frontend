@@ -64,8 +64,12 @@ export default function ProfileImageUploader({
             />
 
             {selectedImage === null ? (
-              <div className='flex flex-col items-center gap-2'>
-                <Button onClick={handleImageChange} className='px-6 py-3' variant='white'>
+              <div className='flex flex-col items-start gap-2'>
+                <Button
+                  onClick={handleImageChange}
+                  className='px-4 py-3 text-lg font-semibold'
+                  variant='white'
+                >
                   이미지 선택
                 </Button>
               </div>
@@ -79,10 +83,10 @@ export default function ProfileImageUploader({
                 <div className='flex gap-2'>
                   <Button
                     onClick={handleImageDelete}
-                    className='px-6 text-red-500 '
+                    className='px-4 py-1 text-red-600 font-medium'
                     variant='ghost'
                   >
-                    삭제
+                    삭제하기
                   </Button>
                 </div>
               </div>

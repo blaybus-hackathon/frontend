@@ -1,16 +1,10 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
-// import {
-//   getMatchingWaitingList,
-//   getMatchingInProgressList,
-//   getMatchingCompletedList,
-//   changeMatchingStatus,
-// } from '@/services/center/matchingService';
 import {
   getMatchingWaitingList,
   getMatchingInProgressList,
   getMatchingCompletedList,
   changeMatchingStatus,
-} from '@/mock/matchingService';
+} from '@/services/center/matchingService';
 import { MATCH_STATE } from '@/constants/matching';
 
 /**

@@ -1,4 +1,10 @@
 export const GENDER_CODE = { MALE: 1, FEMALE: 2 };
+
+export const GENDER_TEXT = {
+  [GENDER_CODE.MALE]: '남성',
+  [GENDER_CODE.FEMALE]: '여성',
+};
+
 export const WORK_TYPE_TEXT = {
   1: '방문요양',
   2: '입주요양',
@@ -18,6 +24,7 @@ export const CARE_LEVEL_TEXT = {
   64: '인지지원 등급',
 };
 
+// 생년월일 -> 나이
 export const birthToAge = (birth) => {
   if (!birth) return 0;
   if (birth.length === 8 && !birth.includes('-')) {
@@ -36,22 +43,23 @@ export const birthToAge = (birth) => {
   return age;
 };
 
-/**
- * 주소 포맷팅
- * @param {*} address 주소
- * @returns 주소
- *
- * 만약 '전체'가 나오면 중단
- */
+// 주소 포맷팅
 export const formatAddress = (first, second, third) => {
-  if (first && first.includes('전체')) return first;
-  if (second && second.includes('전체')) {
-    return [first, second].filter(Boolean).join(' ');
-  }
-  // third에는 전체x
-  return [first, second, third].filter(Boolean).join(' ');
+  const parts = [first, second, third].filter(Boolean);
+
+  // 연속 중복 제거
+  const deduped = parts.filter((val, idx) => {
+    if (idx === 0) return true;
+    const prev = parts[idx - 1];
+    return !val.startsWith(prev);
+  });
+
+  return deduped.join(' ');
 };
 
+export const genderCodeToText = (code) => GENDER_TEXT[code] || '알수 없음';
+
+// 데이터 변환
 export const transformData = (data) => ({
   patientSeq: data.patientSeq,
   name: data.name,

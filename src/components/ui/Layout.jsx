@@ -7,7 +7,7 @@ import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 export default function Layout() {
   const location = useLocation();
   const headerProps = useHeaderPropsStore((state) => state.headerProps);
-  const isCenter = useAuthStore((state) => state.isCenter());
+  const isManager = useAuthStore((state) => state.isCenter());
 
   const hideHeaderRoutes = ['/signin', '/chatrooms'];
   const hideFooterRoutes = [
@@ -15,7 +15,6 @@ export default function Layout() {
     '/helper/signup',
     '/center/signup',
     '/center/elder-register',
-    '/center/mypage',
     '/signin',
     '/center/register',
     '/chatroom',
@@ -38,7 +37,7 @@ export default function Layout() {
       <main className={isFullWidth ? 'flex-grow' : 'w-[88%] mx-auto flex-grow'}>
         <Outlet />
       </main>
-      {isFooterVisible && <Footer isManger={isCenter} />}
+      {isFooterVisible && <Footer isManager={isManager} />}
     </div>
   );
 }

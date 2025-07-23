@@ -17,7 +17,7 @@ export default function Layout() {
     '/center/elder-register',
     '/signin',
     '/center/register',
-    '/chatroom',
+    '/chatroom/',
     '/center/caregiver-info',
     '/center/recruit-detail',
     '/center/modify-info',

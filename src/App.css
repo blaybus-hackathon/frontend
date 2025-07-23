@@ -175,3 +175,9 @@
 .profile-section__content-box {
   @apply flex w-full p-5 items-center self-stretch rounded-[10px] border border-[#C8C8C8] bg-white gap-3;
 }
+
+@layer utilities {
+  .main-minus-footer {
+    min-height: calc(100vh - 4.44rem);
+  }
+}

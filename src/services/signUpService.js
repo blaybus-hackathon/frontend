@@ -10,8 +10,8 @@ export const uploadHelperImg = async (data) => {
   return response;
 };
 
-export const signUpCenter = async (formData) => {
-  const response = await requestMultipart('POST', '/sign-up/manager', formData);
+export const signUpCenter = async (data) => {
+  const response = await request('POST', '/sign-up/manager', data);
   return response;
 };
 

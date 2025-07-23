@@ -1,17 +1,18 @@
 import { Button } from '@/components/ui/custom/Button';
 import { useNavigate } from 'react-router-dom';
 import { Phone, Menu } from 'lucide-react';
-import useProfileStore from '@/store/useProfileStore';
+import useAuthStore from '@/store/useAuthStore';
 import Logo from '/blaybus_logo_icon_text.svg';
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const { profile, clearProfile } = useProfileStore();
+  const logout = useAuthStore((s) => s.logout);
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn());
 
   return (
     <header className='bg-white shadow-sm border-b sticky top-0 z-50'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-10 flex justify-between items-center py-4'>
-        <div className='flex justify-between items-center py-2 lg:py-4'>
+        <div className='flex justify-between items-center py-2 lg:py-4 cursor-pointer'>
           <div className='flex items-center space-x-3'>
             <img src={Logo} alt='logo' className='h-10 lg:h-12 w-auto' />
           </div>
@@ -44,11 +45,12 @@ export default function Navbar() {
             <span>1588-1234</span>
           </div>
           <div>
-            {profile && profile.email !== '' ? (
+            {isLoggedIn ? (
               <Button
                 className='text-lg px-6 py-3'
                 onClick={() => {
-                  clearProfile();
+                  logout();
+                  alert('로그아웃 되었습니다!');
                   navigate('/');
                 }}
               >

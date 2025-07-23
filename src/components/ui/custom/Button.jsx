@@ -4,22 +4,22 @@ import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center w-[88%] whitespace-nowrap transition-colors rounded-[0.625rem] text-xl font-bold disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:n ot([class*='size-'])]:size-4 [&_svg]:shrink-0 ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 focus-visible:ring-4 focus-visible:outline-1 aria-invalid:focus-visible:ring-0 ",
+  "inline-flex items-center justify-center w-[88%] whitespace-nowrap transition-colors rounded-[0.625rem] text-xl font-bold disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:n ot([class*='size-'])]:size-4 [&_svg]:shrink-0 ring-ring/10 dark:ring-ring/20 dark:outline-ring/40 outline-ring/50 focus-visible:ring-4 focus-visible:outline-1 aria-invalid:focus-visible:ring-0 cursor-pointer",
   {
     variants: {
       variant: {
         default:
           'bg-[var(--main)] text-white border border-[var(--outline)] active:bg-[var(--main-hover)] hover:bg-[var(--main-hover)]',
         white:
-          'bg-white text-[var(--main)] border border-[var(--main)] active:bg-[var(--main)] active:text-white hover:bg-[var(--main)] hover:text-white',
-          black:
-'bg-white text-black border border-[var(--main)] active:bg-[var(--main)] active:text-black hover:bg-[var(--main)] hover:text-white',
+          'bg-white text-[var(--main)] border border-[var(--main)] active:bg-[var(--main)] active:text-white hover:bg-[var(--main-hover)] hover:text-white',
+        black:
+          'bg-white text-black border border-[var(--main)] active:bg-[var(--main)] active:text-black hover:bg-[var(--main)] hover:text-white',
 
-          disabled: 'bg-[var(--disabled)] text-white border border-[var(--disabled)]',
+        disabled: 'bg-[var(--disabled)] text-white border border-[var(--disabled)]',
         outline:
           'bg-white text-[var(--black)] border border-[var(--outline)] font-normal hover:bg-[var(--main)] hover:text-white active:bg-[var(--main)] active:text-white data-[selected=true]:bg-[var(--main)] data-[selected=true]:text-white data-[selected=true]',
         ghost: 'bg-transparent hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+        link: 'text-primary underline-offset-4 underline hover:underline rounded-none',
       },
       size: {
         default: 'py-4 has-[>svg]:px-3',

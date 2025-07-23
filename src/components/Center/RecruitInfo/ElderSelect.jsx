@@ -1,3 +1,4 @@
+// === Post Recruit Page 1 ===
 import { useState, useEffect } from 'react';
 
 import { request } from '@/api';
@@ -10,6 +11,7 @@ import serach from '@/assets/images/search.png';
 
 export default function MatchingManage({ handleMatchingPage }) {
   const [selectedSeq, setSelectedSeq] = useState(-1);
+  // const [isChecked, setIsChecked] = useState(-1);
   const [searchQuery, setSearchQuery] = useState('');
   const [elders, setElders] = useState([]);
 
@@ -17,9 +19,6 @@ export default function MatchingManage({ handleMatchingPage }) {
 
   useEffect(() => {
     getElderList();
-    request('get', '/patient/recruit-list?pageNo=0&pageSize=4')
-      .then((res) => console.log(res))
-      .catch((e) => console.log(e));
   }, []);
 
   const handleCheck = (idx) => {
@@ -27,7 +26,7 @@ export default function MatchingManage({ handleMatchingPage }) {
   };
 
   const getElderList = () =>
-    request('get', `/patient/list?pageNo=${0}&pageSize=${5}`)
+    request('get', `/patient/list?pageNo=${0}&pageSize=${100}`)
       .then((res) => {
         setElders(res.list);
       })
@@ -41,11 +40,10 @@ export default function MatchingManage({ handleMatchingPage }) {
           <InfoCard
             key={idx}
             isChecked={selectedSeq === filteredUser.patientSeq}
-            onCheck={() => {
+            onClick={() => {
               handleCheck(filteredUser.patientSeq);
               setPatient(filteredUser);
             }}
-            // checkFunc={setSelectedCard}
             user={filteredUser}
           />
         ));
@@ -64,7 +62,7 @@ export default function MatchingManage({ handleMatchingPage }) {
 
   return (
     <>
-      <div className='mx-auto px-[1.5rem] flex flex-col items-center max-w-2xl mb-40'>
+      <div className='mx-auto flex flex-col items-center max-w-2xl mb-40'>
         <div className='w-full py-3.5 border-b border-[var(--main)] flex items-center pr-6'>
           <Input
             placeholder={'어르신 이름을 검색해 보세요'}
@@ -82,7 +80,7 @@ export default function MatchingManage({ handleMatchingPage }) {
         {renderInfoCard()}
         <Button
           variant={selectedSeq === -1 ? 'disabled' : 'default'}
-          className='h-16 w-9/10 hover:bg-[var(--company-primary)]/90 fixed bottom-8 font-bold'
+          className='h-16 max-w-2xl hover:bg-[var(--company-primary)]/90 fixed bottom-[5rem] font-bold'
           disabled={selectedSeq === -1}
           onClick={() => {
             setPatientDetail();

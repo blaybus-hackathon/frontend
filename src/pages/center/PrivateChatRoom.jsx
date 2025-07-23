@@ -1,26 +1,31 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useOptimistic, startTransition } from 'react';
 
 import addImg from '@/assets/images/add.png';
 import chatStore from '@/store/jbStore/chatStore';
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
-import { connectSocket, subscribe, sendMessage, disconnectSocket } from './ChatSocket';
+import {
+  connectSocket,
+  subscribe,
+  sendMessage,
+  disconnectSocket,
+} from '@/components/chat/ChatSocket';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
+import useAuthStore from '@/store/useAuthStore';
+import defaultProfile from '@/assets/images/elder-basic-profile.png';
 
 // chat 입력창 최대 높이
 const MAX_HEIGHT = 120;
 
-//temporary code
-const SENDERID = 7;
-
 function PrivateChatRoom() {
   const roomId = useParams().roomid;
   const navigate = useNavigate();
+
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
-
   const { chatInfo } = chatStore();
+  const { user } = useAuthStore();
 
   const [isVisible, setIsvisible] = useState(false); //하단 토글바 visible 여부
   const [messages, setMessages] = useState([]);
@@ -28,6 +33,10 @@ function PrivateChatRoom() {
   const [hasNext, setHasNext] = useState(true); //다음 페이지 유무
   const [msgInput, setMsgInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [optMessages, setOptMessages] = useOptimistic(messages, (state, newMsg) => [
+    newMsg,
+    ...state,
+  ]);
 
   const msgContainerRef = useRef();
   const prevScrollHeight = useRef(0);
@@ -57,6 +66,7 @@ function PrivateChatRoom() {
       connectSocket(() => {
         // 개인 메세지 구독 (상대 -> 나)
         subscribe('/user/queue/private', (message) => {
+          console.log('come');
           const newMsg = {
             senderYn: false,
             content: message.content,
@@ -95,11 +105,8 @@ function PrivateChatRoom() {
       const container = msgContainerRef.current;
       if (isFetching.current || receiveMsg.current) {
         const newScrollHeight = container.scrollHeight;
-        const heightDiff = newScrollHeight - prevScrollHeight.current;
+        const heightDiff = newScrollHeight - prevScrollHeight.current.scrollHeight;
         container.scrollTop += heightDiff;
-        if (container.scrollHeight !== prevScrollHeight.current) {
-          container.scrollTop = container.scrollHeight - prevScrollHeight.current;
-        }
 
         isFetching.current = false;
         receiveMsg.current = false;
@@ -123,9 +130,15 @@ function PrivateChatRoom() {
   };
 
   const sendChatMessage = async () => {
-    const message = {
+    if (!msgInput) return;
+    // if (!user) {
+    //   alert('사용자 식별에 실패하였습니다. 다시 로그인해주세요.');
+    //   navigate('/signin');
+    // }
+    const payload = {
       content: msgInput,
-      senderId: SENDERID,
+      senderId: user.chatSenderId,
+      // senderId: 9,
       receiverId: chatInfo.partnerId,
       patientLogId: chatInfo.patientLogId,
     };
@@ -134,8 +147,12 @@ function PrivateChatRoom() {
       content: msgInput,
       readYn: false,
     };
-    sendMessage('/app/private-message', message);
-    setMessages((prev) => [newMsg, ...prev]);
+    setMsgInput('');
+    startTransition(async () => {
+      setOptMessages({ ...newMsg, isOpt: true });
+      sendMessage('/app/private-message', payload);
+      setMessages((prev) => [newMsg, ...prev]);
+    });
   };
 
   // 메세지 fetch
@@ -167,47 +184,78 @@ function PrivateChatRoom() {
   };
 
   const renderMessages = () =>
-    messages
+    optMessages
       .slice()
       .reverse()
       .map((msg, idx) => (
         <div key={idx} className={`flex ${msg.senderYn ? 'justify-end' : 'gap-3'}`}>
           {!msg.senderYn && (
-            <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
+            <img
+              src={chatInfo.partnerImgAddress ? chatInfo.partnerImgAddress : defaultProfile}
+              className='size-12'
+            />
           )}
           <p
             className={`${
               msg.senderYn ? 'bg-[rgba(82,46,154,0.1)]' : 'bg-[var(--button-inactive)]'
-            } flex items-center rounded-2xl py-3 px-5`}
+            } ${msg.isOpt && 'opacity-50'} flex items-center rounded-2xl py-3 px-5`}
           >
             {msg.content}
           </p>
         </div>
       ));
 
+  const exitChatRoom = () => {
+    const confirmRes = confirm(
+      '채팅방을 나갈 경우 지금까지의 대화가 완전히 삭제됩니다. 정말로 나가시겠습니까?',
+    );
+    if (confirmRes) {
+      request('post', '/chat/out-room', { chatRoomId: chatInfo.chatRoomId })
+        .then(() => {
+          navigate('/chatrooms');
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  };
+
+  // 해당 어르신 공고로 이동
+  const gotoRecruit = () => {
+    navigate('/center/recruit/detail');
+  };
+
+  // 해당 공고에 대해서 조율 완료 처리
+  const tuningComplete = () => {
+    const confirmRes = confirm('해당 어르신과의 조율을 완료 처리하시겠습니까?');
+    if (confirmRes) {
+      request('post', '/patient-match-status', {
+        patientLogSeq: chatInfo.patientLogId,
+        helperSeq: chatInfo.helperSeq,
+        matchState: 'MATCH_FIN',
+      })
+        .then(() => {
+          navigate('/chatrooms');
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  };
+
   return (
-    <div className='max-w-md mx-auto px-5.5 pb-4 flex flex-col'>
-      <div className='px-0.5 pt-6 pb-4.5 absolute top-0'>
-        {/* <div className='flex items-center'>
-          <img src={backArrow} alt='back-arrow' className='mr-8 size-8' />
-          <p className='text-3xl font-semibold'>{chatInfo.partnerName}</p>
-        </div> */}
-      </div>
+    <div className='flex flex-col'>
       <div
-        className='mt-20 flex flex-col gap-7 h-4/5 overflow-y-auto'
-        style={{ height: 'calc(100vh - 80px - 70px)' }}
+        className='flex flex-col gap-7 overflow-y-auto pb-3'
+        style={{ height: 'calc(100vh - 78px - 60px)' }}
         ref={msgContainerRef}
       >
-        <div className='bg-[var(--button-inactive)] p-4 rounded-md'>
-          <p>{`${chatInfo.partnerName}님은 ${chatInfo.patientLogName} 어르신과 연결되었어요!`}</p>
-          <p className='underline'>박순자 어르신 프로필 보러가기</p>
-        </div>
         {renderMessages()}
       </div>
 
       {/* 전송 바 */}
       {!isVisible && (
-        <div className='absolute bottom-4 right-0 left-0 flex items-center gap-2.5 justify-between h-12 max-w-md mx-auto px-5.5'>
+        <div className='fixed left-1/2 -translate-x-1/2 max-w-[591.35px] w-[88%] bottom-0 flex items-center gap-2.5 justify-between h-15 py-3 bg-white'>
           <div>
             <img
               src={addImg}
@@ -236,7 +284,6 @@ function PrivateChatRoom() {
             className='rounded-[100px] bg-[var(--button-inactive)] px-4 py-3 text-[var(--main)] h-12'
             onClick={() => {
               sendChatMessage();
-              setMsgInput('');
             }}
           >
             전송
@@ -246,15 +293,21 @@ function PrivateChatRoom() {
 
       {/* 하단 조정바 */}
       {isVisible && (
-        <div className='absolute bottom-4 right-0 left-0 flex flex-col gap-3.5 px-5.5'>
-          <Button variant={'white'} className='w-full'>
+        <div className='absolute bottom-4 right-0 left-0 flex flex-col gap-3.5 px-5.5 max-w-2xl mx-auto'>
+          <Button variant={'white'} className='w-full' onClick={tuningComplete}>
             조율 완료
           </Button>
           <div>
-            <Button className='bg-[var(--button-inactive)] text-[var(--text)] w-full border-0 border-b rounded-none rounded-t-md'>
-              해당 어르신 프로필
+            <Button
+              className='bg-[var(--button-inactive)] text-[var(--text)] w-full border-0 border-b rounded-none rounded-t-md'
+              onClick={gotoRecruit}
+            >
+              해당 어르신 공고
             </Button>
-            <Button className='bg-[var(--button-inactive)] text-[var(--required-red)] w-full border-0 rounded-none rounded-b-md'>
+            <Button
+              className='bg-[var(--button-inactive)] text-[var(--required-red)] w-full border-0 rounded-none rounded-b-md'
+              onClick={exitChatRoom}
+            >
               채팅방 나가기
             </Button>
           </div>

@@ -1,7 +1,9 @@
+// === Post Recruit Page 2 ===
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
 import { useState, useEffect } from 'react';
 import patientStore from '@/store/jbStore/patientStore';
+import defaultProfile from '@/assets/images/elder-basic-profile.png';
 
 // import profInit from '@/assets/images/default-profile.png';
 
@@ -72,18 +74,17 @@ export default function MatchingManage2({ handleMatchingPage }) {
 
   return (
     <>
-      {console.log(patientData)}
       <div className='mx-auto flex flex-col items-center max-w-2xl'>
-        <p className='font-bold text-xl tracking-[-0.1rem] py-8 w-full mx-auto text-start px-[1.5rem] mb-4'>
+        <p className='font-bold text-xl tracking-[-0.1rem] py-8 w-full mx-auto text-start mb-4'>
           {patientData.name} 어르신의 정보를 확인해주세요
         </p>
       </div>
 
-      <div className='px-[1.5rem] mx-auto flex flex-col gap-5 max-w-2xl mb-40'>
+      <div className='mx-auto flex flex-col gap-5 max-w-2xl mb-40'>
         <div className='flex pb-5 border-b border-[var(--outline)]'>
           <div className='flex items-center justify-center mr-8'>
             <img
-              src={patientData.imgAddress}
+              src={patientData.imgAddress ? patientData.imgAddress : defaultProfile}
               className='size-25 bg-[var(--button-inactive)] rounded-[50%]'
             />
           </div>
@@ -231,7 +232,7 @@ export default function MatchingManage2({ handleMatchingPage }) {
         </div> */}
 
         <Button
-          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
+          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-[5rem] left-1/2 -translate-x-1/2 font-bold'
           onClick={() => {
             window.scrollTo(0, 0);
             handleMatchingPage((prev) => {

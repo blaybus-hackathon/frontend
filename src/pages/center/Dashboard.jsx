@@ -12,7 +12,7 @@ export default function Dashboard() {
         <main className='flex-1 bg-[var(--button-inactive)] p-5 min-h-0'>
           <StatsCards />
         </main>
-        <Footer />
+        <Footer isManager={true} />
       </div>
 
       {/* Desktop Layout */}

@@ -90,9 +90,7 @@ export function DonutChart({
   const renderCustomLegend = (props) => {
     const { payload } = props;
     return (
-      <div
-        className={`flex justify-between md:justify-center md:gap-4 lg:justify-center lg:gap-10 w-full ${currentSize.legendMargin}`}
-      >
+      <div className={`flex justify-center gap-4 lg:gap-10 w-full ${currentSize.legendMargin}`}>
         {payload.map((entry, index) => (
           <div key={index} className='flex items-center gap-1 lg:gap-2'>
             <div
@@ -108,15 +106,12 @@ export function DonutChart({
 
   // render center label
   const renderCenterLabel = () => (
-    <text
-      x='50%'
-      y='50%'
-      textAnchor='middle'
-      dominantBaseline='middle'
-      className={`${currentSize.centerText} font-semibold text-[var(--main)] flex gap-[0.1rem] items-center`}
+    <div
+      className={`flex items-center justify-center ${currentSize.centerText} font-semibold text-[var(--main)]`}
     >
-      {acceptRate} <span className={`${currentSize.centerPercent}`}>%</span>
-    </text>
+      {acceptRate}
+      <span className={`${currentSize.centerPercent} ml-1`}>%</span>
+    </div>
   );
 
   return (

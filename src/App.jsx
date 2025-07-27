@@ -4,6 +4,8 @@ import Layout from './components/ui/Layout';
 import NotFound from './pages/NotFound';
 
 import Home from './pages/Home';
+import HelperHome from './pages/helper/HelperHome';
+import MatchingDetail from './pages/helper/MatchingDetail';
 import Spinner from './components/loading/Spinner';
 
 const SignIn = lazy(() => import('./pages/SignIn'));
@@ -64,6 +66,8 @@ function App() {
             <Route path='center/care-info' element={<CaregiverInfo />} />
 
             {/* Helper */}
+            <Route path='helper' element={<HelperHome />} />
+            <Route path='helper/detail/:patientSeq' element={<MatchingDetail />} />
             <Route path='helper/signup' element={<HelperSignUp />} />
             <Route path='helper/account' element={<Account />} />
             <Route path='helper/account/edit' element={<AccountEdit />} />

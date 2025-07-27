@@ -1,24 +1,16 @@
-import { StatCard } from './StatCard';
-import { DonutChart } from './DonutChart';
-import { BarChart } from './BarChart';
+import { memo } from 'react';
+import { StatCard } from '@/components/Center/Dashboard/StatCard';
+import { DonutChart } from '@/components/Center/Dashboard/DonutChart';
+import { BarChart } from '@/components/Center/Dashboard/BarChart';
 
-export function StatsCards() {
-  // dummy data
-  const statsData = {
-    newMatches: 20,
-    totalMatches: 380,
-    // 도넛 차트용 매칭 비율 데이터
-    matching: {
-      acceptanceRate: 70,
-      rejectionRate: 30,
-    },
-    // 막대 차트용 상태별 데이터 (ReChart 형식에 맞게 변경)
-    statusData: [
-      { name: '대기', value: 140, color: '#c9c1de' },
-      { name: '진행중', value: 278, color: '#8976C0' },
-      { name: '완료', value: 380, color: '#522e9a' },
-    ],
-  };
+export default memo(function StatsCard({ statsData }) {
+  if (!statsData) {
+    return (
+      <div className='text-center p-8'>
+        <p className='text-[var(--placeholder-gray)]'>표시할 데이터가 없습니다.</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -77,4 +69,4 @@ export function StatsCards() {
       </div>
     </>
   );
-}
+});

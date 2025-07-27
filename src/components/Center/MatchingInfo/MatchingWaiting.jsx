@@ -6,10 +6,8 @@ import { MATCH_STATE } from '@/constants/matching';
 import InfoCard from '@/components/ui/InfoCard/InfoCard';
 import ElderProfile from '@/components/ui/InfoCard/ElderProfile';
 import HelperProfile from '@/components/ui/InfoCard/HelperProfile';
-import { useNavigate } from 'react-router-dom';
 
 export default memo(function MatchingWaiting({ data, isLoading: parentLoading }) {
-  const navigate = useNavigate();
   const fullAddress = formatAddress(data.addressFirst, data.addressSecond, data.addressThird);
   const helperList = data.initHelperInfoList || [];
   const hasHelpers = helperList.length > 0;
@@ -118,12 +116,7 @@ export default memo(function MatchingWaiting({ data, isLoading: parentLoading })
             })}
           </div>
         ) : (
-          <p
-            className='pt-3 text-[var(--text-sub)] text-base lg:text-lg'
-            onClick={() => {
-              navigate('/center/care-info', { state: { helperSeq: 2 } });
-            }}
-          >
+          <p className='pt-3 text-[var(--text-sub)] text-base lg:text-lg'>
             현재 추천된 요양보호사가 존재하지 않습니다.
           </p>
         )}

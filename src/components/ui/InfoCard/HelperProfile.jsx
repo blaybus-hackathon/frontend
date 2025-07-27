@@ -1,7 +1,15 @@
+import { useNavigate } from 'react-router-dom';
+
 import { Button } from '@/components/ui/custom/Button';
 import profile from '/default_profile.png';
 
 export default function HelperProfile({ helperInfo, onClick, buttonText, renderButton }) {
+  const navigate = useNavigate();
+
+  const helperDetail = () => {
+    navigate('/center/care-info', { state: { helperSeq: helperInfo.helperSeq } });
+  };
+
   return (
     <>
       <section className='grid grid-cols-2 gap-4 md:grid-cols-[auto_1fr_auto] md:gap-6 md:items-center'>
@@ -35,7 +43,10 @@ export default function HelperProfile({ helperInfo, onClick, buttonText, renderB
         )}
 
         <div className='col-span-2 md:col-span-1 md:order-2 flex flex-col items-start md:justify-center gap-y-1'>
-          <h3 className='text-lg font-semibold text-[var(--text)] lg:text-xl text-start'>
+          <h3
+            className='text-lg font-semibold text-[var(--text)] lg:text-xl text-start'
+            onClick={helperDetail}
+          >
             {helperInfo.name} 요양사
           </h3>
           <p className='text-lg font-normal text-[var(--text)] lg:text-xl'>

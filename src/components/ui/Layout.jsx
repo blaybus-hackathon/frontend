@@ -1,24 +1,23 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
-import useAuthStore from '@/store/useAuthStore';
 import Header from './temp/Header';
 import Footer from './temp/Footer';
+import useAuthStore from '@/store/useAuthStore';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 export default function Layout() {
   const location = useLocation();
   const headerProps = useHeaderPropsStore((state) => state.headerProps);
-  const isCenter = useAuthStore((state) => state.isCenter());
+  const isManager = useAuthStore((state) => state.isCenter());
 
   const hideHeaderRoutes = ['/signin', '/chatrooms'];
   const hideFooterRoutes = [
-    '/helper/detail',
     '/search-center',
     '/helper/signup',
     '/center/signup',
     '/center/elder-register',
     '/signin',
     '/center/register',
-    '/chatroom',
+    '/chatroom/',
     '/center/caregiver-info',
     '/center/recruit-detail',
     '/center/modify-info',
@@ -26,11 +25,11 @@ export default function Layout() {
     '/helper/address',
     '/find-account',
   ];
-  const hidePaddingRoutes = ['/center/matching-info'];
+  const hidePaddingRoutes = ['/center/matching-info', '/helper'];
 
   const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));
   const isFooterVisible = !hideFooterRoutes.some((route) => location.pathname === route);
-  const isFullWidth = hidePaddingRoutes.some((route) => location.pathname.startsWith(route));
+  const isFullWidth = hidePaddingRoutes.some((route) => location.pathname === route);
 
   return (
     <div className='min-h-screen flex flex-col max-w-2xl mx-auto'>
@@ -38,7 +37,7 @@ export default function Layout() {
       <main className={isFullWidth ? 'flex-grow' : 'w-[88%] mx-auto flex-grow'}>
         <Outlet />
       </main>
-      {isFooterVisible && <Footer isManager={isCenter} />}
+      {isFooterVisible && <Footer isManager={isManager} />}
     </div>
   );
 }

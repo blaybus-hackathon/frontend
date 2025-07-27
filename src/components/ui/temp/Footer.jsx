@@ -29,12 +29,12 @@ export default function Footer({ isManager = false }) {
             <span className={textClass}>채팅</span>
           </Link>
 
-          <Link to='/matching' className={baseItemClass}>
+          <Link to='/matching-info' className={baseItemClass}>
             <img src={MatchingIcon} alt='matching' className={iconClass} />
             <span className={textClass}>매칭 관리</span>
           </Link>
 
-          <Link to='/center/elder-register' className={baseItemClass}>
+          <Link to='/center/elder-info ' className={baseItemClass}>
             <img src={PillIcon} alt='pill' className={iconClass} />
             <span className={textClass}>어르신 관리</span>
           </Link>

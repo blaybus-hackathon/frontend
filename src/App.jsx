@@ -9,7 +9,7 @@ import Spinner from './components/loading/Spinner';
 const SignIn = lazy(() => import('./pages/SignIn'));
 const CenterSignUp = lazy(() => import('./pages/center/SignUp'));
 const HelperSignUp = lazy(() => import('./pages/helper/SignUp'));
-const FindAccount = lazy(() => import ('./pages/FindAccount'));
+const FindAccount = lazy(() => import('./pages/FindAccount'));
 const SearchCenter = lazy(() => import('./pages/SearchCenter'));
 const KakaoCallback = lazy(() => import('./components/Auth/KakaoCallback'));
 const Account = lazy(() => import('./pages/helper/Account/Account'));
@@ -19,6 +19,7 @@ const HelperAddress = lazy(() => import('./pages/helper/HelperAddress'));
 const AccountSchedule = lazy(() => import('./pages/helper/AccountEdit/navigate/AccountSchedule'));
 const AccountPay = lazy(() => import('./pages/helper/AccountEdit/navigate/AccountPay'));
 const AccountCareType = lazy(() => import('./pages/helper/AccountEdit/navigate/AccountCareType'));
+const DashBoard = lazy(() => import('./pages/center/Dashboard'));
 const Matching = lazy(() => import('./pages/center/Matching'));
 const RecriutDetail = lazy(() => import('./pages/center/RecriutDetail'));
 const ModifyRecruit = lazy(() => import('./pages/center/ModifyRecruit'));
@@ -41,6 +42,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path='/login/oauth2/code/kakao' element={<KakaoCallback />} />
           <Route path='/*' element={<NotFound />} />
+          <Route path='center' element={<DashBoard />} />
 
           {/* 레이아웃 */}
           <Route path='/' element={<Layout />}>
@@ -57,7 +59,6 @@ function App() {
             <Route path='center/matching' element={<Matching />} />
             <Route path='center/matching-info' element={<MatchingInfo />} />
             <Route path='center/register/address' element={<ElderAddress />} />
-
             <Route path='center/recruit/detail' element={<RecriutDetail />} />
             <Route path='center/recruit/modify' element={<ModifyRecruit />} />
             <Route path='center/care-info' element={<CaregiverInfo />} />
@@ -75,8 +76,6 @@ function App() {
             {/* Chatting */}
             <Route path='chatrooms' element={<ChatRoomsPage />} />
             <Route path='chatroom/:roomid' element={<PrivateChatRoom />} />
-
-            {/* <Route path="/center" element={} /> */}
           </Route>
         </Routes>
       </Suspense>

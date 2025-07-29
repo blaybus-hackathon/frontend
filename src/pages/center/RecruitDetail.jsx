@@ -138,7 +138,7 @@ export default function PatientInfo() {
         </div>
       </div>
 
-      <div className='px-5 pt-8 flex flex-col gap-7.5 items-start mb-40'>
+      <div className='px-5 pt-8 flex flex-col gap-7.5 items-start mb-3'>
         <div className='w-full flex h-16'>
           <p className='flex flex-1 text-start font-semibold text-xl h-full items-center'>
             보유질병
@@ -181,7 +181,7 @@ export default function PatientInfo() {
         </div>
 
         <Button
-          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-20 left-1/2 -translate-x-1/2 font-bold'
+          className='h-16 w-full bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 font-bold'
           onClick={gotoModify}
         >
           수정하기

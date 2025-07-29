@@ -21,7 +21,7 @@ const AccountPay = lazy(() => import('./pages/helper/AccountEdit/navigate/Accoun
 const AccountCareType = lazy(() => import('./pages/helper/AccountEdit/navigate/AccountCareType'));
 const DashBoard = lazy(() => import('./pages/center/Dashboard'));
 const Matching = lazy(() => import('./pages/center/Matching'));
-const RecriutDetail = lazy(() => import('./pages/center/RecriutDetail'));
+const RecruitDetail = lazy(() => import('./pages/center/RecruitDetail'));
 const ModifyRecruit = lazy(() => import('./pages/center/ModifyRecruit'));
 const CaregiverInfo = lazy(() => import('./pages/center/CaregiverInfo'));
 const CenterRegister = lazy(() => import('./pages/center/CenterRegister'));
@@ -59,7 +59,7 @@ function App() {
             <Route path='center/matching' element={<Matching />} />
             <Route path='center/matching-info' element={<MatchingInfo />} />
             <Route path='center/register/address' element={<ElderAddress />} />
-            <Route path='center/recruit/detail' element={<RecriutDetail />} />
+            <Route path='center/recruit/detail' element={<RecruitDetail />} />
             <Route path='center/recruit/modify' element={<ModifyRecruit />} />
             <Route path='center/care-info' element={<CaregiverInfo />} />
 

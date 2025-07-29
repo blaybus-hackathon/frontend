@@ -41,7 +41,7 @@ export default function Footer({ isManager = false }) {
         </>
       )}
 
-      <Link to='/center/mypage' className={baseItemClass}>
+      <Link to={isManager ? '/center/mypage' : '/helper/account'} className={baseItemClass}>
         <img src={MyPageIcon} alt='mypage' className={iconClass} />
         <span className={textClass}>마이</span>
       </Link>

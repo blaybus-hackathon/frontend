@@ -5,9 +5,12 @@ import { useEffect } from 'react';
 // ✅ 2. 상태 관리 (스토어, 컨텍스트 등)
 import useScheduleStore from '@/store/suho/useScheduleStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
+import useAuthStore from '@/store/useAuthStore';
+import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
 
 // ✅ 3. UI 컴포넌트 (공통 UI → 커스텀 컴포넌트 순)
 import { Button } from '@/components/ui/custom/Button';
+import { request } from '@/api';
 
 // ✅ 4. 이미지 및 정적 파일
 import location_icon from '@/assets/images/location.png';
@@ -20,12 +23,15 @@ import useProfileStore from '@/store/useProfileStore';
 
 export default function Account() {
   const { optimizedSchedule } = useScheduleStore();
-  const PAY_TYPES = [
-    { id: 'hourly', label: '시급' },
-    { id: 'daily', label: '일급' },
-    { id: 'weekly', label: '주급' },
-    { id: 'monthly', label: '월급' },
-  ];
+  // const PAY_TYPES = [
+  //   { id: 'hourly', label: '시급' },
+  //   { id: 'daily', label: '일급' },
+  //   { id: 'weekly', label: '주급' },
+  //   { id: 'monthly', label: '월급' },
+  // ];
+  const PAY_TYPES = ['시급', '일급', '주급'];
+  const { user } = useAuthStore();
+  const { helper, setHelper } = useHelperAccountStore();
 
   const navigate = useNavigate();
 
@@ -45,6 +51,18 @@ export default function Account() {
       clearHeaderProps();
     };
   }, []);
+
+  useEffect(() => {
+    const helperSeq = user.helperSeq;
+    request('post', '/detail/helper-info', { helperSeq })
+      .then((res) => {
+        console.log(res);
+        setHelper(res);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, [user, setHelper]);
 
   const handleEdit = () => {
     navigate('/helper/account/edit', {
@@ -68,10 +86,10 @@ export default function Account() {
             </div>
             <div className='flex flex-col gap-5 items-start'>
               <span className='text-[#191919] text-[23px] font-bold leading-none h-auto '>
-                {profileEdit.name || '알수 없음'}
+                {helper.name || '알수 없음'}
               </span>
               <span className='text-[#191919] font-pretendard text-[20px] font-medium leading-none '>
-                {profileEdit.address || '주소 불명'}
+                {helper.addressDetail || '주소 불명'}
               </span>
             </div>
           </section>
@@ -172,10 +190,10 @@ export default function Account() {
             <div className='profile-section__content-box'>
               <img className='w-[24px] h-[24px]' src={overview} alt='overview_icon' />
               <span className='profile-section__content-text'>
-                {PAY_TYPES.find((t) => t.id === profileEdit.pay.type)?.label || ''}
+                {PAY_TYPES[helper.wageState - 1]}
               </span>
               <img src={backarrow} alt='backarrow' className='w-4 h-4 rotate-180' />
-              <span className='profile-section__content-text'>{profileEdit.pay.amount}원</span>
+              <span className='profile-section__content-text'>{helper.wage}원</span>
             </div>
           </section>
 

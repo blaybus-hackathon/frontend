@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
 import usePayStore from '@/store/suho/usePayStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
+import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
 
 import {
   Select,
@@ -22,6 +23,8 @@ const PAY_TYPES = [
 export default function AccountPay() {
   const navigate = useNavigate();
 
+  const { helper, setPart } = useHelperAccountStore();
+
   // store에서 직접 값과 함수 가져오기
   const { pay, setPay, consult, setConsult } = usePayStore();
 
@@ -29,8 +32,8 @@ export default function AccountPay() {
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
   // 로컬 상태로 관리
-  const [inputPay, setInputPay] = useState(pay.amount);
-  const [selectedType, setSelectedType] = useState(pay.type || 'hourly');
+  const [inputPay, setInputPay] = useState(helper.wage);
+  const [selectedType, setSelectedType] = useState(PAY_TYPES[helper.wageState - 1].id);
 
   useEffect(() => {
     setHeaderProps({
@@ -55,11 +58,7 @@ export default function AccountPay() {
   };
 
   const handleSave = () => {
-    // PayStore만 업데이트
-    setPay({
-      amount: Number(inputPay),
-      type: selectedType,
-    });
+    setPart({ wage: inputPay, wageState: PAY_TYPES.findIndex((x) => x.id === selectedType) + 1 });
 
     navigate('/helper/account/edit');
   };
@@ -72,7 +71,7 @@ export default function AccountPay() {
     <main className='max-w-md mx-auto flex flex-col gap-6 h-full'>
       <section className='flex flex-col gap-8 py-10'>
         <div className='flex flex-col items-start gap-2.5 self-stretch'>
-          <span className='helper-title'>
+          <span className='text-xl font-bold'>
             희망하시는 급여를 입력해 주세요.
             <span className='helper-title_sub'>필수</span>
           </span>
@@ -102,7 +101,7 @@ export default function AccountPay() {
 
           <div className='w-[50%]'>
             <Input
-              type='text'
+              type='number'
               value={inputPay}
               onChange={handlePayChange}
               placeholder={`${PAY_TYPES.find((t) => t.id === selectedType)?.label}을 입력하세요`}

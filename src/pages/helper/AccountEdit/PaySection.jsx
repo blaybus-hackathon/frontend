@@ -1,16 +1,22 @@
 import { useNavigate } from 'react-router-dom';
+
+import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
+
 import backarrow from '@/assets/images/back-arrow.png';
 import overview from '@/assets/images/overview.png';
 
-const PAY_TYPES = [
-  { id: 'hourly', label: '시급' },
-  { id: 'daily', label: '일급' },
-  { id: 'weekly', label: '주급' },
-  { id: 'monthly', label: '월급' },
-];
+// const PAY_TYPES = [
+//   { id: 'hourly', label: '시급' },
+//   { id: 'daily', label: '일급' },
+//   { id: 'weekly', label: '주급' },
+//   { id: 'monthly', label: '월급' },
+// ];
+const PAY_TYPES = ['시급', '일급', '주급'];
 
 function PaySection({ pay }) {
   const navigate = useNavigate();
+
+  const { helper } = useHelperAccountStore();
 
   return (
     <section
@@ -22,11 +28,9 @@ function PaySection({ pay }) {
 
       <div className='profile-section__content-box'>
         <img className='w-[24px] h-[24px]' src={overview} alt='overview_icon' />
-        <span className='profile-section__content-text'>
-          {PAY_TYPES.find((t) => t.id === pay.type)?.label || ''}
-        </span>
+        <span className='profile-section__content-text'>{PAY_TYPES[helper.wageState - 1]}</span>
         <img src={backarrow} alt='backarrow' className='w-4 h-4 rotate-180' />
-        <span className='profile-section__content-text'>{pay.amount}원</span>
+        <span className='profile-section__content-text'>{helper.wage}원</span>
       </div>
     </section>
   );

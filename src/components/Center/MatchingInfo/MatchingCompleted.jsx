@@ -1,6 +1,5 @@
-import { memo } from 'react';
 import { Button } from '@/components/ui/custom/Button';
-import { formatAddress } from '@/utils/format';
+import { formatAddress } from '@/utils/formatters/formatAddress';
 import InfoCard from '@/components/ui/InfoCard/InfoCard';
 import ElderProfile from '@/components/ui/InfoCard/ElderProfile';
 import HelperProfile from '@/components/ui/InfoCard/HelperProfile';

@@ -80,6 +80,7 @@ export const formatElderLogDetail = (data, getAddressNameById, getCareNameByIds)
     ...data,
     formattedBirthDate: formatBirthDate(data.birthDate),
     age: formatBirthToAge(data.birthDate),
+    weight: data.weight,
     formattedTimeList: formatTimeList(data.timeList || []),
     formattedWage: formatWageToHourlyText(data.wage, data.wageState, data.timeList || []),
   };
@@ -131,6 +132,30 @@ export const formatElderLogDetail = (data, getAddressNameById, getCareNameByIds)
     // if careChoiceFormatted.gender is not empty, overwrite the default gender field
     if (elderData.careChoiceFormatted.gender?.length > 0) {
       elderData.gender = elderData.careChoiceFormatted.gender.join(', ');
+    }
+
+    if (elderData.careChoiceFormatted.inmateStates?.length > 0) {
+      elderData.careChoiceFormatted.inmateStates =
+        elderData.careChoiceFormatted.inmateStates.join('\n');
+    }
+    if (elderData.careChoiceFormatted.serviceMeals?.length > 0) {
+      elderData.careChoiceFormatted.serviceMeals =
+        elderData.careChoiceFormatted.serviceMeals.join('\n');
+    }
+    if (elderData.careChoiceFormatted.serviceToilets?.length > 0) {
+      elderData.careChoiceFormatted.serviceToilets =
+        elderData.careChoiceFormatted.serviceToilets.join('\n');
+    }
+    if (elderData.careChoiceFormatted.serviceMobilities?.length > 0) {
+      elderData.careChoiceFormatted.serviceMobilities =
+        elderData.careChoiceFormatted.serviceMobilities.join('\n');
+    }
+    if (elderData.careChoiceFormatted.serviceDailies?.length > 0) {
+      elderData.careChoiceFormatted.serviceDailies =
+        elderData.careChoiceFormatted.serviceDailies.join('\n');
+    }
+    if (elderData.careChoiceFormatted.welfares?.length > 0) {
+      elderData.careChoiceFormatted.welfares = elderData.careChoiceFormatted.welfares.join('\n');
     }
   } else {
     elderData.careChoiceFormatted = null;

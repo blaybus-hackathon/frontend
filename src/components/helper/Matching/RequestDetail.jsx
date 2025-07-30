@@ -55,7 +55,7 @@ export default function RequestDetail({ patientLogSeq, returnPath }) {
 
   if (!isValidPatientLogSeq) {
     return (
-      <article className='py-14'>
+      <article className='py-14 '>
         <InfoCard>
           <div className='text-center py-8'>
             <p className='text-red-500 mb-4'>잘못된 요청입니다.</p>
@@ -156,7 +156,7 @@ export default function RequestDetail({ patientLogSeq, returnPath }) {
   };
 
   return (
-    <article className='py-5 lg:py-14'>
+    <article className='py-5 lg:py-14 w-[88%] mx-auto'>
       <InfoCard>
         <ElderProfile elderInfo={data} detailInfo={false} />
         <hr className='my-5' />

@@ -1,28 +1,28 @@
-import { useState, useEffect, useCallback } from "react";
-import useAddressStore from "@/store/useAddressStore";
+import { useState, useEffect, useCallback } from 'react';
+import { useAddressSelection } from '@/store/useAddressStore';
 
 export function useAddressFlow() {
   const {
     firstAddressList,
     secondAddressList,
     thirdAddressList,
-    selectedAfSeq,  // selected first address id
-    selectedAsSeq,  // selected second address id
-    selectedAtSeq,  // selected third address id
-    fetchFirstAddressList, 
+    selectedAfSeq, // selected first address id
+    selectedAsSeq, // selected second address id
+    selectedAtSeq, // selected third address id
+    fetchFirstAddressList,
     fetchSecondAddressList,
     fetchThirdAddressList,
     setSelectedAfSeq,
     setSelectedAsSeq,
-    setSelectedAtSeq
-  } = useAddressStore();
+    setSelectedAtSeq,
+  } = useAddressSelection();
 
   const [step, setStep] = useState(1);
 
   // load first address list when component mounts
   useEffect(() => {
     fetchFirstAddressList();
-  }, []);
+  }, [fetchFirstAddressList]);
 
   // guard: if previous step undefined, go to prev step
   useEffect(() => {
@@ -35,21 +35,30 @@ export function useAddressFlow() {
   }, [step, selectedAfSeq, selectedAsSeq]);
 
   // load address list when previous address is selected
-  const handleSelectFirstAddress = useCallback(async (afSeq) => {
-    setSelectedAfSeq(afSeq);
-    await fetchSecondAddressList(afSeq);
-    setStep(2);
-  }, [fetchSecondAddressList, setSelectedAfSeq]);
+  const handleSelectFirstAddress = useCallback(
+    async (afSeq) => {
+      setSelectedAfSeq(afSeq);
+      await fetchSecondAddressList(afSeq);
+      setStep(2);
+    },
+    [fetchSecondAddressList, setSelectedAfSeq],
+  );
 
-  const handleSelectSecondAddress = useCallback(async (asSeq) => {
-    setSelectedAsSeq(asSeq);
-    await fetchThirdAddressList(asSeq);
-    setStep(3);
-  }, [fetchThirdAddressList, setSelectedAsSeq]);
+  const handleSelectSecondAddress = useCallback(
+    async (asSeq) => {
+      setSelectedAsSeq(asSeq);
+      await fetchThirdAddressList(asSeq);
+      setStep(3);
+    },
+    [fetchThirdAddressList, setSelectedAsSeq],
+  );
 
-  const handleSelectThirdAddress = useCallback(async (atSeq) => {
-    setSelectedAtSeq(atSeq);
-  }, [setSelectedAtSeq]);
+  const handleSelectThirdAddress = useCallback(
+    async (atSeq) => {
+      setSelectedAtSeq(atSeq);
+    },
+    [setSelectedAtSeq],
+  );
 
   const stepButtons = {
     1: {

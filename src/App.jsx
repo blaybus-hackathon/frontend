@@ -48,9 +48,9 @@ function App() {
 
           {/* 레이아웃 */}
           <Route path='/' element={<Layout />}>
-            <Route path='/signin' element={<SignIn />} />
-            <Route path='/find-account' element={<FindAccount />} />
-            <Route path='/search-center' element={<SearchCenter />} />
+            <Route path='signin' element={<SignIn />} />
+            <Route path='find-account' element={<FindAccount />} />
+            <Route path='search-center' element={<SearchCenter />} />
 
             {/* Center */}
             <Route path='center/signup' element={<CenterSignUp />} />
@@ -67,7 +67,7 @@ function App() {
 
             {/* Helper */}
             <Route path='helper' element={<HelperHome />} />
-            <Route path='helper/detail/:patientSeq' element={<MatchingDetail />} />
+            <Route path='helper/detail/:patientLogSeq' element={<MatchingDetail />} />
             <Route path='helper/signup' element={<HelperSignUp />} />
             <Route path='helper/account' element={<Account />} />
             <Route path='helper/account/edit' element={<AccountEdit />} />

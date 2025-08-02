@@ -32,7 +32,7 @@ const CenterRegister = lazy(() => import('./pages/center/CenterRegister'));
 const ElderRegister = lazy(() => import('./pages/center/ElderRegister'));
 const MyPage = lazy(() => import('./pages/center/MyPage'));
 const ElderInfo = lazy(() => import('./pages/center/ElderInfo'));
-const ElderList = lazy(() => import('./pages/center/ElderList'));
+// const ElderList = lazy(() => import('./pages/center/ElderList'));
 const MatchingInfo = lazy(() => import('./pages/center/MatchingInfo'));
 const ElderAddress = lazy(() => import('./pages/center/ElderAddress'));
 const ChatRoomsPage = lazy(() => import('./pages/center/ChatRoomsPage'));
@@ -50,7 +50,7 @@ function App() {
             <Route path='error' element={<Error />} />
             <Route path='*' element={<NotFound />} />
             <Route path='center' element={<DashBoard />} />
-            <Route path='center/elder-list' element={<ElderList />} />
+            {/* <Route path='center/elder-list' element={<ElderList />} /> */}
 
             {/* 레이아웃 */}
             <Route path='/' element={<Layout />}>

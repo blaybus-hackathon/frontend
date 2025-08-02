@@ -4,6 +4,7 @@ import Layout from './components/ui/Layout';
 import NotFound from './pages/NotFound';
 import Error from './pages/Error';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import RequireAuth from './routes/RequireAuth';
 
 import Home from './pages/Home';
 import HelperHome from './pages/helper/HelperHome';
@@ -46,42 +47,77 @@ function App() {
           <Routes>
             {/* 공통 */}
             <Route index element={<Home />} />
+            <Route
+              path='center'
+              element={
+                <RequireAuth role='center'>
+                  <DashBoard />
+                </RequireAuth>
+              }
+            />
             <Route path='login/oauth2/code/kakao' element={<KakaoCallback />} />
-            <Route path='error' element={<Error />} />
             <Route path='*' element={<NotFound />} />
-            <Route path='center' element={<DashBoard />} />
-            {/* <Route path='center/elder-list' element={<ElderList />} /> */}
+            <Route path='error' element={<Error />} />
 
             {/* 레이아웃 */}
             <Route path='/' element={<Layout />}>
               <Route path='signin' element={<SignIn />} />
               <Route path='find-account' element={<FindAccount />} />
-              <Route path='search-center' element={<SearchCenter />} />
+
+              <Route
+                path='search-center'
+                element={
+                  <RequireAuth role='center'>
+                    <SearchCenter />
+                  </RequireAuth>
+                }
+              />
+              <Route path='center/signup' element={<CenterSignUp />} />
+              <Route path='helper/signup' element={<HelperSignUp />} />
 
               {/* Center */}
-              <Route path='center/signup' element={<CenterSignUp />} />
-              <Route path='center/register' element={<CenterRegister />} />
-              <Route path='center/elder-register' element={<ElderRegister />} />
-              <Route path='center/mypage' element={<MyPage />} />
-              <Route path='center/elder-info' element={<ElderInfo />} />
-              <Route path='center/matching' element={<Matching />} />
-              <Route path='center/matching-info' element={<MatchingInfo />} />
-              <Route path='center/register/address' element={<ElderAddress />} />
-              <Route path='center/recruit/detail' element={<RecruitDetail />} />
-              <Route path='center/recruit/modify' element={<ModifyRecruit />} />
-              <Route path='center/care-info' element={<CaregiverInfo />} />
+              <Route
+                path='center/*'
+                element={
+                  <RequireAuth role='center'>
+                    <Route path='register' element={<CenterRegister />} />
+                    <Route path='elder-register' element={<ElderRegister />} />
+                    <Route path='mypage' element={<MyPage />} />
+                    <Route path='elder-info' element={<ElderInfo />} />
+                    <Route path='matching' element={<Matching />} />
+                    <Route path='matching-info' element={<MatchingInfo />} />
+                    <Route path='register/address' element={<ElderAddress />} />
+                    <Route path='recruit/detail' element={<RecruitDetail />} />
+                    <Route path='recruit/modify' element={<ModifyRecruit />} />
+                    <Route path='care-info' element={<CaregiverInfo />} />
+                  </RequireAuth>
+                }
+              />
 
               {/* Helper */}
-              <Route path='helper' element={<HelperHome />} />
-              <Route path='helper/detail/:patientLogSeq' element={<MatchingDetail />} />
-              <Route path='helper/signup' element={<HelperSignUp />} />
-              <Route path='helper/account' element={<Account />} />
-              <Route path='helper/account/edit' element={<AccountEdit />} />
-              <Route path='helper/account/schedule' element={<AccountSchedule />} />
-              <Route path='helper/account/pay' element={<AccountPay />} />
-              <Route path='helper/account/care-type' element={<AccountCareType />} />
-              <Route path='helper/location' element={<HelperLocation />} />
-              <Route path='helper/address' element={<HelperAddress />} />
+              <Route
+                path='helper'
+                element={
+                  <RequireAuth role='helper'>
+                    <HelperHome />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path='helper/*'
+                element={
+                  <RequireAuth role='helper'>
+                    <Route path='detail/:patientLogSeq' element={<MatchingDetail />} />
+                    <Route path='account' element={<Account />} />
+                    <Route path='account/edit' element={<AccountEdit />} />
+                    <Route path='account/schedule' element={<AccountSchedule />} />
+                    <Route path='account/pay' element={<AccountPay />} />
+                    <Route path='account/care-type' element={<AccountCareType />} />
+                    <Route path='location' element={<HelperLocation />} />
+                    <Route path='address' element={<HelperAddress />} />
+                  </RequireAuth>
+                }
+              />
 
               {/* Chatting */}
               <Route path='chatrooms' element={<ChatRoomsPage />} />

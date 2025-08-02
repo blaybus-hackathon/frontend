@@ -15,7 +15,7 @@
 
 export function FormField({ label, required, isMultiple, children }) {
   return (
-    <section className='mb-8'>
+    <>
       <div className='flex items-center mb-4'>
         <span className='text-xl lg:text-[1.4375rem] font-semibold text-[var(--text)]'>
           {label}
@@ -32,6 +32,6 @@ export function FormField({ label, required, isMultiple, children }) {
         )}
       </div>
       {children}
-    </section>
+    </>
   );
 }

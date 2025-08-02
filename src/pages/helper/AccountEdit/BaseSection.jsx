@@ -1,7 +1,9 @@
 import useProfileStore from '@/store/useProfileStore';
+import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
 
 function BaseSection() {
   const { profileEdit, updateProfileField } = useProfileStore();
+  const { helper } = useHelperAccountStore();
   return (
     <section className='flex items-center gap-12 '>
       <div className='relative w-24 h-24'>
@@ -39,10 +41,10 @@ function BaseSection() {
       </div>
       <div className='flex flex-col gap-5 items-start'>
         <span className='text-[#191919] text-[23px] font-bold leading-none h-auto '>
-          {profileEdit.name || '홍길동'}
+          {helper.name || '홍길동'}
         </span>
         <span className='text-[#191919] font-pretendard text-[20px] font-medium leading-none '>
-          {profileEdit.address || '서울특별시 광진구 거주'}
+          {helper.addressDetail || '서울특별시 광진구'} 거주
         </span>
       </div>
     </section>

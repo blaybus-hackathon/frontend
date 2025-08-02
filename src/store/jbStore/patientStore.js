@@ -57,7 +57,5 @@ const patientStore = create((set) => ({
     set((state) => ({ patientData: { ...state.patientData, address } })),
   setPatientGrade: (grade) => set((state) => ({ patientData: { ...state.patientData, grade } })),
   setPatient: (info) => set((state) => ({ patientData: { ...state.patientData, ...info } })),
-
-  setRecruit: (recruit) => set((state) => ({ recruitReq: { ...state.recruitReq, ...recruit } })),
 }));
 export default patientStore;

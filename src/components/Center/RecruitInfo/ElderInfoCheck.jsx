@@ -80,7 +80,7 @@ export default function MatchingManage2({ handleMatchingPage }) {
         </p>
       </div>
 
-      <div className='mx-auto flex flex-col gap-5 max-w-2xl mb-40'>
+      <div className='mx-auto flex flex-col gap-5 max-w-2xl mb-3'>
         <div className='flex pb-5 border-b border-[var(--outline)]'>
           <div className='flex items-center justify-center mr-8'>
             <img
@@ -164,14 +164,6 @@ export default function MatchingManage2({ handleMatchingPage }) {
             </p>
           </div>
         </div>
-        {/* <div className='px-5'>
-          <div className='flex min-h-16'>
-            <p className='flex flex-1 text-start font-semibold text-xl items-center'>케어필요</p>
-            <p className='flex flex-1 text-start bg-[var(--button-inactive)] items-center rounded-md text-xl px-5'>
-              {}
-            </p>
-          </div>
-        </div> */}
         <div className='px-5'>
           <div className='flex min-h-16'>
             <p className='flex flex-1 text-start font-semibold text-xl items-center'>동거인 여부</p>
@@ -222,17 +214,9 @@ export default function MatchingManage2({ handleMatchingPage }) {
             </div>
           </div>
         </div>
-        {/* <div className='px-5'>
-          <div className='flex min-h-16'>
-            <p className='flex flex-1 text-start font-semibold text-xl items-center'>희망시급</p>
-            <p className='flex flex-1 text-start bg-[var(--button-inactive)] items-center rounded-md text-xl px-5'>
-              {recruitReq.wage || 10300}
-            </p>
-          </div>
-        </div> */}
 
         <Button
-          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-[5rem] left-1/2 -translate-x-1/2 font-bold'
+          className='h-16 w-full bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 font-bold'
           onClick={() => {
             window.scrollTo(0, 0);
             handleMatchingPage((prev) => {

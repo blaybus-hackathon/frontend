@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
+import { Alert } from '@/components/ui/custom/alert';
 import { User, LockKeyholeOpen } from 'lucide-react';
 import Kakao from '/kakao_login_medium_wide.svg';
 import Logo from '/blaybus_logo_icon_text.svg';
@@ -8,6 +10,7 @@ import { CLIENT_ROLE, ROLE_MAP } from '@/constants/authType';
 
 const AuthForm = ({ type, onSubmit, setLoginType }) => {
   const navigate = useNavigate();
+  const [alertMessage, setAlertMessage] = useState('');
 
   const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
   const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
@@ -15,18 +18,19 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
 
   function handleSubmit(e) {
     e.preventDefault();
+    setAlertMessage('');
+
     const formData = new FormData(e.target);
     const email = formData.get('email')?.trim();
     const password = formData.get('password')?.trim();
 
     if (!email || !password) {
-      alert('이메일과 비밀번호를 모두 입력해주세요.');
+      setAlertMessage('이메일과 비밀번호를 모두 입력해주세요.');
       return;
     }
     onSubmit({ email, password, loginType: type });
   }
 
-  // 회원가입이 되어있지 않으면 navigate
   function handleSignUpNavigation() {
     navigate(type === 'helper' ? '/helper/signup' : '/center/signup');
   }
@@ -72,6 +76,9 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
           요양보호사용
         </Button>
       </div>
+
+      {/* Alert 메시지 표시 */}
+      {alertMessage && <Alert description={alertMessage} color='red' className='mb-4' />}
 
       <form onSubmit={handleSubmit} className='space-y-4'>
         <div className='relative'>

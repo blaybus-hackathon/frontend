@@ -41,7 +41,6 @@ function PrivateChatRoom() {
   const msgContainerRef = useRef();
   const prevScrollHeight = useRef(0);
   const firstRenderRef = useRef(true); // 최초 렌더링 여부
-  const isFetching = useRef(true);
   const receiveMsg = useRef(false); // 메세지를 받는 경우 true
 
   // 헤더 세팅
@@ -58,9 +57,17 @@ function PrivateChatRoom() {
     return () => {
       clearHeaderProps();
     };
-  }, []);
+  }, [chatInfo.partnerName, clearHeaderProps, navigate, setHeaderProps]);
 
   useEffect(() => {
+    // 컨테이너 최상단 도달 시 page up
+    const handleScroll = () => {
+      const container = msgContainerRef.current;
+      if (hasNext && container.scrollTop === 0) {
+        setPage((prev) => prev + 1);
+      }
+    };
+
     //최초 채팅 세팅
     const setupSocket = async () => {
       connectSocket(() => {
@@ -97,37 +104,58 @@ function PrivateChatRoom() {
       //언마운트 시 소켓 통신 해제
       disconnectSocket();
     };
-  }, []);
+  }, [hasNext]);
 
-  // 메세지 fetch 후 스크롤 고정
   useEffect(() => {
+    // 최초 렌더링 시 스크롤 최하단 이동
+    if (firstRenderRef.current && messages.length > 0) {
+      msgContainerRef.current.scrollTop = msgContainerRef.current.scrollHeight;
+      firstRenderRef.current = false;
+      return;
+    }
+
+    // messages 변경 시 스크롤 위치 계산
     if (msgContainerRef.current) {
       const container = msgContainerRef.current;
-      if (isFetching.current || receiveMsg.current) {
-        const newScrollHeight = container.scrollHeight;
-        const heightDiff = newScrollHeight - prevScrollHeight.current.scrollHeight;
-        container.scrollTop += heightDiff;
-
-        isFetching.current = false;
+      if (receiveMsg.current) {
         receiveMsg.current = false;
       } else {
-        container.scrollTop = container.scrollHeight;
+        const newScrollHeight = container.scrollHeight;
+        const heightDiff = newScrollHeight - prevScrollHeight.current;
+        console.log(newScrollHeight, prevScrollHeight.current, heightDiff);
+        container.scrollTop = heightDiff;
       }
     }
   }, [messages]);
 
   // 페이지 변동 시 메세지 추가 fetch
   useEffect(() => {
-    getMessages();
-  }, [page]);
+    // 메세지 fetch
+    const getMessages = () => {
+      if (isLoading) return;
+      if (!hasNext) return;
 
-  // 컨테이너 최상단 도달 시 page up
-  const handleScroll = () => {
-    const container = msgContainerRef.current;
-    if (hasNext && container.scrollTop === 0) {
-      setPage((prev) => prev + 1);
-    }
-  };
+      setIsLoading(true);
+
+      // fetch 시 스크롤 위치 기억 (마운트 시 fetch 제외)
+      if (!firstRenderRef.current) {
+        prevScrollHeight.current = msgContainerRef.current.scrollHeight;
+      }
+
+      request('get', `/chat/find-detail?pageNo=${page}&chatRoomId=${roomId}`)
+        .then((res) => {
+          setMessages((prev) => [...prev, ...res.list]);
+          setHasNext(res.hasNext);
+        })
+        .catch(() => {
+          console.error('채팅 불러오기 실패');
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    };
+    getMessages();
+  }, [page, hasNext, roomId]);
 
   const sendChatMessage = async () => {
     if (!msgInput) return;
@@ -138,7 +166,6 @@ function PrivateChatRoom() {
     const payload = {
       content: msgInput,
       senderId: user.chatSenderId,
-      // senderId: 9,
       receiverId: chatInfo.partnerId,
       patientLogId: chatInfo.patientLogId,
     };
@@ -153,34 +180,8 @@ function PrivateChatRoom() {
       sendMessage('/app/private-message', payload);
       setMessages((prev) => [newMsg, ...prev]);
     });
-  };
 
-  // 메세지 fetch
-  const getMessages = () => {
-    if (isLoading) return;
-    if (!hasNext) return;
-
-    setIsLoading(true);
-
-    // fetch 시 스크롤 위치 기억 (마운트 시 fetch 제외)
-    if (!firstRenderRef.current) {
-      prevScrollHeight.current = msgContainerRef.current;
-    } else {
-      firstRenderRef.current = false;
-    }
-    isFetching.current = true;
-
-    request('get', `/chat/find-detail?pageNo=${page}&chatRoomId=${roomId}`)
-      .then((res) => {
-        setMessages((prev) => [...prev, ...res.list]);
-        setHasNext(res.hasNext);
-      })
-      .catch(() => {
-        console.error('채팅 불러오기 실패');
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    firstRenderRef.current = true;
   };
 
   const renderMessages = () =>

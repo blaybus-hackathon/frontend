@@ -28,11 +28,20 @@ const useHelperAccountStore = create((set) => ({
     name: 'tempName',
     phone: '010-0000-0000',
     addressDetail: '서울특별시 강남구',
-    certificates: ['산후관리사'],
+    certificates: [
+      {
+        certName: '',
+        certNum: '',
+        certDateIssue: null,
+        certSerialNum: null,
+      },
+    ],
     carOwnYn: true,
     eduYn: false,
     wage: null,
     wageState: null,
+    introduce: '',
+    careExperience: false,
   },
 
   setPart: (newPart) => set((state) => ({ helper: { ...state.helper, ...newPart } })),

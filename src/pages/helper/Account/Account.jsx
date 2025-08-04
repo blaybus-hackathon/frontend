@@ -23,12 +23,6 @@ import useProfileStore from '@/store/useProfileStore';
 
 export default function Account() {
   const { optimizedSchedule } = useScheduleStore();
-  // const PAY_TYPES = [
-  //   { id: 'hourly', label: '시급' },
-  //   { id: 'daily', label: '일급' },
-  //   { id: 'weekly', label: '주급' },
-  //   { id: 'monthly', label: '월급' },
-  // ];
   const PAY_TYPES = ['시급', '일급', '주급'];
   const { user } = useAuthStore();
   const { helper, setHelper } = useHelperAccountStore();
@@ -56,7 +50,6 @@ export default function Account() {
     const helperSeq = user.helperSeq;
     request('post', '/detail/helper-info', { helperSeq })
       .then((res) => {
-        console.log(res);
         setHelper(res);
       })
       .catch((e) => {
@@ -111,7 +104,7 @@ export default function Account() {
        profile-section__content-text 
     `}
               >
-                {profileEdit.introduction || '소개 없음'}
+                {helper.introduce || '소개 없음'}
               </span>
             </div>
           </section>
@@ -122,7 +115,7 @@ export default function Account() {
 
             <div className='profile-section__content-box justify-center'>
               <span className='profile-section__content-text'>
-                {profileEdit.careExperience || '신입'}
+                {helper.careExperience ? '경력' : '신입'}
               </span>
             </div>
           </section>
@@ -218,10 +211,7 @@ export default function Account() {
             <div className='profile-section__content-box'>
               <img className='w-[24px] h-[24px]' src={homecontrols} alt='homeControls_icon' />
               <span className='profile-section__content-text'>
-                {Object.entries(profileEdit.selectedOptions || {})
-                  .filter(([_, value]) => value)
-                  .map(([key]) => key)
-                  .join(', ') || '설정되지 않음'}
+                {helper.certificates.map((cert) => cert.certName).join(', ')}
               </span>
             </div>
           </section>

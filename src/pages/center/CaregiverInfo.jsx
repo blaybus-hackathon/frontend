@@ -16,8 +16,8 @@ const CERT = ['요양보호사', '간병사', '병원동행매니저', ' 산후 
 
 export default function CaregiverInfo() {
   const navigate = useNavigate();
-  const helperSeq = useLocation().state.helperSeq;
-  // const helperSeq = 1;
+  // const helperSeq = useLocation().state.helperSeq;
+  const helperSeq = 1;
 
   const [censored, setCensored] = useState(true);
 
@@ -77,7 +77,7 @@ export default function CaregiverInfo() {
           <div className='flex flex-col items-start w-full'>
             <label className='font-semibold text-xl mb-5'>자기소개</label>
             <div className='border border-[#C8C8C8] w-full rounded-md h-34 px-2 py-3 text-left relative'>
-              <div className={`h-full ${censored && 'blur-lg'}`}>내가 최고야</div>
+              <div className={`h-full ${censored && 'blur-lg'}`}>{helperInfo.introduce}</div>
               {censored && (
                 <p className='font-semibold absolute top-1/2 left-1/2 -translate-1/2'>
                   매칭 후 열람 가능합니다
@@ -91,10 +91,22 @@ export default function CaregiverInfo() {
             </label>
             <div className='relative'>
               <div className={`text-xl flex ${censored && 'blur-3xl'} gap-8`}>
-                <div className='flex-1 border h-16 bg-[var(--main)] flex justify-center items-center rounded-[10px] text-white'>
+                <div
+                  className={`flex-1 border h-16 flex justify-center items-center rounded-[10px] ${
+                    helperInfo.careExperience
+                      ? 'border-[var(--outline)] border'
+                      : 'text-white bg-[var(--main)]'
+                  }`}
+                >
                   신입
                 </div>
-                <div className='flex-1 border h-16 border-[var(--outline)] flex justify-center items-center rounded-[10px]'>
+                <div
+                  className={`flex-1 h-16 flex justify-center items-center rounded-[10px] ${
+                    helperInfo.careExperience
+                      ? 'text-white bg-[var(--main)]'
+                      : 'border-[var(--outline)] border'
+                  }`}
+                >
                   경력
                 </div>
               </div>
@@ -123,7 +135,7 @@ export default function CaregiverInfo() {
             <label className='font-semibold text-xl mb-4'>나의 근무 가능 일정</label>
             <div className='border border-[#C8C8C8] font-medium text-lg flex justify-center items-center rounded-md w-full p-5 flex'>
               <img src={map_pin} className='size-6 mr-5' />
-              <div className='flex-1'>
+              <div className='flex-1 text-start'>
                 <p>월,화,수 &gt; 13:00~20:00</p>
                 <p>목,금,토 &gt; 12:00~18:00</p>
               </div>
@@ -134,7 +146,7 @@ export default function CaregiverInfo() {
             <div className='h-16 border border-[#C8C8C8] font-medium text-lg flex rounded-md w-full'>
               <div className='flex items-center ml-5 text-xl'>
                 <img src={card} className='size-6 mr-5' />
-                {helperInfo.wage}원
+                <span className='mr-2'>시급</span> <span> {helperInfo.wage}원</span>
               </div>
             </div>
           </div>

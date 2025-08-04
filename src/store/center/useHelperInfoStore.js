@@ -12,6 +12,8 @@ export const useHelperInfoStore = create((set) => ({
     eduYn: false,
     wage: null,
     wageState: null,
+    introduce: '',
+    careExperience: true,
   },
 
   setHelperInfo: (newState) =>

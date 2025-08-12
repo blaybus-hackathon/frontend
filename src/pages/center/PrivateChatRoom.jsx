@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef, useOptimistic, startTransition } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import addImg from '@/assets/images/add.png';
 import chatStore from '@/store/jbStore/chatStore';
@@ -33,15 +34,12 @@ function PrivateChatRoom() {
   const [hasNext, setHasNext] = useState(true); //다음 페이지 유무
   const [msgInput, setMsgInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [optMessages, setOptMessages] = useOptimistic(messages, (state, newMsg) => [
-    newMsg,
-    ...state,
-  ]);
 
   const msgContainerRef = useRef();
   const prevScrollHeight = useRef(0);
   const firstRenderRef = useRef(true); // 최초 렌더링 여부
   const receiveMsg = useRef(false); // 메세지를 받는 경우 true
+  const updatingPending = useRef(false);
 
   // 헤더 세팅
   useEffect(() => {
@@ -73,7 +71,6 @@ function PrivateChatRoom() {
       connectSocket(() => {
         // 개인 메세지 구독 (상대 -> 나)
         subscribe('/user/queue/private', (message) => {
-          console.log('come');
           const newMsg = {
             senderYn: false,
             content: message.content,
@@ -86,6 +83,20 @@ function PrivateChatRoom() {
         // 오류 메세지 구독
         subscribe('/user/queue/error', (error) => {
           console.error('오류 발생:', error);
+        });
+
+        // 서버에 메세지 전달 성공 시
+        subscribe('/user/queue/success', (res) => {
+          updatingPending.current = true;
+          setMessages((prev) => {
+            const idx = prev.findIndex((m) => m.successSepCode === res.successSepCode);
+            if (idx !== -1) {
+              const updated = [...prev];
+              updated[idx].isPending = false;
+              return updated;
+            }
+          });
+          updatingPending.current = false;
         });
       });
     };
@@ -122,7 +133,6 @@ function PrivateChatRoom() {
       } else {
         const newScrollHeight = container.scrollHeight;
         const heightDiff = newScrollHeight - prevScrollHeight.current;
-        console.log(newScrollHeight, prevScrollHeight.current, heightDiff);
         container.scrollTop = heightDiff;
       }
     }
@@ -159,33 +169,33 @@ function PrivateChatRoom() {
 
   const sendChatMessage = async () => {
     if (!msgInput) return;
-    // if (!user) {
-    //   alert('사용자 식별에 실패하였습니다. 다시 로그인해주세요.');
-    //   navigate('/signin');
-    // }
+
+    const successSepCode = uuidv4();
     const payload = {
       content: msgInput,
       senderId: user.chatSenderId,
       receiverId: chatInfo.partnerId,
       patientLogId: chatInfo.patientLogId,
+      successSepCode,
     };
     const newMsg = {
       senderYn: true,
       content: msgInput,
       readYn: false,
+      isPending: true,
+      successSepCode,
     };
     setMsgInput('');
-    startTransition(async () => {
-      setOptMessages({ ...newMsg, isOpt: true });
-      sendMessage('/app/private-message', payload);
-      setMessages((prev) => [newMsg, ...prev]);
-    });
+
+    while (updatingPending.current);
+    setMessages((prev) => [newMsg, ...prev]);
+    sendMessage('/app/private-message', payload);
 
     firstRenderRef.current = true;
   };
 
   const renderMessages = () =>
-    optMessages
+    messages
       .slice()
       .reverse()
       .map((msg, idx) => (
@@ -199,7 +209,7 @@ function PrivateChatRoom() {
           <p
             className={`${
               msg.senderYn ? 'bg-[rgba(82,46,154,0.1)]' : 'bg-[var(--button-inactive)]'
-            } ${msg.isOpt && 'opacity-50'} flex items-center rounded-2xl py-3 px-5`}
+            } ${msg.isPending && 'opacity-50'} flex items-center rounded-2xl py-3 px-5`}
           >
             {msg.content}
           </p>

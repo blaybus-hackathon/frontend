@@ -14,7 +14,6 @@ export const connectSocket = async (callbackFunc) => {
 
     // 연결 성공
     onConnect: () => {
-      console.log('success');
       callbackFunc();
     },
     onStompError: (e) => {

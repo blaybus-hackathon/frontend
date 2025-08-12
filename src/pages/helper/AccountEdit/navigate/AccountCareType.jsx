@@ -82,7 +82,6 @@ export default function AccountCareType() {
       alert('근무 종류를 최소 1개 이상 선택해주세요.');
       return;
     }
-    console.log(profileEdit.careTypes);
     navigate('/helper/account/edit'); // Zustand에 저장했으므로 navigate만
   };
 

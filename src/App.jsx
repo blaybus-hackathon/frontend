@@ -64,14 +64,9 @@ function App() {
               <Route path='signin' element={<SignIn />} />
               <Route path='find-account' element={<FindAccount />} />
 
-              <Route
-                path='search-center'
-                element={
-                  <RequireAuth role='center'>
-                    <SearchCenter />
-                  </RequireAuth>
-                }
-              />
+              <Route path='search-center' element={<SearchCenter />} />
+              <Route path='center/register' element={<CenterRegister />} />
+
               <Route path='center/signup' element={<CenterSignUp />} />
               <Route path='helper/signup' element={<HelperSignUp />} />
 
@@ -80,16 +75,17 @@ function App() {
                 path='center/*'
                 element={
                   <RequireAuth role='center'>
-                    <Route path='register' element={<CenterRegister />} />
-                    <Route path='elder-register' element={<ElderRegister />} />
-                    <Route path='mypage' element={<MyPage />} />
-                    <Route path='elder-info' element={<ElderInfo />} />
-                    <Route path='matching' element={<Matching />} />
-                    <Route path='matching-info' element={<MatchingInfo />} />
-                    <Route path='register/address' element={<ElderAddress />} />
-                    <Route path='recruit/detail' element={<RecruitDetail />} />
-                    <Route path='recruit/modify' element={<ModifyRecruit />} />
-                    <Route path='care-info' element={<CaregiverInfo />} />
+                    <Routes>
+                      <Route path='elder-register' element={<ElderRegister />} />
+                      <Route path='mypage' element={<MyPage />} />
+                      <Route path='elder-info' element={<ElderInfo />} />
+                      <Route path='matching' element={<Matching />} />
+                      <Route path='matching-info' element={<MatchingInfo />} />
+                      <Route path='register/address' element={<ElderAddress />} />
+                      <Route path='recruit/detail' element={<RecruitDetail />} />
+                      <Route path='recruit/modify' element={<ModifyRecruit />} />
+                      <Route path='care-info' element={<CaregiverInfo />} />
+                    </Routes>
                   </RequireAuth>
                 }
               />
@@ -107,14 +103,16 @@ function App() {
                 path='helper/*'
                 element={
                   <RequireAuth role='helper'>
-                    <Route path='detail/:patientLogSeq' element={<MatchingDetail />} />
-                    <Route path='account' element={<Account />} />
-                    <Route path='account/edit' element={<AccountEdit />} />
-                    <Route path='account/schedule' element={<AccountSchedule />} />
-                    <Route path='account/pay' element={<AccountPay />} />
-                    <Route path='account/care-type' element={<AccountCareType />} />
-                    <Route path='location' element={<HelperLocation />} />
-                    <Route path='address' element={<HelperAddress />} />
+                    <Routes>
+                      <Route path='detail/:patientLogSeq' element={<MatchingDetail />} />
+                      <Route path='account' element={<Account />} />
+                      <Route path='account/edit' element={<AccountEdit />} />
+                      <Route path='account/schedule' element={<AccountSchedule />} />
+                      <Route path='account/pay' element={<AccountPay />} />
+                      <Route path='account/care-type' element={<AccountCareType />} />
+                      <Route path='location' element={<HelperLocation />} />
+                      <Route path='address' element={<HelperAddress />} />
+                    </Routes>
                   </RequireAuth>
                 }
               />

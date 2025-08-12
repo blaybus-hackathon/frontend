@@ -4,6 +4,7 @@ import { FormField } from '@/components/ui/custom/FormField';
 import { Input } from '@/components/ui/custom/input';
 import { Button } from '@/components/ui/custom/Button';
 import { Alert } from '@/components/ui/custom/alert';
+import { ButtonLoader } from '@/components/ui/custom/ButtonLoader';
 import { setTempPassword } from '@/services/findAccountService';
 
 export default function SendTempPwdForm({ onResult }) {
@@ -48,7 +49,12 @@ export default function SendTempPwdForm({ onResult }) {
             className={`w-full h-fit font-lg text-[var(--text)] font-normal focus:outline-none focus:ring-0 p-4 rounded-[0.625rem] ${emailError ? 'border-red-500' : ''}`}
           />
           {emailError && (
-            <Alert icon={<AlertCircle className='w-4 h-4' />} description={emailError} />
+            <Alert
+              icon={<AlertCircle className='w-4 h-4' />}
+              title='이메일 오류'
+              description={emailError}
+              color='red'
+            />
           )}
           <p className='text-start text-sm text-gray-500 pt-3'>
             입력하신 이메일로 임시 비밀번호를 전송해 드려요!
@@ -58,7 +64,7 @@ export default function SendTempPwdForm({ onResult }) {
             onClick={handleCheckEmail}
             disabled={isLoading || !email}
           >
-            {isLoading ? '확인중...' : '임시 비밀번호 전송'}
+            {isLoading ? <ButtonLoader text='전송중...' /> : '임시 비밀번호 전송'}
           </Button>
         </div>
       </FormField>

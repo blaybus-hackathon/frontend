@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMatchStatusMutation } from '@/hooks/center/service/useMatchList';
-import { formatAddress } from '@/utils/format';
+import { formatAddress } from '@/utils/formatters/formatAddress';
 import { MATCH_STATE } from '@/constants/matching';
 import { Button } from '@/components/ui/custom/Button';
 import InfoCard from '@/components/ui/InfoCard/InfoCard';

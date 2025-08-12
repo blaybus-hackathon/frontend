@@ -2,16 +2,11 @@ import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 import { Input } from '@/components/ui/custom/input';
 import useProfileStore from '@/store/useProfileStore';
 import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
-import { useEffect } from 'react';
 
 const CertificationSection = () => {
   const { profileEdit, updateProfileField } = useProfileStore();
   const { helper } = useHelperAccountStore();
   const certificates = ['요양보호사', '간병사', '병원동행매니저', '산후관리사'];
-
-  useEffect(() => {
-    console.log('ss');
-  }, []);
 
   const handleRadioChange = (certificate, isChecked) => {
     updateProfileField('selectedOptions', {
@@ -43,8 +38,6 @@ const CertificationSection = () => {
 
       <Radio cols={1} multiple className='gap-4'>
         {certificates.map((certificate) => {
-          console.log(helper.certificates);
-          console.log(certificate);
           const isChecked = helper.certificates.includes(certificate);
           return (
             <div key={certificate} className='flex flex-col gap-2'>

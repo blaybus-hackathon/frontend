@@ -56,11 +56,10 @@ export default function Account() {
     const helperSeq = user.helperSeq;
     request('post', '/detail/helper-info', { helperSeq })
       .then((res) => {
-        console.log(res);
         setHelper(res);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   }, [user, setHelper]);
 

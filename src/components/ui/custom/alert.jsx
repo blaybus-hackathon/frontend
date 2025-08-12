@@ -24,7 +24,7 @@ export function Alert({ icon, description, color = 'red', className }) {
   return (
     <div className={cn('flex items-center justify-start gap-2', className)}>
       <div className={`${colorClass.icon} pt-0.5`}>{displayIcon}</div>
-      {description && <p className={`text-sm ${colorClass.desc}`}>{description}</p>}
+      {description && <p className={`text-start text-sm ${colorClass.desc}`}>{description}</p>}
     </div>
   );
 }

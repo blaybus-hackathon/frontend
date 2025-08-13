@@ -1,4 +1,4 @@
-export { validateEmail } from './validateEmail';
-export { validatePersonalInfo } from './validatePersonalInfo';
-export { validateHelperInfo } from './validateHelperInfo';
-export { validateLicenseInfo } from './validateLicenseInfo';
+export { validateEmail, validatePasswordMatch } from './email.js';
+export { validatePersonalInfo } from './personalInfo.js';
+export { validateHelperInfo } from './helperInfo.js';
+export { validateLicenseInfo } from './licenseInfo.js';

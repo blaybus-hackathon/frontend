@@ -28,11 +28,16 @@ export const handleApiError = (
   showAlert = true,
   redirectOnServerError = true,
 ) => {
-  const code = error?.response?.status || error?.response?.data?.code;
+  // 비즈니스 로직 에러 코드를 우선 확인 (4009, 4000 등)
+  const businessCode = error?.response?.data?.code;
+  const httpCode = error?.response?.status;
+
+  // 비즈니스 코드가 있으면 그것을 우선 사용, 없으면 HTTP 코드 사용
+  const code = businessCode || httpCode;
   const message = localMap[code] || errorMessageMap[code] || fallbackMessage;
 
-  // if code is 5xx, redirect to error page
-  if (redirectOnServerError && REDIRECT_TO_ERROR_PAGE_CODES.includes(code)) {
+  // if code is 5xx, redirect to error page (비즈니스 로직 에러는 제외)
+  if (redirectOnServerError && REDIRECT_TO_ERROR_PAGE_CODES.includes(code) && !businessCode) {
     // save current location and error info, then redirect to error page
     sessionStorage.setItem('errorRedirectFrom', window.location.pathname);
     sessionStorage.setItem(

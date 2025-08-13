@@ -1,7 +1,7 @@
 // rule chain
 // return error message sequence
 // return '' if valid
-export const run =
+export const chain =
   (...rules) =>
   (value) => {
     for (const rule of rules) {
@@ -11,7 +11,7 @@ export const run =
     return '';
   };
 
-export const validate = (values, schema) => {
+export const validateWithSchema = (values, schema) => {
   const errors = {};
   for (const key in schema) {
     const res = schema[key]?.(values[key]);

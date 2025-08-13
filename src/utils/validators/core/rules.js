@@ -19,11 +19,15 @@ export const rules = {
     (
       emptyMsg = '전화번호를 입력해주세요.',
       invalidMsg = '형식이 올바르지 않습니다. (예: 01012345678)',
+      hyphenMsg = '하이픈(-)을 입력할 수 없습니다.',
     ) =>
     (value) => {
       const s = String(value ?? '').trim();
       if (!s) return emptyMsg;
-      return /^01[0-9]{8,9}$/.test(s) ? '' : invalidMsg;
+
+      if (s.includes('-')) return hyphenMsg;
+
+      return /^0[0-9]/.test(s) ? '' : invalidMsg;
     },
   boolRequired:
     (msg = '필수 선택 항목입니다.') =>

@@ -3,9 +3,9 @@
 // return '' if valid
 export const chain =
   (...rules) =>
-  (value) => {
+  (value, formData) => {
     for (const rule of rules) {
-      const msg = rule?.(value);
+      const msg = rule?.(value, formData);
       if (msg) return msg;
     }
     return '';
@@ -14,7 +14,7 @@ export const chain =
 export const validateWithSchema = (values, schema) => {
   const errors = {};
   for (const key in schema) {
-    const res = schema[key]?.(values[key]);
+    const res = schema[key]?.(values[key], values);
     if (res) errors[key] = res;
   }
   return errors;

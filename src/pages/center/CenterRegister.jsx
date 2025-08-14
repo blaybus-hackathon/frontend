@@ -5,6 +5,7 @@ import { useCenterRegiStepStore } from '@/store/center/useCenterRegiStepStore';
 import { useCenterRegiStore } from '@/store/center/useCenterRegiStore';
 import { CENTER_REGISTRATION_STEPS } from '@/constants/registrationSteps';
 import Spinner from '@/components/loading/Spinner';
+import { handleApiError } from '@/utils/handleApiError';
 
 import CenterBasicInfo from '@/components/Center/CenterRegister/CenterBasicInfo';
 import CenterAdditionalInfo from '@/components/Center/CenterRegister/CenterAdditionalInfo';
@@ -59,8 +60,16 @@ export default function CenterRegister() {
   }
 
   if (isError) {
-    alert('데이터를 불러오는 중 오류가 발생했습니다.');
-    navigate('/');
+    const error = new Error('센터 등록 데이터를 불러오는 중 오류가 발생했습니다.');
+    error.response = { status: 500 };
+
+    handleApiError(
+      error,
+      { 500: '센터 등록 정보를 불러오는 중 서버 오류가 발생했습니다.' },
+      '센터 등록 데이터를 불러오는 중 오류가 발생했습니다.',
+      false,
+      true,
+    );
     return null;
   }
 

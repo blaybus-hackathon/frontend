@@ -31,7 +31,7 @@ export function CenterNextButton({ isValid }) {
       } catch (error) {
         if (error.code === 4004 || error.code === 403) {
           reset();
-          navigate('/center/register');
+          navigate('/center/register', { replace: true });
         }
       }
     } else {

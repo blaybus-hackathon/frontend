@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import Layout from './components/ui/Layout';
 import NotFound from './pages/NotFound';
@@ -45,7 +45,7 @@ function App() {
       <ErrorBoundary>
         <Suspense fallback={<Spinner />}>
           <Routes>
-            {/* 공통 */}
+            {/* 공통 - Layout 밖에 위치 */}
             <Route index element={<Home />} />
             <Route
               path='center'
@@ -56,8 +56,9 @@ function App() {
               }
             />
             <Route path='login/oauth2/code/kakao' element={<KakaoCallback />} />
-            <Route path='*' element={<NotFound />} />
             <Route path='error' element={<Error />} />
+            <Route path='404' element={<NotFound />} />
+            <Route path='*' element={<NotFound />} />
 
             {/* 레이아웃 */}
             <Route path='/' element={<Layout />}>
@@ -85,6 +86,7 @@ function App() {
                       <Route path='recruit/detail' element={<RecruitDetail />} />
                       <Route path='recruit/modify' element={<ModifyRecruit />} />
                       <Route path='care-info' element={<CaregiverInfo />} />
+                      <Route path='*' element={<Navigate to='/404' replace />} />
                     </Routes>
                   </RequireAuth>
                 }
@@ -112,6 +114,7 @@ function App() {
                       <Route path='account/care-type' element={<AccountCareType />} />
                       <Route path='location' element={<HelperLocation />} />
                       <Route path='address' element={<HelperAddress />} />
+                      <Route path='*' element={<Navigate to='/404' replace />} />
                     </Routes>
                   </RequireAuth>
                 }

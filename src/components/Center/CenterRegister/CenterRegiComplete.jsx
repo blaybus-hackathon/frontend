@@ -8,7 +8,7 @@ export default function CenterRegiComplete() {
   const { registerCenter } = useCenterRegiStore();
 
   const handleClick = () => {
-    navigate('/signin');
+    navigate('/search-center');
   };
 
   return (
@@ -29,7 +29,7 @@ export default function CenterRegiComplete() {
       </div>
 
       <Button className='w-full my-10' onClick={handleClick}>
-        로그인하기
+        센터 검색하기
       </Button>
     </div>
   );

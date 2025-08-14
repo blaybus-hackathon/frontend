@@ -13,10 +13,10 @@
  * @returns
  */
 
-export function FormField({ label, required, isMultiple, children }) {
+export function FormField({ label, required, isMultiple, children, className, contentClassName }) {
   return (
-    <>
-      <div className='flex items-center mb-4'>
+    <div className={`flex flex-col gap-4 lg:gap-6 ${className}`}>
+      <div className='flex items-center'>
         <span className='text-xl lg:text-[1.4375rem] font-semibold text-[var(--text)]'>
           {label}
         </span>
@@ -31,7 +31,8 @@ export function FormField({ label, required, isMultiple, children }) {
           </span>
         )}
       </div>
-      {children}
-    </>
+
+      <div className={contentClassName}>{children}</div>
+    </div>
   );
 }

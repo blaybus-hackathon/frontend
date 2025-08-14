@@ -2,7 +2,9 @@ import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import { useCenterRegiStepStore } from '@/store/center/useCenterRegiStepStore';
+import { useCenterRegiStore } from '@/store/center/useCenterRegiStore';
 import { CENTER_REGISTRATION_STEPS } from '@/constants/registrationSteps';
+import Spinner from '@/components/loading/Spinner';
 
 import CenterBasicInfo from '@/components/Center/CenterRegister/CenterBasicInfo';
 import CenterAdditionalInfo from '@/components/Center/CenterRegister/CenterAdditionalInfo';
@@ -23,11 +25,17 @@ export default function CenterRegister() {
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
   const { currentIndex, totalSteps, prevStep, isLoading, isError } = useCenterRegiStepStore();
+  const reset = useCenterRegiStore((state) => state.reset);
   const isFinalStep = currentIndex === totalSteps - 1;
+
+  // reset store
+  useEffect(() => {
+    reset();
+  }, [reset]);
 
   const handleBackClick = useCallback(() => {
     if (isFinalStep || currentIndex === 0) {
-      navigate('/');
+      navigate('/search-center');
     } else {
       prevStep();
     }
@@ -46,9 +54,8 @@ export default function CenterRegister() {
     };
   }, [currentIndex, totalSteps, isFinalStep, handleBackClick, setHeaderProps, clearHeaderProps]);
 
-  // TODO: 로딩 UI 수정 필요
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (isError) {

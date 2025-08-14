@@ -1,5 +1,4 @@
-// src/utils/validators/center/elder/index.js
-export { validateBasicInfo } from './basicInfo.js';
-export { validateCareInfo } from './careInfo.js';
-export { validateServiceInfo } from './serviceInfo.js';
-export { validateAddInfo } from './additionalInfo.js';
+export { validateBasicInfo } from './basicInfo';
+export { validateCareInfo } from './careInfo';
+export { validateServiceInfo } from './serviceInfo';
+export { validateAddInfo } from './additionalInfo';

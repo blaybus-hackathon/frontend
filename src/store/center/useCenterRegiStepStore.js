@@ -5,6 +5,7 @@ const initialState = {
   currentIndex: 0,
   totalSteps: CENTER_REGISTRATION_STEPS.length,
   isCompleted: false,
+  activeValidation: false,
 };
 
 export const useCenterRegiStepStore = create((set) => ({
@@ -21,4 +22,7 @@ export const useCenterRegiStepStore = create((set) => ({
     })),
   setCompleted: (completed) => set({ isCompleted: completed }),
   reset: () => set(initialState),
+
+  triggerValidation: () => set({ activeValidation: true }),
+  clearValidationTrigger: () => set({ activeValidation: false }),
 }));

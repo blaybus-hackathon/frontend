@@ -14,6 +14,7 @@ export const validateCenterBasicInfo = (basicInfo) => {
   return (
     name?.trim() !== '' &&
     tel?.trim() !== '' &&
+    /^[0-9]+$/.test(tel) &&
     carYn !== '' &&
     basicAddress?.trim() !== '' &&
     detailAddress?.trim() !== '' &&

@@ -1,7 +1,7 @@
 import { useManagerProfileStore } from '@/store/center/useManagerProfileStore';
 import { FormField } from '@/components/ui/custom/FormField';
 import { Input } from '@/components/ui/custom/input';
-import ProfileImageUploader from '@/components/common/ProfileImageUploader';
+import { ProfileImageUploader } from '@/components/common/ProfileImageUploader';
 
 export default function ManagerInfoEdit() {
   const { formData, setFormData } = useManagerProfileStore();

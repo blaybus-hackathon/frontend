@@ -6,7 +6,6 @@ import { useSignUpStore } from '@/store/auth/center/useSignUpStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import { useCenterList } from '@/hooks/center/service/useCenterList';
 import { Button } from '@/components/ui/custom/Button';
-import SignUpButton from '@/components/Auth/SignUp/center/SignUpButton';
 
 function CenterListComponent({ center }) {
   const navigate = useNavigate();
@@ -62,15 +61,37 @@ export default function SearchCenter() {
           type='text'
           placeholder='센터 이름을 검색해주세요.'
           value={searchText}
+          autoFocus
           onChange={(e) => setSearchText(e.target.value)}
           className='w-full border-b-[var(--main)] border-b-2 pb-[0.88rem] outline-none text-[var(--text)]'
         />
-        <Search className='absolute strple right-4 top-0 text-[var(--main)]' strokeWidth={3} />
+        <Search className='absolute right-4 top-0 text-[var(--main)]' strokeWidth={3} />
       </div>
 
       {/* Search Result */}
       <div className='flex flex-col gap-4 overflow-y-auto h-[50vh]'>
-        {centerList.length === 0 ? (
+        {searchText.trim() === '' ? (
+          // if search text is empty
+          <div className='flex flex-col gap-15'>
+            <p className='text-[var(--text)] text-lg font-normal text-center pt-10'>
+              센터를 검색하거나 새로 등록해주세요.
+            </p>
+            <div className='flex flex-col gap-2'>
+              <p className='text-[var(--placeholder-gray)] text-base font-normal text-center'>
+                찾으시는 센터가 없으신가요?
+              </p>
+              <Button
+                variant='white'
+                className='mx-auto text-lg font-normal p-3 flex items-center justify-center gap-1 w-fit'
+                onClick={() => navigate('/center/register')}
+              >
+                <ArrowUpLeft className='mt-1/2 w-6 h-6 text-[var(--main)]' />
+                센터 등록하러 가기
+              </Button>
+            </div>
+          </div>
+        ) : centerList.length === 0 ? (
+          // if search text is not empty and no result
           <div className='flex flex-col gap-15'>
             <p className='text-[var(--text)] text-lg font-normal text-center pt-10'>
               검색 결과가 존재하지 않습니다.
@@ -93,8 +114,6 @@ export default function SearchCenter() {
           centerList.map((center) => <CenterListComponent key={center.centerSeq} center={center} />)
         )}
       </div>
-
-      <SignUpButton />
     </div>
   );
 }

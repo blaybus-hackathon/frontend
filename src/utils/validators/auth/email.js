@@ -15,8 +15,7 @@ export const validateEmail = (info) => {
 export const validatePasswordMatch = (info) => {
   if (!info) return false;
 
-  const password = info.password?.trim() ?? '';
-  const passwordConfirm = info.passwordConfirm?.trim() ?? '';
+  const passwordCheck = info.passwordCheck ?? false;
 
-  return password && passwordConfirm && password === passwordConfirm;
+  return passwordCheck;
 };

@@ -4,6 +4,11 @@ export const validatePersonalInfo = (info) => {
   const centerName = info.centerName?.trim() ?? '';
   const name = info.name?.trim() ?? '';
   const position = info.position?.trim() ?? '';
+  const profileOption = info.profileOption;
+  const photoFile = info.photoFile;
 
-  return centerName && name && position;
+  const basicInfoValid = centerName && name && position;
+  const profileValid = profileOption === '2' || (profileOption === '1' && photoFile);
+
+  return basicInfoValid && profileValid;
 };

@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import { useSignUpStepStore } from '@/store/auth/center/useSignUpStepStore';
 import { CENTER_SIGNUP_STEPS } from '@/constants/registrationSteps';
+import { handleApiError } from '@/utils/handleApiError';
 
+import Spinner from '@/components/loading/Spinner';
 import EmailAuth from '@/components/Auth/SignUp/center/EmailAuth';
 import PersonalInfo from '@/components/Auth/SignUp/center/PersonalInfo';
 import SignUpComplete from '@/components/Auth/SignUp/center/SignUpComplete';
@@ -22,16 +24,22 @@ export default function SignUp() {
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
-  const { currentIndex, totalSteps, prevStep, isLoading, isError } = useSignUpStepStore();
+  const { currentIndex, totalSteps, prevStep, isLoading, reset, isError } = useSignUpStepStore();
   const isFinalStep = currentIndex === totalSteps - 1;
 
   const handleBackClick = useCallback(() => {
-    if (isFinalStep || currentIndex === 0) {
-      navigate('/');
-    } else {
-      prevStep();
+    if (isFinalStep) {
+      reset();
+      navigate('/', { replace: true });
+      return;
     }
-  }, [isFinalStep, currentIndex, prevStep, navigate]);
+
+    if (currentIndex === 0) {
+      navigate(-1);
+    }
+
+    prevStep();
+  }, [isFinalStep, currentIndex, prevStep, navigate, reset]);
 
   useEffect(() => {
     setHeaderProps({
@@ -47,11 +55,12 @@ export default function SignUp() {
   }, [currentIndex, isFinalStep, clearHeaderProps, handleBackClick, setHeaderProps, totalSteps]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
   if (isError) {
-    alert('설문 데이터를 불러오는 중 오류가 발생했습니다.');
-    navigate('/');
+    handleApiError(isError);
+    reset();
+    navigate('/', { replace: true });
     return null;
   }
 

@@ -1,13 +1,16 @@
 import { useRef } from 'react';
+import { Alert } from '@/components/ui/custom/alert';
 import { Button } from '@/components/ui/custom/Button';
 import { FormField } from '@/components/ui/custom/FormField';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 
-export default function ProfileImageUploader({
+export function ProfileImageUploader({
   profileOption,
   onOptionChange,
   selectedImage,
   onImageSelect,
+  error,
+  touched,
 }) {
   const fileInputRef = useRef(null);
 
@@ -94,6 +97,7 @@ export default function ProfileImageUploader({
           </div>
         )}
       </div>
+      {error && touched && <Alert description={error} />}
     </FormField>
   );
 }

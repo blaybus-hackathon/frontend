@@ -196,7 +196,6 @@ export default function LocationSelector() {
                     key={sub.id}
                     disabled={isSubDistrictDisabled}
                     onClick={() => {
-                      console.log(isSubDistrictDisabled);
                       if (!isSubDistrictDisabled) {
                         if (isWholeSubDistrictButton) {
                           // "동 전체" 버튼 클릭 시

@@ -57,8 +57,6 @@ export default function AccountEdit() {
         // schedules: schedules,
       };
 
-      console.log('저장할 프로필 정보:', newProfile); // 저장될 정보 확인
-
       // 한 번에 저장
       updateProfile(newProfile);
       navigate('/helper/account');

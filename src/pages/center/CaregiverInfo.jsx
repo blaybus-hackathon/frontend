@@ -40,10 +40,8 @@ export default function CaregiverInfo() {
   }, [clearHeaderProps, navigate, setHeaderProps]);
 
   useEffect(() => {
-    console.log(helperSeq);
     request('post', '/detail/helper-info', { helperSeq })
       .then((res) => {
-        console.log(res);
         setHelperInfo(res);
       })
       .catch(() => {});

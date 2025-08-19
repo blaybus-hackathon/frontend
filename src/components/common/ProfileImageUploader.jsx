@@ -1,12 +1,9 @@
 import { useRef } from 'react';
 import { Alert } from '@/components/ui/custom/alert';
 import { Button } from '@/components/ui/custom/Button';
-import { FormField } from '@/components/ui/custom/FormField';
-import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 
 export function ProfileImageUploader({
   profileOption,
-  onOptionChange,
   selectedImage,
   onImageSelect,
   error,
@@ -42,19 +39,8 @@ export function ProfileImageUploader({
   };
 
   return (
-    <FormField label='프로필 사진 등록'>
+    <>
       <div className='flex flex-col'>
-        {onOptionChange && (
-          <Radio value={profileOption} onValueChange={onOptionChange} cols={2} className='gap-2'>
-            <RadioItem value='1'>
-              <p className='text-base lg:text-xl'>등록하기</p>
-            </RadioItem>
-            <RadioItem value='2'>
-              <p className='text-base lg:text-xl'>아이콘 대체</p>
-            </RadioItem>
-          </Radio>
-        )}
-
         {profileOption === '1' && (
           <div className='mt-4 flex flex-col items-start gap-4'>
             <input
@@ -98,6 +84,6 @@ export function ProfileImageUploader({
         )}
       </div>
       {error && touched && <Alert description={error} />}
-    </FormField>
+    </>
   );
 }

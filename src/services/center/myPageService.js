@@ -5,11 +5,20 @@ export const getManagerProfile = async () => {
   return response;
 };
 
-export const updateManagerProfile = async ({ cmSeq, cmPosition, photoFile, imgChangeYn }) => {
+export const updateManagerProfile = async ({
+  cmSeq,
+  cmPosition,
+  photoFile,
+  profileOption,
+  imgChangeYn,
+}) => {
   const formData = new FormData();
   formData.append('cmSeq', cmSeq);
   formData.append('cmPosition', cmPosition);
-  formData.append('photoFile', photoFile);
+  if (profileOption === '1' && photoFile && photoFile instanceof File) {
+    formData.append('photoFile', photoFile);
+  }
   formData.append('imgChangeYn', imgChangeYn);
+
   return await requestMultipart('POST', '/center-manager/update', formData);
 };

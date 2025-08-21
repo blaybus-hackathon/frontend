@@ -6,31 +6,31 @@ const createElderDataSlice = (set) => ({
   registerElder: {
     basicInfo: {
       name: '',
-      gender: 0,
+      gender: null,
       birthDate: '',
-      afSeq: 0,
-      asSeq: 0,
-      atSeq: 0,
+      afSeq: null,
+      asSeq: null,
+      atSeq: null,
       weight: '',
       diseases: '',
-      careLevel: 0,
+      careLevel: null,
       addressLabel: '',
     },
     careInfo: {
-      workType: 0,
+      workType: null,
       timeList: [],
       timeNegotiation: false,
     },
     addInfo: {
-      dementiaSymptom: 0,
-      inmateState: 0,
+      dementiaSymptom: null,
+      inmateState: null,
       selectedDementiaSymptoms: [], // for ui, not for backend
     },
     serviceInfo: {
-      serviceMeal: 0,
-      serviceToilet: 0,
-      serviceMobility: 0,
-      serviceDaily: 0,
+      serviceMeal: null,
+      serviceToilet: null,
+      serviceMobility: null,
+      serviceDaily: null,
       selectedServiceMealList: [],
       selectedServiceToiletList: [],
       selectedServiceMobilityList: [],
@@ -60,25 +60,34 @@ const createElderDataSlice = (set) => ({
       },
     })),
 
-  setCareInfo: (data) =>
+  setCareInfoField: (field, value) =>
     set((state) => ({
       registerElder: {
         ...state.registerElder,
-        careInfo: data,
+        careInfo: {
+          ...state.registerElder.careInfo,
+          [field]: value,
+        },
       },
     })),
-  setAddInfo: (data) =>
+  setAddInfoField: (field, value) =>
     set((state) => ({
       registerElder: {
         ...state.registerElder,
-        addInfo: data,
+        addInfo: {
+          ...state.registerElder.addInfo,
+          [field]: value,
+        },
       },
     })),
-  setServiceInfo: (data) =>
+  setServiceInfoField: (fields) =>
     set((state) => ({
       registerElder: {
         ...state.registerElder,
-        serviceInfo: data,
+        serviceInfo: {
+          ...state.registerElder.serviceInfo,
+          ...fields,
+        },
       },
     })),
   setProfileOption: (option) =>
@@ -102,6 +111,47 @@ const createElderDataSlice = (set) => ({
         patientSeq: seq,
       },
     })),
+
+  reset: () =>
+    set({
+      registerElder: {
+        basicInfo: {
+          name: '',
+          gender: null,
+          birthDate: '',
+          afSeq: null,
+          asSeq: null,
+          atSeq: null,
+          weight: '',
+          diseases: '',
+          careLevel: null,
+          addressLabel: '',
+        },
+        careInfo: {
+          workType: null,
+          timeList: [],
+          timeNegotiation: false,
+        },
+        addInfo: {
+          dementiaSymptom: null,
+          inmateState: null,
+          selectedDementiaSymptoms: [],
+        },
+        serviceInfo: {
+          serviceMeal: null,
+          serviceToilet: null,
+          serviceMobility: null,
+          serviceDaily: null,
+          selectedServiceMealList: [],
+          selectedServiceToiletList: [],
+          selectedServiceMobilityList: [],
+          selectedServiceDailyList: [],
+        },
+        patientImage: null,
+        patientSeq: null,
+        profileOption: null,
+      },
+    }),
 
   // for image save
   selectedImg: null,

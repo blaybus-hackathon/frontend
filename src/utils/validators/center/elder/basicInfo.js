@@ -3,25 +3,25 @@ export const validateBasicInfo = (basicInfo) => {
 
   const {
     name = '',
-    gender = 0,
+    gender = null,
     birthDate = '',
-    afSeq = 0,
-    asSeq = 0,
-    atSeq = 0,
-    weight = 0,
-    disease = '',
-    careLevel = 0,
+    afSeq = null,
+    asSeq = null,
+    atSeq = null,
+    weight = '',
+    diseases = '',
+    careLevel = null,
   } = basicInfo;
 
   return (
     name?.trim() !== '' &&
-    gender > 0 &&
+    gender !== null &&
     birthDate?.length === 8 &&
-    afSeq > 0 &&
-    asSeq > 0 &&
-    atSeq > 0 &&
-    weight > 0 &&
-    disease?.trim() !== '' &&
-    careLevel > 0
+    afSeq !== null &&
+    asSeq !== null &&
+    atSeq !== null &&
+    weight?.trim() !== '' &&
+    diseases?.trim() !== '' &&
+    careLevel !== null
   );
 };

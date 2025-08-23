@@ -5,6 +5,7 @@ const initialState = {
   currentIndex: 0,
   totalSteps: CENTER_SIGNUP_STEPS.length,
   isCompleted: false,
+  activeValidation: false,
 };
 
 export const useSignUpStepStore = create((set) => ({
@@ -16,4 +17,7 @@ export const useSignUpStepStore = create((set) => ({
   prevStep: () => set((state) => ({ currentIndex: Math.max(state.currentIndex - 1, 0) })),
   setCompleted: (completed) => set({ isCompleted: completed }),
   reset: () => set(initialState),
+
+  triggerValidation: () => set({ activeValidation: true }),
+  clearValidationTrigger: () => set({ activeValidation: false }),
 }));

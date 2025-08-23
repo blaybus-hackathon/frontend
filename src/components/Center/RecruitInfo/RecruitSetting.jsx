@@ -73,7 +73,6 @@ export default function MatchingManage3({ handleMatchingPage }) {
   const [workTypeBit, setWorkTypeBit] = useState(0);
 
   useEffect(() => {
-    console.log(patientData.afSeq, typeof patientData.afSeq);
     request('post', '/cmn/part-request-care-list', {
       careTopEnumList: ['WORK_TYPE', 'WELFARE'],
     })
@@ -82,7 +81,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
         setBenefits(res.welfareList);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   }, []);
 
@@ -173,13 +172,11 @@ export default function MatchingManage3({ handleMatchingPage }) {
       serviceMobility: getSelectionBit(patientData.careChoice.serviceMobilityList, 55),
       serviceDaily: getSelectionBit(patientData.careChoice.serviceDailyList, 60),
     };
-    console.log(data);
 
     setRecruit(data);
 
     request('post', '/patient-recruit/helper', data)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         handleMatchingPage((prev) => {
           return prev + 1;
         });

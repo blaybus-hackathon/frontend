@@ -10,7 +10,7 @@ import { MATCH_STATE } from '@/constants/matching';
 /**
  *  create common query option
  */
-const createQueryOptions = (key, queryFn, staleTime) => ({
+const createQueryOptions = (key, queryFn, staleTime = 1000 * 60 * 3) => ({
   queryKey: ['patients', key],
   queryFn,
   staleTime,
@@ -25,14 +25,14 @@ export const useWaitingPatients = () => {
   const queryClient = useQueryClient();
 
   return useQuery({
-    ...createQueryOptions('waiting', getMatchingWaitingList, 1000 * 60 * 3),
+    ...createQueryOptions('waiting', getMatchingWaitingList),
 
     // prefetch in-progress tab if waiting data exists
     onSuccess: (data) => {
       if (data?.length > 0) {
         setTimeout(() => {
           queryClient.prefetchQuery({
-            ...createQueryOptions('in-progress', getMatchingInProgressList, 1000 * 60 * 3),
+            ...createQueryOptions('in-progress', getMatchingInProgressList),
           });
         }, 100);
       }
@@ -111,10 +111,6 @@ export const useMatchStatusMutation = (options = {}) => {
 
     // if mutation success, invalidate relevant queries
     onSuccess: (data, { matchState }) => {
-      if (data?.msg) {
-        console.log('Success: ', data.msg);
-      }
-
       switch (matchState) {
         case MATCH_STATE.MATCH_REQUEST:
           // refetch when user moves to other tab

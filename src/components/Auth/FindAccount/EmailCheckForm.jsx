@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { AlertCircle } from 'lucide-react';
 import { FormField } from '@/components/ui/custom/FormField';
 import { Input } from '@/components/ui/custom/input';
 import { Button } from '@/components/ui/custom/Button';
 import { Alert } from '@/components/ui/custom/alert';
+import { ButtonLoader } from '@/components/ui/custom/ButtonLoader';
 import { checkEmail } from '@/services/findAccountService';
 
 export default function EmailCheckForm({ onResult }) {
@@ -39,23 +39,23 @@ export default function EmailCheckForm({ onResult }) {
     <section className='px-2 py-4'>
       <FormField label='이메일 입력' required>
         <div className='flex flex-col gap-3 lg:gap-8'>
-          <Input
-            type='email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleCheckEmail()}
-            placeholder='이메일을 입력해주세요.'
-            className={`w-full h-fit font-lg text-[var(--text)] font-normal focus:outline-none focus:ring-0 p-4 rounded-[0.625rem] ${emailError ? 'border-red-500' : ''}`}
-          />
-          {emailError && (
-            <Alert icon={<AlertCircle className='w-4 h-4' />} description={emailError} />
-          )}
+          <div>
+            <Input
+              type='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleCheckEmail()}
+              placeholder='이메일을 입력해주세요.'
+              className={`w-full h-fit font-lg text-[var(--text)] font-normal focus:outline-none focus:ring-0 p-4 rounded-[0.625rem] ${emailError ? 'border-red-500' : ''}`}
+            />
+            {emailError && <Alert description={emailError} color='red' className='mt-2' />}
+          </div>
           <Button
             className={`w-full h-fit p-3.5 font-normal disabled:opacity-50`}
             onClick={handleCheckEmail}
             disabled={isLoading || !email}
           >
-            {isLoading ? '확인중...' : '확인'}
+            {isLoading ? <ButtonLoader text='확인중...' /> : '확인'}
           </Button>
         </div>
       </FormField>

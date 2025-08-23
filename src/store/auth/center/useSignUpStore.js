@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { signUpCenter } from '@/services/signUpService';
+import { omit } from '@/utils/omit';
+import { signUpCenter, uploadManagerImg } from '@/services/signUpService';
 
 const createCenterDataSlice = (set) => ({
   signUpForm: {
@@ -9,7 +10,7 @@ const createCenterDataSlice = (set) => ({
       password: '',
       passwordConfirm: '',
       passwordCheck: false,
-      mailSeq: undefined,
+      mailSeq: null,
       isVerified: false,
     },
     personalInfo: {
@@ -17,9 +18,15 @@ const createCenterDataSlice = (set) => ({
       centerName: '',
       name: '',
       position: '',
-      profileImage: '',
+      profileOption: null,
+      photoFile: null,
+      imgChangeYn: false,
     },
     kakaoInfo: null,
+
+    managerImage: null,
+    managerSeq: null,
+    profileOption: null, // default is icon
   },
 
   setEmailAuth: (data) =>
@@ -71,6 +78,55 @@ const createCenterDataSlice = (set) => ({
       },
     })),
 
+  setProfileOption: (option) =>
+    set((state) => ({
+      signUpForm: {
+        ...state.signUpForm,
+        profileOption: option,
+      },
+    })),
+
+  setManagerImage: (imageId) =>
+    set((state) => ({
+      signUpForm: {
+        ...state.signUpForm,
+        managerImage: imageId,
+      },
+    })),
+
+  setManagerSeq: (seq) =>
+    set((state) => ({
+      signUpForm: {
+        ...state.signUpForm,
+        managerSeq: seq,
+      },
+    })),
+
+  //  for image save
+  selectedImg: null,
+  setSelectedImg: (file) => set({ selectedImg: file }),
+
+  // state for image upload
+  isUploading: false,
+  uploadError: null,
+
+  // function for image upload
+  uploadProfileImage: async (file, managerSeq) => {
+    set({ isUploading: true, uploadError: null });
+    try {
+      const formData = new FormData();
+      formData.append('photoFile', file);
+      formData.append('managerSeq', String(managerSeq));
+
+      const res = await uploadManagerImg(formData);
+      set({ isUploading: false });
+      return res;
+    } catch (error) {
+      set({ isUploading: false, uploadError: error });
+      throw error;
+    }
+  },
+
   reset: () =>
     set({
       signUpForm: {
@@ -79,6 +135,7 @@ const createCenterDataSlice = (set) => ({
           emailCode: '',
           password: '',
           passwordConfirm: '',
+          passwordCheck: false,
           mailSeq: null,
           isVerified: false,
         },
@@ -87,48 +144,78 @@ const createCenterDataSlice = (set) => ({
           centerName: '',
           name: '',
           position: '',
+          profileOption: '1',
+          photoFile: null,
+          imgChangeYn: false,
         },
         kakaoUser: null,
       },
+      managerImage: null,
+      managerSeq: null,
+      profileOption: null,
     }),
 });
 
-const createCenterSubmissionSlice = (set, get) => ({
+const createManagerSubmissionSlice = (set, get) => ({
   isSubmitting: false,
   error: null,
 
   submitManager: async () => {
+    const { signUpForm } = get();
     set({ isSubmitting: true, error: null });
 
     try {
-      const { emailAuth, personalInfo } = get().signUpForm;
+      const { emailAuth, personalInfo } = signUpForm;
+
+      const cleanEmailAuth = omit(emailAuth, [
+        'emailCode',
+        'passwordConfirm',
+        'passwordCheck',
+        'mailSeq',
+        'isVerified',
+      ]);
+
+      const cleanPersonalInfo = omit(personalInfo, [
+        'centerName',
+        'profileOption',
+        'photoFile',
+        'imgChangeYn',
+      ]);
 
       const payload = {
-        centerSeq: personalInfo.centerSeq,
-        name: personalInfo.name,
-        position: personalInfo.position,
-        email: emailAuth.email,
-        password: emailAuth.password,
+        ...cleanEmailAuth,
+        ...cleanPersonalInfo,
       };
 
-      const result = await signUpCenter(payload);
+      // call manager sign up api
+      const signUpRes = await signUpCenter(payload);
+
+      // if sign up is successful and there is a profile image, upload the image
+      if (signUpRes.code === 200 && personalInfo.photoFile && personalInfo.profileOption === '1') {
+        const managerSeq = signUpRes.data.managerSeq;
+        set({ managerSeq: managerSeq });
+
+        try {
+          // upload profile image
+          await get().uploadProfileImage(personalInfo.photoFile, managerSeq);
+        } catch (imageError) {
+          console.error('profile image upload failed:', imageError);
+          // even if image upload fails, sign up is successful so continue
+        }
+      }
+
       set({ isSubmitting: false });
-      return result;
+      return signUpRes;
     } catch (error) {
-      const customError = {
-        code: error?.response?.data?.code || 'UNKNOWN_ERROR',
-        message: error?.response?.data?.message || '알 수 없는 오류가 발생했습니다.',
-        status: error?.response?.status || 500,
-      };
-      set({ isSubmitting: false, error: customError.message });
-      throw customError;
+      set({ isSubmitting: false, error });
+      throw error;
     }
   },
 });
 
 export const useSignUpStore = create((set, get) => ({
   ...createCenterDataSlice(set),
-  ...createCenterSubmissionSlice(set, get),
+  ...createManagerSubmissionSlice(set, get),
 }));
 
 export default useSignUpStore;

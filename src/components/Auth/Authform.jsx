@@ -1,13 +1,16 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
+import { Alert } from '@/components/ui/custom/alert';
 import { User, LockKeyholeOpen } from 'lucide-react';
-import Kakao from '/kakao_login_medium_wide.png';
+import Kakao from '/kakao_login_medium_wide.svg';
 import Logo from '/blaybus_logo_icon_text.svg';
 import { CLIENT_ROLE, ROLE_MAP } from '@/constants/authType';
 
 const AuthForm = ({ type, onSubmit, setLoginType }) => {
   const navigate = useNavigate();
+  const [alertMessage, setAlertMessage] = useState('');
 
   const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
   const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
@@ -15,18 +18,19 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
 
   function handleSubmit(e) {
     e.preventDefault();
+    setAlertMessage('');
+
     const formData = new FormData(e.target);
     const email = formData.get('email')?.trim();
     const password = formData.get('password')?.trim();
 
     if (!email || !password) {
-      alert('이메일과 비밀번호를 모두 입력해주세요.');
+      setAlertMessage('이메일과 비밀번호를 모두 입력해주세요.');
       return;
     }
     onSubmit({ email, password, loginType: type });
   }
 
-  // 회원가입이 되어있지 않으면 navigate
   function handleSignUpNavigation() {
     navigate(type === 'helper' ? '/helper/signup' : '/center/signup');
   }
@@ -44,10 +48,12 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
   }
 
   return (
-    <div className='bg-white rounded-lg'>
-      <img src={Logo} alt='blaybus logo' className='w-1/2 mx-auto py-8' />
+    <div className='bg-white rounded-lg mx-auto'>
+      <button onClick={() => navigate('/')} className='w-1/2 mx-auto py-8 cursor-pointer'>
+        <img src={Logo} alt='blaybus logo' className='w-full' />
+      </button>
 
-      {/* 로그인 타입 선택 */}
+      {/* select login type */}
       <div className='grid grid-cols-2 mb-8 gap-4'>
         <Button
           onClick={() => setLoginType(CLIENT_ROLE.CENTER)}
@@ -70,6 +76,9 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
           요양보호사용
         </Button>
       </div>
+
+      {/* Alert 메시지 표시 */}
+      {alertMessage && <Alert description={alertMessage} color='red' className='mb-4' />}
 
       <form onSubmit={handleSubmit} className='space-y-4'>
         <div className='relative'>
@@ -101,14 +110,17 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
         <div className='flex justify-end mb-8'>
           <button
             type='button'
-            className='text-[1.06rem] font-medium text-[var(--placeholder-gray)] border-b border-[var(--outline)]'
+            className='text-base lg:text-[1.06rem] font-medium text-[var(--placeholder-gray)] border-b border-[var(--outline)] hover:bg-accent'
             onClick={handleFindAccount}
           >
             아이디 비밀번호 찾기
           </button>
         </div>
 
-        <Button className={'w-full h-[3.4rem] rounded-[0.31rem] text-lg font-medium'} type='submit'>
+        <Button
+          className={'w-full h-[3.4rem] rounded-[0.31rem] text-base lg:text-lg font-medium'}
+          type='submit'
+        >
           로그인
         </Button>
       </form>
@@ -116,14 +128,22 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
       <Button
         variant='white'
         onClick={handleSignUpNavigation}
-        className={'mt-2 w-full h-[3.4rem] rounded-[0.31rem] text-lg  font-medium'}
+        className={
+          'mt-2 w-full h-[3.4rem] rounded-[0.31rem] text-base lg:text-lg font-medium hover:brightness-90 transition-all'
+        }
       >
         돌봄워크 회원가입
       </Button>
 
-      <button className={`w-full h-[3.4rem] mt-2`} onClick={handleKakaoLogin} type='button'>
-        <img src={Kakao} alt='kakao' className='w-full h-full object-fit' />
-      </button>
+      <div className='rounded-[0.31rem] overflow-hidden h-[3.4rem] w-full bg-[#fee500] flex items-center justify-center mt-2 cursor-pointer hover:brightness-90 transition-all'>
+        <button
+          className='h-full rounded-[0.31rem] overflow-hidden cursor-pointer'
+          onClick={handleKakaoLogin}
+          type='button'
+        >
+          <img src={Kakao} alt='kakao' className='w-full h-full object-fit' />
+        </button>
+      </div>
     </div>
   );
 };

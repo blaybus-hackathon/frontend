@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useSignUpStore } from '@/store/auth/helper/useSignUpStore';
 import { FormField } from '@/components/ui/custom/FormField';
 import { Input } from '@/components/ui/custom/input';
-import { formatPhoneNumber } from '@/utils/formatPhoneNumber';
+import { formatPhoneNumber } from '@/utils/formatters/formatPhoneNumber';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
-import ProfileImageUploader from '@/components/common/ProfileImageUploader';
+import { ProfileImageUploader } from '@/components/common/ProfileImageUploader';
 import SignUpButton from '@/components/Auth/SignUp/helper/SignUpButton';
 
 export default function HelperInfo() {

@@ -10,7 +10,7 @@ import {
   SelectItem,
 } from '@/components/ui/custom/select';
 import patientStore from '@/store/jbStore/patientStore';
-import { request } from '@/api';
+import { getCareItems, createRecruitPost } from '@/services/center';
 
 export default function MatchingManage3({ handleMatchingPage }) {
   const { patientData, setRecruit } = patientStore();
@@ -73,16 +73,17 @@ export default function MatchingManage3({ handleMatchingPage }) {
   const [workTypeBit, setWorkTypeBit] = useState(0);
 
   useEffect(() => {
-    request('post', '/cmn/part-request-care-list', {
-      careTopEnumList: ['WORK_TYPE', 'WELFARE'],
-    })
-      .then((res) => {
+    const fetchWorkTypeAndWelfare = async () => {
+      try {
+        const res = await getCareItems(['WORK_TYPE', 'WELFARE']);
         setWorkTypes(res.workTypeList);
         setBenefits(res.welfareList);
-      })
-      .catch((e) => {
+      } catch (e) {
         console.error(e);
-      });
+      }
+    };
+
+    fetchWorkTypeAndWelfare();
   }, []);
 
   //요일 선택 렌더링
@@ -137,7 +138,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
     ));
 
   //공고 등록
-  const postRecruit = () => {
+  const postRecruit = async () => {
     const timeList = Object.entries(selectedDays)
       .filter(([_, isSelected]) => isSelected === true)
       .map(([dayIdx]) => ({
@@ -175,15 +176,14 @@ export default function MatchingManage3({ handleMatchingPage }) {
 
     setRecruit(data);
 
-    request('post', '/patient-recruit/helper', data)
-      .then(() => {
-        handleMatchingPage((prev) => {
-          return prev + 1;
-        });
-      })
-      .catch((e) => {
-        console.error(e);
+    try {
+      await createRecruitPost(data);
+      handleMatchingPage((prev) => {
+        return prev + 1;
       });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   //근무형태 렌더링

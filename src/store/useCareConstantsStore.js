@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { getElderForm } from '@/services/center/elderFormService';
+import { getFormConstants } from '@/services/center';
 import { FALLBACK_CARE_CONSTANTS } from '@/constants/fallbackCareConstants';
 
 // set range for each category
@@ -125,7 +125,7 @@ export const useCareMapping = create(
 
         const attemptFetch = async () => {
           try {
-            const data = await getElderForm();
+            const data = await getFormConstants();
             const apiMapping = {};
 
             // convert API data to Map

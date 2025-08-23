@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { omit } from '@/utils/omit';
-import { submitElderData, uploadElderProfile } from '@/services/center/elderFormService';
+import {
+  registerElder as registerElderAPI,
+  uploadElderProfile,
+} from '@/services/center/elderService';
 
 const createElderDataSlice = (set) => ({
   registerElder: {
@@ -183,7 +186,7 @@ const createSubmissionSlice = (set, get) => ({
   isSubmitting: false,
   error: null,
 
-  submitElder: async () => {
+  registerElder: async () => {
     const { registerElder } = get();
     set({ isSubmitting: true, error: null });
 
@@ -206,7 +209,7 @@ const createSubmissionSlice = (set, get) => ({
         ...cleanServiceInfo,
       };
 
-      const result = await submitElderData(payload);
+      const result = await registerElderAPI(payload);
       set({ isSubmitting: false });
       return result;
     } catch (error) {

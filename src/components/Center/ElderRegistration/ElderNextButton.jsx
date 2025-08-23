@@ -24,7 +24,7 @@ export function ElderNextButton({ isValid }) {
 
   // zustand store
   const elderForm = useElderRegiStore((s) => s.registerElder);
-  const submitElder = useElderRegiStore((s) => s.submitElder);
+  const registerElder = useElderRegiStore((s) => s.registerElder);
   const setPatientSeq = useElderRegiStore((s) => s.setPatientSeq);
   const setPatientImage = useElderRegiStore((s) => s.setPatientImage);
   const uploadProfileImage = useElderRegiStore((s) => s.uploadProfileImage);
@@ -44,7 +44,7 @@ export function ElderNextButton({ isValid }) {
     if (isLastStep) {
       try {
         // submit elder data
-        const response = await submitElder();
+        const response = await registerElder();
         const patientSeq = response.patientSeq;
         setPatientSeq(patientSeq);
 

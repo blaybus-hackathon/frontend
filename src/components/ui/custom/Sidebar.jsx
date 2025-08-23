@@ -18,7 +18,7 @@ import Logo from '/blaybus_logo_icon_text_row.svg';
 const menuItems = [
   { icon: BarChart3, label: '통계 현황', path: '/center', active: true },
   { icon: DiamondPlus, label: '요양사 조회', path: '/center/caregiver', active: false },
-  { icon: UserSearch, label: '이르신 조회', path: '/elderly', active: false },
+  { icon: UserSearch, label: '어르신 조회', path: '/center/elder-list', active: false },
   { icon: Mail, label: '채팅', path: '/chatrooms', active: false },
   { icon: ArrowRightLeft, label: '매칭관리', path: '/center/matching-info', active: false },
   { icon: PillBottle, label: '어르신 관리 ', path: '/center/elder-info', active: false },
@@ -31,6 +31,12 @@ export function Sidebar() {
   const toggle = useSidebarStore((state) => state.toggle);
 
   const handleClick = (path) => {
+    // 어르신 조회와 요양보호사 조회는 임시로 alert로 처리
+    if (path === '/center/elder-list' || path === '/center/caregiver') {
+      alert('준비 중입니다.');
+      return;
+    }
+
     navigate(path);
   };
 

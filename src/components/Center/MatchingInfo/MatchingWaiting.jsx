@@ -1,7 +1,7 @@
 import { memo, useState, useCallback, useEffect } from 'react';
 import { useMatchStatusMutation } from '@/hooks/center/service/useMatchList';
 import { Button } from '@/components/ui/custom/Button';
-import { formatAddress } from '@/utils/format';
+import { formatAddress } from '@/utils/formatters/formatAddress';
 import { MATCH_STATE } from '@/constants/matching';
 import InfoCard from '@/components/ui/InfoCard/InfoCard';
 import ElderProfile from '@/components/ui/InfoCard/ElderProfile';

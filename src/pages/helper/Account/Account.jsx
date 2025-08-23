@@ -53,7 +53,7 @@ export default function Account() {
         setHelper(res);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   }, [user, setHelper]);
 

@@ -17,7 +17,6 @@ export default function Layout() {
     '/center/elder-register',
     '/signin',
     '/center/register',
-    '/chatroom/',
     '/center/caregiver-info',
     '/center/recruit-detail',
     '/center/modify-info',
@@ -25,11 +24,19 @@ export default function Layout() {
     '/helper/address',
     '/find-account',
   ];
+
+  // 특정 prefix로 시작하는 모든 하위 경로에서 footer 숨김
+  const hideFooterPrefixRoutes = ['/helper/detail', '/chatroom'];
   const hidePaddingRoutes = ['/center/matching-info', '/helper'];
+  const hidePaddingPrefixRoutes = ['/helper/detail'];
 
   const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));
-  const isFooterVisible = !hideFooterRoutes.some((route) => location.pathname === route);
-  const isFullWidth = hidePaddingRoutes.some((route) => location.pathname === route);
+  const isFooterVisible =
+    !hideFooterRoutes.some((route) => location.pathname === route) &&
+    !hideFooterPrefixRoutes.some((route) => location.pathname.startsWith(route));
+  const isFullWidth =
+    hidePaddingRoutes.some((route) => location.pathname === route) ||
+    hidePaddingPrefixRoutes.some((route) => location.pathname.startsWith(route));
 
   return (
     <div className='min-h-screen flex flex-col max-w-2xl mx-auto'>

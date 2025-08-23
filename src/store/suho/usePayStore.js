@@ -11,9 +11,6 @@ const usePayStore = create((set, get) => ({
   },
 
   setPay: ({ amount, type }) => {
-    console.log('PayStore setPay 호출:', { amount, type });
-    console.log('이전 상태:', get().pay);
-
     set({
       pay: {
         type,

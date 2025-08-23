@@ -73,7 +73,6 @@ export default function MatchingManage3({ handleMatchingPage }) {
   const [workTypeBit, setWorkTypeBit] = useState(0);
 
   useEffect(() => {
-    console.log(patientData.afSeq, typeof patientData.afSeq);
     request('post', '/cmn/part-request-care-list', {
       careTopEnumList: ['WORK_TYPE', 'WELFARE'],
     })
@@ -82,7 +81,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
         setBenefits(res.welfareList);
       })
       .catch((e) => {
-        console.log(e);
+        console.error(e);
       });
   }, []);
 
@@ -173,13 +172,11 @@ export default function MatchingManage3({ handleMatchingPage }) {
       serviceMobility: getSelectionBit(patientData.careChoice.serviceMobilityList, 55),
       serviceDaily: getSelectionBit(patientData.careChoice.serviceDailyList, 60),
     };
-    console.log(data);
 
     setRecruit(data);
 
     request('post', '/patient-recruit/helper', data)
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         handleMatchingPage((prev) => {
           return prev + 1;
         });
@@ -292,7 +289,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
         </p>
       </div>
 
-      <div className='mx-auto flex flex-col gap-10 max-w-2xl mb-40'>
+      <div className='mx-auto flex flex-col gap-10 max-w-2xl mb-3'>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-4'>근무 종류</label>
           <div className='grid grid-cols-2 w-full gap-4'>{renderWorkType()}</div>
@@ -420,7 +417,7 @@ export default function MatchingManage3({ handleMatchingPage }) {
           <div className='w-full grid grid-cols-2 gap-4'>{renderBenefit()}</div>
         </div>
         <Button
-          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-[5rem] left-1/2 -translate-x-1/2 font-bold'
+          className='h-16 w-full bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 font-bold'
           disabled={ptDateBit === 0 || wage === 0}
           onClick={() => {
             postRecruit();

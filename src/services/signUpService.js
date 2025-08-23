@@ -16,7 +16,7 @@ export const signUpCenter = async (data) => {
 };
 
 export const uploadManagerImg = async (formData) => {
-  const response = await requestMultipart('POST', '/cmn/upload-image', formData);
+  const response = await requestMultipart('POST', '/cmn/upload-img/MANAGER', formData);
   return response;
 };
 

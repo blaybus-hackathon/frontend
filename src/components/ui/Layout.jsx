@@ -23,6 +23,7 @@ export default function Layout() {
     '/center/matching',
     '/helper/address',
     '/find-account',
+    '/center/address',
   ];
 
   // 특정 prefix로 시작하는 모든 하위 경로에서 footer 숨김

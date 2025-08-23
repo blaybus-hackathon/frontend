@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
 import { Alert } from '@/components/ui/custom/alert';
 import { User, LockKeyholeOpen } from 'lucide-react';
+import { navigateToHome } from '@/routes/homeNavigation';
 import Kakao from '/kakao_login_medium_wide.svg';
 import Logo from '/blaybus_logo_icon_text.svg';
 import { CLIENT_ROLE, ROLE_MAP } from '@/constants/authType';
@@ -49,7 +50,10 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
 
   return (
     <div className='bg-white rounded-lg mx-auto'>
-      <button onClick={() => navigate('/')} className='w-1/2 mx-auto py-8 cursor-pointer'>
+      <button
+        onClick={() => navigateToHome(navigate)}
+        className='w-1/2 mx-auto py-8 cursor-pointer'
+      >
         <img src={Logo} alt='blaybus logo' className='w-full' />
       </button>
 

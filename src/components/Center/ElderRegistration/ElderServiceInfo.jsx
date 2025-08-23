@@ -107,8 +107,6 @@ export default function ElderServiceInfo({ formOptions }) {
   const spanClassName =
     'text-center break-normal whitespace-pre-wrap leading-snug text-lg lg:text-xl';
 
-  console.log(formData);
-
   return (
     <article className='flex flex-col space-y-6 lg:space-y-8'>
       <FormField label='식사 보조' required isMultiple={true}>

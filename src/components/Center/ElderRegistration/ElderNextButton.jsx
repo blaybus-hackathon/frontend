@@ -22,9 +22,9 @@ export function ElderNextButton({ isValid }) {
   // trigger validation for the current step's every field
   const triggerValidation = useElderRegiStepStore((s) => s.triggerValidation);
 
-  // zustand store
-  const elderForm = useElderRegiStore((s) => s.registerElder);
-  const registerElder = useElderRegiStore((s) => s.registerElder);
+  // store
+  const elderFormData = useElderRegiStore((s) => s.registerElder);
+  const submitElderRegi = useElderRegiStore((s) => s.submitElderRegi);
   const setPatientSeq = useElderRegiStore((s) => s.setPatientSeq);
   const setPatientImage = useElderRegiStore((s) => s.setPatientImage);
   const uploadProfileImage = useElderRegiStore((s) => s.uploadProfileImage);
@@ -44,7 +44,7 @@ export function ElderNextButton({ isValid }) {
     if (isLastStep) {
       try {
         // submit elder data
-        const response = await registerElder();
+        const response = await submitElderRegi();
         const patientSeq = response.patientSeq;
         setPatientSeq(patientSeq);
 
@@ -86,13 +86,13 @@ export function ElderNextButton({ isValid }) {
   const validateCurrentStep = () => {
     switch (currentStep) {
       case 0:
-        return validateBasicInfo(elderForm?.basicInfo);
+        return validateBasicInfo(elderFormData?.basicInfo);
       case 1:
-        return validateCareInfo(elderForm?.careInfo);
+        return validateCareInfo(elderFormData?.careInfo);
       case 2:
-        return validateAddInfo(elderForm?.addInfo);
+        return validateAddInfo(elderFormData?.addInfo);
       case 3:
-        return validateServiceInfo(elderForm?.serviceInfo);
+        return validateServiceInfo(elderFormData?.serviceInfo);
       default:
         return true;
     }

@@ -23,19 +23,18 @@ export default function ElderBasicInfo({ formOptions }) {
   const clearValidationTrigger = useElderRegiStepStore((s) => s.clearValidationTrigger);
 
   const formData = useMemo(
-    () =>
-      registerElder?.basicInfo || {
-        name: '',
-        gender: null,
-        birthDate: '',
-        afSeq: null,
-        asSeq: null,
-        atSeq: null,
-        weight: '',
-        diseases: '',
-        careLevel: null,
-        addressLabel: '',
-      },
+    () => ({
+      name: registerElder?.basicInfo?.name || '',
+      gender: registerElder?.basicInfo?.gender || null,
+      birthDate: registerElder?.basicInfo?.birthDate || '',
+      afSeq: registerElder?.basicInfo?.afSeq || null,
+      asSeq: registerElder?.basicInfo?.asSeq || null,
+      atSeq: registerElder?.basicInfo?.atSeq || null,
+      weight: registerElder?.basicInfo?.weight || '',
+      diseases: registerElder?.basicInfo?.diseases || '',
+      careLevel: registerElder?.basicInfo?.careLevel || null,
+      addressLabel: registerElder?.basicInfo?.addressLabel || '',
+    }),
     [registerElder?.basicInfo],
   );
 
@@ -153,12 +152,14 @@ export default function ElderBasicInfo({ formOptions }) {
         >
           <p
             className={`${
-              formData.addressLabel.length === 0
+              !formData.addressLabel || formData.addressLabel.length === 0
                 ? 'text-lg font-normal text-[var(--placeholder-gray)]'
                 : 'text-lg font-normal text-[var(--button-black)]'
             }`}
           >
-            {formData.addressLabel.length === 0 ? '주소지 등록하러 가기' : formData.addressLabel}
+            {!formData.addressLabel || formData.addressLabel.length === 0
+              ? '주소지 등록하러 가기'
+              : formData.addressLabel}
           </p>
         </Button>
         {errors.addressLabel && touched.addressLabel && <Alert description={errors.addressLabel} />}

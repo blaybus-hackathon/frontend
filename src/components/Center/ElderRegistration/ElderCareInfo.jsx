@@ -95,8 +95,6 @@ export default function ElderCareInfo({ formOptions }) {
   // pick up selected days
   const selectedDays = formData.timeList?.map((t) => t.ptDate) || [];
 
-  console.log(formData);
-
   return (
     <article className='flex flex-col space-y-6 lg:space-y-8'>
       <FormField label='근무 종류' required isMultiple={false} onBlur={onBlur}>

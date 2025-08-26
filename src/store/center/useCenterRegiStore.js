@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { centerRegister } from '@/services/center/centerRegiService';
+import { centerRegister } from '@/services/center';
 import { handleApiError } from '@/utils/handleApiError';
 
 const createCenterDataSlice = (set) => ({

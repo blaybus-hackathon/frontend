@@ -1,9 +1,9 @@
 // === Post Recruit Page 2 ===
 import { Button } from '@/components/ui/custom/Button';
-import { request } from '@/api';
 import { useState, useEffect } from 'react';
 import patientStore from '@/store/jbStore/patientStore';
 import defaultProfile from '@/assets/images/elder-basic-profile.png';
+import { getCareItems } from '@/services/center';
 
 // import profInit from '@/assets/images/default-profile.png';
 
@@ -19,16 +19,16 @@ export default function MatchingManage2({ handleMatchingPage }) {
   const [daily, setDaily] = useState([]);
 
   useEffect(() => {
-    request('post', '/cmn/part-request-care-list', {
-      careTopEnumList: [
-        'INMATE_STATE',
-        'SERVICE_MEAL',
-        'SERVICE_TOILET',
-        'SERVICE_MOBILITY',
-        'SERVICE_DAILY',
-      ],
-    })
-      .then((res) => {
+    const fetchCareItems = async () => {
+      try {
+        const res = await getCareItems([
+          'INMATE_STATE',
+          'SERVICE_MEAL',
+          'SERVICE_TOILET',
+          'SERVICE_MOBILITY',
+          'SERVICE_DAILY',
+        ]);
+
         // 동거인 정보 가져오기
         setInmate(
           res.inmateStateList
@@ -59,8 +59,12 @@ export default function MatchingManage2({ handleMatchingPage }) {
             .filter((x) => patientData.careChoice.serviceDailyList.includes(x.id))
             .map((m) => m.careName),
         );
-      })
-      .catch((e) => console.error(e));
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchCareItems();
   }, []);
 
   const renderWorkTime = () =>

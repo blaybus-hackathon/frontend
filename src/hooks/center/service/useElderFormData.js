@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { getElderForm } from '@/services/center/elderFormService';
+import { getFormConstants } from '@/services/center';
 
 export function useElderFormData() {
   return useQuery({
     queryKey: ['elderFormData'],
-    queryFn: getElderForm,
+    queryFn: getFormConstants,
     staleTime: 1000 * 60 * 60, // 1시간
     select: (data) => ({
       workTypeList: data.workTypeList ?? [],

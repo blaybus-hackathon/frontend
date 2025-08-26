@@ -6,6 +6,7 @@ import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 import { request } from '@/api';
 import recruitStore from '@/store/jbStore/recruitStore';
+import { updateRecruitPost } from '@/services/center';
 
 export default function ModifyInfo() {
   const { recruitInfo } = recruitStore();
@@ -163,7 +164,7 @@ export default function ModifyInfo() {
       serviceMobility: selectedMobile.reduce((acc, cur) => acc + cur, 0),
       serviceDaily: selectedDaily.reduce((acc, cur) => acc + cur, 0),
     };
-    request('post', '/patient-recruit/update', updateData)
+    updateRecruitPost(updateData)
       .then(() => {
         navigate('/center/recruit/detail');
       })

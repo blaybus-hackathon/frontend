@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { omit } from '@/utils/omit';
-import { submitElderData, uploadElderProfile } from '@/services/center/elderFormService';
+import { registerElder as registerElderAPI, uploadElderProfile } from '@/services/center';
+import { useElderRegiStepStore } from '@/store/center/useElderRegiStepStore';
 
 const createElderDataSlice = (set) => ({
   registerElder: {
@@ -112,7 +113,8 @@ const createElderDataSlice = (set) => ({
       },
     })),
 
-  reset: () =>
+  reset: () => {
+    // reset data
     set({
       registerElder: {
         basicInfo: {
@@ -151,7 +153,16 @@ const createElderDataSlice = (set) => ({
         patientSeq: null,
         profileOption: null,
       },
-    }),
+      selectedImg: null,
+      isUploading: false,
+      uploadError: null,
+      isSubmitting: false,
+      error: null,
+    });
+
+    // reset step
+    useElderRegiStepStore.getState().reset();
+  },
 
   // for image save
   selectedImg: null,
@@ -183,7 +194,7 @@ const createSubmissionSlice = (set, get) => ({
   isSubmitting: false,
   error: null,
 
-  submitElder: async () => {
+  submitElderRegi: async () => {
     const { registerElder } = get();
     set({ isSubmitting: true, error: null });
 
@@ -206,7 +217,7 @@ const createSubmissionSlice = (set, get) => ({
         ...cleanServiceInfo,
       };
 
-      const result = await submitElderData(payload);
+      const result = await registerElderAPI(payload);
       set({ isSubmitting: false });
       return result;
     } catch (error) {

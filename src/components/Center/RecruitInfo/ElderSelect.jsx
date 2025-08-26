@@ -1,11 +1,11 @@
 // === Post Recruit Page 1 ===
 import { useState, useEffect } from 'react';
 
-import { request } from '@/api';
 import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
 import InfoCard from '@/components/ui/temp/InfoCard';
 import patientStore from '@/store/jbStore/patientStore';
+import { getElderList, getElderDetail } from '@/services/center';
 
 import serach from '@/assets/images/search.png';
 
@@ -18,19 +18,21 @@ export default function MatchingManage({ handleMatchingPage }) {
   const { setPatient } = patientStore();
 
   useEffect(() => {
-    getElderList();
+    fetchElderList();
   }, []);
 
   const handleCheck = (idx) => {
     setSelectedSeq((prev) => (prev === idx ? -1 : idx));
   };
 
-  const getElderList = () =>
-    request('get', `/patient/list?pageNo=${0}&pageSize=${100}`)
-      .then((res) => {
-        setElders(res.list);
-      })
-      .catch((e) => console.error(e));
+  const fetchElderList = async () => {
+    try {
+      const res = await getElderList({ pageNo: 0, pageSize: 100 });
+      setElders(res.list);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const renderInfoCard = () => {
     if (elders) {
@@ -50,14 +52,15 @@ export default function MatchingManage({ handleMatchingPage }) {
     }
   };
 
-  const setPatientDetail = () => {
-    request('get', `/patient/${selectedSeq}/detail`)
-      .then((res) => {
-        setPatient({ ...res, patientSeq: selectedSeq });
-        window.scrollTo(0, 0);
-        handleMatchingPage((prev) => prev + 1);
-      })
-      .catch((e) => console.error(e));
+  const setPatientDetail = async () => {
+    try {
+      const res = await getElderDetail(selectedSeq);
+      setPatient({ ...res, patientSeq: selectedSeq });
+      window.scrollTo(0, 0);
+      handleMatchingPage((prev) => prev + 1);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

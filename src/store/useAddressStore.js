@@ -1,4 +1,3 @@
-// zustand + persist 기반 통합 주소 상태 관리
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { getFirstAddr, getSecondAddr, getThirdAddr } from '@/services/addressService';

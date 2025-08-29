@@ -1,23 +1,24 @@
 import { useMemo, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useElderRegiStore } from '@/store/center/useElderRegiStore';
-import { useRecruitStore } from '@/store/center/usePatientStore';
+import { usePatientStore } from '@/store/center/usePatientStore';
 import AddressRegister from '@/pages/AddressRegister';
 
-export default function ElderAddress() {
+export default function Address() {
   const location = useLocation();
 
   const setBasicInfoField = useElderRegiStore((s) => s.setBasicInfoField);
-  const setRecruitField = useRecruitStore((s) => s.setRecruitField);
+  const setRecruitField = usePatientStore((s) => s.setField);
+
+  const [searchParams] = useSearchParams();
 
   // check is it from recruit
   // if state is undefined, check query params
   const isFromRecruit = useMemo(() => {
     const fromState = location.state?.from;
-    const sp = new URLSearchParams(location.search);
-    const fromQuery = sp.get('from');
+    const fromQuery = searchParams.get('from');
     return fromState === 'recruit' || fromQuery === 'recruit';
-  }, [location.state, location.search]);
+  }, [location.state, searchParams]);
 
   // helper function for update fields
   const updateRecruitFields = useCallback(
@@ -64,7 +65,7 @@ export default function ElderAddress() {
   // back path
   const backPath = useMemo(() => {
     if (location.state?.backPath) return location.state.backPath;
-    return isFromRecruit ? '/center/matching' : '/center/elder-register';
+    return isFromRecruit ? '/center/matching?step=3' : '/center/elder-register';
   }, [isFromRecruit, location.state]);
 
   return (

@@ -146,7 +146,13 @@ export default function ElderBasicInfo({ formOptions }) {
           variant={'outline'}
           className={`${inputClass('addressLabel')} flex justify-start items-center px-3 py-2 w-full hover:bg-transparent hover:text-[var(--button-black)] active:bg-transparent`}
           value={formData.addressLabel || ''}
-          onClick={() => navigate('/center/address')}
+          onClick={() =>
+            navigate('/center/address', {
+              state: {
+                from: 'elder',
+              },
+            })
+          }
           onBlur={() => onBlur('addressLabel')}
           ref={(el) => (inputRefs.current.addressLabel = el)}
         >

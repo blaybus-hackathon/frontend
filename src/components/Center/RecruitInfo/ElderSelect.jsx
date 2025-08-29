@@ -1,94 +1,161 @@
 // === Post Recruit Page 1 ===
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 
-import { request } from '@/api';
 import { Button } from '@/components/ui/custom/Button';
 import { Input } from '@/components/ui/custom/input';
-import InfoCard from '@/components/ui/temp/InfoCard';
-import patientStore from '@/store/jbStore/patientStore';
+import { handleApiError } from '@/utils/handleApiError';
+import { getElderList, getElderDetail } from '@/services/center';
 
+import { usePatientStore } from '@/store/center/usePatientStore';
+import { useCareConstantsStore, initializeCareConstants } from '@/store/useCareMappingStore';
+
+import ElderInfoCard from '@/components/ui/InfoCard/ElderInfoCard';
 import serach from '@/assets/images/search.png';
 
-export default function MatchingManage({ handleMatchingPage }) {
+export default function ElderSelect({ handleMatchingPage }) {
+  const buttonRef = useRef(null);
   const [selectedSeq, setSelectedSeq] = useState(-1);
-  // const [isChecked, setIsChecked] = useState(-1);
   const [searchQuery, setSearchQuery] = useState('');
   const [elders, setElders] = useState([]);
 
-  const { setPatient } = patientStore();
+  const { setFields, setCareData } = usePatientStore();
+  const { getCareNameByIds } = useCareConstantsStore();
 
   useEffect(() => {
-    getElderList();
+    initializeCareConstants();
+    loadElderList();
   }, []);
 
-  const handleCheck = (idx) => {
-    setSelectedSeq((prev) => (prev === idx ? -1 : idx));
-  };
+  const loadElderList = async () => {
+    try {
+      const response = await getElderList({ pageNo: 0, pageSize: 100 });
 
-  const getElderList = () =>
-    request('get', `/patient/list?pageNo=${0}&pageSize=${100}`)
-      .then((res) => {
-        setElders(res.list);
-      })
-      .catch((e) => console.error(e));
-
-  const renderInfoCard = () => {
-    if (elders) {
-      return elders
-        .filter((x) => x.name.includes(searchQuery))
-        .map((filteredUser, idx) => (
-          <InfoCard
-            key={idx}
-            isChecked={selectedSeq === filteredUser.patientSeq}
-            onClick={() => {
-              handleCheck(filteredUser.patientSeq);
-              setPatient(filteredUser);
-            }}
-            user={filteredUser}
-          />
-        ));
+      if (response && Array.isArray(response.list)) {
+        setElders(response.list);
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (error) {
+      handleApiError(
+        error,
+        {
+          4008: '어르신 목록을 찾을 수 없습니다.',
+          7000: '조회 권한이 없습니다.',
+        },
+        '어르신 목록을 불러오는 중 오류가 발생했습니다.',
+        true,
+        true,
+      );
+      setElders([]);
     }
   };
 
-  const setPatientDetail = () => {
-    request('get', `/patient/${selectedSeq}/detail`)
-      .then((res) => {
-        setPatient({ ...res, patientSeq: selectedSeq });
-        window.scrollTo(0, 0);
-        handleMatchingPage((prev) => prev + 1);
-      })
-      .catch((e) => console.error(e));
+  const filteredElders = useMemo(
+    () => (Array.isArray(elders) ? elders.filter((x) => x.name.includes(searchQuery)) : []),
+    [elders, searchQuery],
+  );
+
+  const hasSearchResults = filteredElders.length > 0;
+
+  const handleSelectedCard = (elder) => {
+    setSelectedSeq((prev) => (prev === elder.patientSeq ? -1 : elder.patientSeq));
+
+    // 기본 정보 설정
+    setFields({
+      imgAddress: elder.imgAddress,
+      patientSeq: elder.patientSeq,
+      name: elder.name,
+      gender: elder.genderStr === '남성' ? 1 : 2,
+      address: elder.address,
+    });
+
+    // 버튼으로 자동 스크롤
+    buttonRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  };
+
+  const setPatientDetail = async () => {
+    if (selectedSeq === -1) return;
+
+    try {
+      const response = await getElderDetail(selectedSeq);
+      if (!response) throw new Error('No elder data');
+
+      const careChoice = response.careChoice || {};
+
+      setFields({
+        name: response.name,
+        afSeq: response.afSeq,
+        asSeq: response.asSeq,
+        atSeq: response.atSeq,
+        birthDate: response.birthDate,
+        weight: response.weight,
+        diseases: response.diseases,
+        timeList: response.timeList || [],
+        timeNegotiation: response.timeNegotiation,
+      });
+
+      setCareData(careChoice, getCareNameByIds);
+
+      window.scrollTo(0, 0);
+      handleMatchingPage((prev) => prev + 1);
+    } catch (error) {
+      handleApiError(
+        error,
+        {
+          4008: '어르신 목록을 찾을 수 없습니다.',
+          7000: '조회 권한이 없습니다.',
+        },
+        '어르신 목록을 불러오는 중 오류가 발생했습니다.',
+        true,
+        true,
+      );
+    }
+  };
+
+  const renderInfoCard = () => {
+    if (!elders || !Array.isArray(elders)) return <div>어르신 목록을 불러오는 중입니다...</div>;
+
+    return filteredElders.map((elder, idx) => (
+      <ElderInfoCard
+        key={idx}
+        isChecked={selectedSeq === elder.patientSeq}
+        onClick={() => handleSelectedCard(elder)}
+        user={elder}
+      />
+    ));
   };
 
   return (
-    <>
-      <div className='mx-auto flex flex-col items-center max-w-2xl mb-20'>
-        <div className='w-full py-3.5 border-b border-[var(--main)] flex items-center pr-6'>
+    <article className='flex flex-col mb-10 w-full min-h-[calc(100vh-10rem)] flex-grow justify-between'>
+      <section className='flex flex-col items-center space-y-5'>
+        {/* 검색 바 */}
+        <div className='w-full pt-3.5 border-b border-[var(--main)] flex items-center pl-1 pr-3'>
           <Input
             placeholder={'어르신 이름을 검색해 보세요'}
-            className='border-0 text-xl flex-1 p-0 text-[#6C6C6C] focus:outline-none'
+            className='border-0 text-lg flex-1 p-0 text-[#6C6C6C] focus:outline-none'
             width='100%'
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-            }}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <img src={serach} alt='search' className='size-6' />
         </div>
-        <p className='font-bold text-xl tracking-[-0.1rem] py-8 w-full mx-auto text-start pl-1'>
-          매칭이 필요한 어르신을 선택해주세요!
-        </p>
+
         {renderInfoCard()}
+      </section>
+
+      {hasSearchResults && (
         <Button
+          ref={buttonRef}
           variant={selectedSeq === -1 ? 'disabled' : 'default'}
-          className='h-16 max-w-2xl hover:bg-[var(--company-primary)]/90 fixed bottom-[5rem] font-bold'
+          className='h-16 w-full hover:bg-[var(--main)]/90 font-bold'
           disabled={selectedSeq === -1}
-          onClick={() => {
-            setPatientDetail();
-          }}
+          onClick={setPatientDetail}
         >
           {selectedSeq === -1 ? '어르신을 선택해야 넘어갈 수 있어요!' : '다음'}
         </Button>
-      </div>
-    </>
+      )}
+    </article>
   );
 }

@@ -13,23 +13,26 @@
  * @returns
  */
 
-export function FormField({ label, required, isMultiple, children }) {
+export function FormField({ label, required, isMultiple, children, className, contentClassName }) {
   return (
-    <section className='mb-8'>
-      <div className='flex items-center mb-[1.25rem]'>
-        <span className='text-[1.4375rem] font-semibold text-[var(--text)]'>{label}</span>
+    <div className={`flex flex-col gap-4 lg:gap-6 ${className}`}>
+      <div className='flex items-center'>
+        <span className='text-xl lg:text-[1.4375rem] font-semibold text-[var(--text)]'>
+          {label}
+        </span>
         {typeof isMultiple === 'boolean' && (
-          <span className='text-[1.06rem] text-[var(--placeholder-gray)] font-normal ml-[0.56rem]'>
+          <span className='text-base lg:text-[1.06rem] text-[var(--placeholder-gray)] font-normal ml-[0.56rem]'>
             {isMultiple ? '(복수선택가능)' : '(단일선택)'}
           </span>
         )}
         {required && (
-          <span className='text-[1.06rem] text-[var(--required-red)] font-normal ml-[0.56rem]'>
+          <span className='text-base lg:text-[1.06rem] text-[var(--required-red)] font-normal ml-[0.56rem]'>
             필수
           </span>
         )}
       </div>
-      {children}
-    </section>
+
+      <div className={contentClassName}>{children}</div>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
 import { request } from '@/api';
 import recruitStore from '@/store/jbStore/recruitStore';
+import { updateRecruitPost } from '@/services/center';
 
 export default function ModifyInfo() {
   const { recruitInfo } = recruitStore();
@@ -163,9 +164,9 @@ export default function ModifyInfo() {
       serviceMobility: selectedMobile.reduce((acc, cur) => acc + cur, 0),
       serviceDaily: selectedDaily.reduce((acc, cur) => acc + cur, 0),
     };
-    request('post', '/patient/recruit-update', updateData)
+    updateRecruitPost(updateData)
       .then(() => {
-        navigate('/center/recruit-detail');
+        navigate('/center/recruit/detail');
       })
       .catch((e) => {
         console.error(`공고 수정 실패 : ${e}`);
@@ -174,7 +175,7 @@ export default function ModifyInfo() {
 
   return (
     <div>
-      <div className='max-w-2xl mx-auto px-6 mt-8 gap-10 flex flex-col mb-40'>
+      <div className='max-w-2xl mx-auto px-6 mt-8 gap-10 flex flex-col mb-3'>
         <div className='flex flex-col items-start'>
           <label className='font-semibold text-xl mb-5'>
             이름<span className='text-[var(--required-red)] text-sm ml-2'>필수</span>
@@ -342,7 +343,7 @@ export default function ModifyInfo() {
           <span className='absolute -bottom-6 right-3'>{`${guitar.length}/300`}</span>
         </div>
         <Button
-          className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'
+          className='h-16 w-full bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 font-bold'
           onClick={() => {
             modify();
           }}

@@ -1,26 +1,32 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import addImg from '@/assets/images/add.png';
 import chatStore from '@/store/jbStore/chatStore';
 import { Button } from '@/components/ui/custom/Button';
 import { request } from '@/api';
-import { connectSocket, subscribe, sendMessage, disconnectSocket } from './ChatSocket';
+import {
+  connectSocket,
+  subscribe,
+  sendMessage,
+  disconnectSocket,
+} from '@/components/chat/ChatSocket';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
+import useAuthStore from '@/store/useAuthStore';
+import defaultProfile from '@/assets/images/elder-basic-profile.png';
 
 // chat 입력창 최대 높이
 const MAX_HEIGHT = 120;
 
-//temporary code
-const SENDERID = 7;
-
 function PrivateChatRoom() {
   const roomId = useParams().roomid;
   const navigate = useNavigate();
+
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
-
   const { chatInfo } = chatStore();
+  const { user } = useAuthStore();
 
   const [isVisible, setIsvisible] = useState(false); //하단 토글바 visible 여부
   const [messages, setMessages] = useState([]);
@@ -32,8 +38,8 @@ function PrivateChatRoom() {
   const msgContainerRef = useRef();
   const prevScrollHeight = useRef(0);
   const firstRenderRef = useRef(true); // 최초 렌더링 여부
-  const isFetching = useRef(true);
   const receiveMsg = useRef(false); // 메세지를 받는 경우 true
+  const updatingPending = useRef(false);
 
   // 헤더 세팅
   useEffect(() => {
@@ -49,9 +55,17 @@ function PrivateChatRoom() {
     return () => {
       clearHeaderProps();
     };
-  }, []);
+  }, [chatInfo.partnerName, clearHeaderProps, navigate, setHeaderProps]);
 
   useEffect(() => {
+    // 컨테이너 최상단 도달 시 page up
+    const handleScroll = () => {
+      const container = msgContainerRef.current;
+      if (hasNext && container.scrollTop === 0) {
+        setPage((prev) => prev + 1);
+      }
+    };
+
     //최초 채팅 세팅
     const setupSocket = async () => {
       connectSocket(() => {
@@ -70,6 +84,20 @@ function PrivateChatRoom() {
         subscribe('/user/queue/error', (error) => {
           console.error('오류 발생:', error);
         });
+
+        // 서버에 메세지 전달 성공 시
+        subscribe('/user/queue/success', (res) => {
+          updatingPending.current = true;
+          setMessages((prev) => {
+            const idx = prev.findIndex((m) => m.successSepCode === res.successSepCode);
+            if (idx !== -1) {
+              const updated = [...prev];
+              updated[idx].isPending = false;
+              return updated;
+            }
+          });
+          updatingPending.current = false;
+        });
       });
     };
     if (typeof window !== 'undefined') {
@@ -87,83 +115,83 @@ function PrivateChatRoom() {
       //언마운트 시 소켓 통신 해제
       disconnectSocket();
     };
-  }, []);
+  }, [hasNext]);
 
-  // 메세지 fetch 후 스크롤 고정
   useEffect(() => {
+    // 최초 렌더링 시 스크롤 최하단 이동
+    if (firstRenderRef.current && messages.length > 0) {
+      msgContainerRef.current.scrollTop = msgContainerRef.current.scrollHeight;
+      firstRenderRef.current = false;
+      return;
+    }
+
+    // messages 변경 시 스크롤 위치 계산
     if (msgContainerRef.current) {
       const container = msgContainerRef.current;
-      if (isFetching.current || receiveMsg.current) {
-        const newScrollHeight = container.scrollHeight;
-        const heightDiff = newScrollHeight - prevScrollHeight.current;
-        container.scrollTop += heightDiff;
-        if (container.scrollHeight !== prevScrollHeight.current) {
-          container.scrollTop = container.scrollHeight - prevScrollHeight.current;
-        }
-
-        isFetching.current = false;
+      if (receiveMsg.current) {
         receiveMsg.current = false;
       } else {
-        container.scrollTop = container.scrollHeight;
+        const newScrollHeight = container.scrollHeight;
+        const heightDiff = newScrollHeight - prevScrollHeight.current;
+        container.scrollTop = heightDiff;
       }
     }
   }, [messages]);
 
   // 페이지 변동 시 메세지 추가 fetch
   useEffect(() => {
-    getMessages();
-  }, [page]);
+    // 메세지 fetch
+    const getMessages = () => {
+      if (isLoading) return;
+      if (!hasNext) return;
 
-  // 컨테이너 최상단 도달 시 page up
-  const handleScroll = () => {
-    const container = msgContainerRef.current;
-    if (hasNext && container.scrollTop === 0) {
-      setPage((prev) => prev + 1);
-    }
-  };
+      setIsLoading(true);
+
+      // fetch 시 스크롤 위치 기억 (마운트 시 fetch 제외)
+      if (!firstRenderRef.current) {
+        prevScrollHeight.current = msgContainerRef.current.scrollHeight;
+      }
+
+      request('get', `/chat/find-detail?pageNo=${page}&chatRoomId=${roomId}`)
+        .then((res) => {
+          setMessages((prev) => [...prev, ...res.list]);
+          setHasNext(res.hasNext);
+        })
+        .catch(() => {
+          console.error('채팅 불러오기 실패');
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    };
+    getMessages();
+  }, [page, hasNext, roomId]);
 
   const sendChatMessage = async () => {
-    const message = {
+    if (!msgInput) return;
+
+    const successSepCode = uuidv4();
+    const payload = {
       content: msgInput,
-      senderId: SENDERID,
+      senderId: user.chatSenderId,
       receiverId: chatInfo.partnerId,
       patientLogId: chatInfo.patientLogId,
+      successSepCode,
     };
     const newMsg = {
       senderYn: true,
       content: msgInput,
       readYn: false,
+      isPending: true,
+      successSepCode,
     };
-    sendMessage('/app/private-message', message);
+    setMsgInput('');
+
+    while (updatingPending.current);
     setMessages((prev) => [newMsg, ...prev]);
-  };
+    sendMessage('/app/private-message', payload);
 
-  // 메세지 fetch
-  const getMessages = () => {
-    if (isLoading) return;
-    if (!hasNext) return;
-
-    setIsLoading(true);
-
-    // fetch 시 스크롤 위치 기억 (마운트 시 fetch 제외)
-    if (!firstRenderRef.current) {
-      prevScrollHeight.current = msgContainerRef.current;
-    } else {
-      firstRenderRef.current = false;
-    }
-    isFetching.current = true;
-
-    request('get', `/chat/find-detail?pageNo=${page}&chatRoomId=${roomId}`)
-      .then((res) => {
-        setMessages((prev) => [...prev, ...res.list]);
-        setHasNext(res.hasNext);
-      })
-      .catch(() => {
-        console.error('채팅 불러오기 실패');
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    firstRenderRef.current = true;
   };
 
   const renderMessages = () =>
@@ -173,41 +201,72 @@ function PrivateChatRoom() {
       .map((msg, idx) => (
         <div key={idx} className={`flex ${msg.senderYn ? 'justify-end' : 'gap-3'}`}>
           {!msg.senderYn && (
-            <div className='bg-[var(--button-inactive)] size-12 rounded-[50%]'></div>
+            <img
+              src={chatInfo.partnerImgAddress ? chatInfo.partnerImgAddress : defaultProfile}
+              className='size-12'
+            />
           )}
           <p
             className={`${
               msg.senderYn ? 'bg-[rgba(82,46,154,0.1)]' : 'bg-[var(--button-inactive)]'
-            } flex items-center rounded-2xl py-3 px-5`}
+            } ${msg.isPending && 'opacity-50'} flex items-center rounded-2xl py-3 px-5`}
           >
             {msg.content}
           </p>
         </div>
       ));
 
+  const exitChatRoom = () => {
+    const confirmRes = confirm(
+      '채팅방을 나갈 경우 지금까지의 대화가 완전히 삭제됩니다. 정말로 나가시겠습니까?',
+    );
+    if (confirmRes) {
+      request('post', '/chat/out-room', { chatRoomId: chatInfo.chatRoomId })
+        .then(() => {
+          navigate('/chatrooms');
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  };
+
+  // 해당 어르신 공고로 이동
+  const gotoRecruit = () => {
+    navigate('/center/recruit/detail');
+  };
+
+  // 해당 공고에 대해서 조율 완료 처리
+  const tuningComplete = () => {
+    const confirmRes = confirm('해당 어르신과의 조율을 완료 처리하시겠습니까?');
+    if (confirmRes) {
+      request('post', '/patient-match-status', {
+        patientLogSeq: chatInfo.patientLogId,
+        helperSeq: chatInfo.helperSeq,
+        matchState: 'MATCH_FIN',
+      })
+        .then(() => {
+          navigate('/chatrooms');
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  };
+
   return (
-    <div className='max-w-md mx-auto px-5.5 pb-4 flex flex-col'>
-      <div className='px-0.5 pt-6 pb-4.5 absolute top-0'>
-        {/* <div className='flex items-center'>
-          <img src={backArrow} alt='back-arrow' className='mr-8 size-8' />
-          <p className='text-3xl font-semibold'>{chatInfo.partnerName}</p>
-        </div> */}
-      </div>
+    <div className='flex flex-col'>
       <div
-        className='mt-20 flex flex-col gap-7 h-4/5 overflow-y-auto'
-        style={{ height: 'calc(100vh - 80px - 70px)' }}
+        className='flex flex-col gap-7 overflow-y-auto pb-3'
+        style={{ height: 'calc(100vh - 78px - 60px)' }}
         ref={msgContainerRef}
       >
-        <div className='bg-[var(--button-inactive)] p-4 rounded-md'>
-          <p>{`${chatInfo.partnerName}님은 ${chatInfo.patientLogName} 어르신과 연결되었어요!`}</p>
-          <p className='underline'>박순자 어르신 프로필 보러가기</p>
-        </div>
         {renderMessages()}
       </div>
 
       {/* 전송 바 */}
       {!isVisible && (
-        <div className='absolute bottom-4 right-0 left-0 flex items-center gap-2.5 justify-between h-12 max-w-md mx-auto px-5.5'>
+        <div className='fixed left-1/2 -translate-x-1/2 max-w-[591.35px] w-[88%] bottom-0 flex items-center gap-2.5 justify-between h-15 py-3 bg-white'>
           <div>
             <img
               src={addImg}
@@ -236,7 +295,6 @@ function PrivateChatRoom() {
             className='rounded-[100px] bg-[var(--button-inactive)] px-4 py-3 text-[var(--main)] h-12'
             onClick={() => {
               sendChatMessage();
-              setMsgInput('');
             }}
           >
             전송
@@ -246,15 +304,21 @@ function PrivateChatRoom() {
 
       {/* 하단 조정바 */}
       {isVisible && (
-        <div className='absolute bottom-4 right-0 left-0 flex flex-col gap-3.5 px-5.5'>
-          <Button variant={'white'} className='w-full'>
+        <div className='absolute bottom-4 right-0 left-0 flex flex-col gap-3.5 px-5.5 max-w-2xl mx-auto'>
+          <Button variant={'white'} className='w-full' onClick={tuningComplete}>
             조율 완료
           </Button>
           <div>
-            <Button className='bg-[var(--button-inactive)] text-[var(--text)] w-full border-0 border-b rounded-none rounded-t-md'>
-              해당 어르신 프로필
+            <Button
+              className='bg-[var(--button-inactive)] text-[var(--text)] w-full border-0 border-b rounded-none rounded-t-md'
+              onClick={gotoRecruit}
+            >
+              해당 어르신 공고
             </Button>
-            <Button className='bg-[var(--button-inactive)] text-[var(--required-red)] w-full border-0 rounded-none rounded-b-md'>
+            <Button
+              className='bg-[var(--button-inactive)] text-[var(--required-red)] w-full border-0 rounded-none rounded-b-md'
+              onClick={exitChatRoom}
+            >
               채팅방 나가기
             </Button>
           </div>

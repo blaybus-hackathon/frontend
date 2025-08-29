@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSignUpStore } from '@/store/auth/center/useSignUpStore';
 import { Button } from '@/components/ui/custom/Button';
@@ -5,11 +6,25 @@ import defaultProfile from '/default_profile.png';
 
 export default function SignUpComplete() {
   const navigate = useNavigate();
-  const { signUpForm } = useSignUpStore();
-  const { name, position, centerName } = signUpForm.personalInfo;
+  const { signUpForm, reset } = useSignUpStore();
+  const { name, position, centerName, photoFile, profileOption } = signUpForm.personalInfo;
+  const [profileImageUrl, setProfileImageUrl] = useState(null);
+
+  // set profile img
+  useEffect(() => {
+    if (profileOption === '1' && photoFile) {
+      const imageUrl = URL.createObjectURL(photoFile);
+      setProfileImageUrl(imageUrl);
+
+      // revoke object url when component unmounts
+      return () => URL.revokeObjectURL(imageUrl);
+    }
+  }, [photoFile, profileOption]);
 
   const handleHome = () => {
-    navigate('/');
+    // reset sign up form
+    reset();
+    navigate('/signin', { replace: true });
   };
 
   return (
@@ -22,7 +37,11 @@ export default function SignUpComplete() {
 
       <div className='flex flex-col space-y-5'>
         <div className='rounded-full overflow-hidden w-[10.5rem] h-[10.5rem]'>
-          <img src={defaultProfile} alt='logo' />
+          <img
+            src={profileImageUrl || defaultProfile}
+            alt='프로필 이미지'
+            className='w-full h-full object-cover'
+          />
         </div>
         <span className='text-[var(--text)] text-xl font-semibold'>
           {name} {position}님
@@ -31,7 +50,7 @@ export default function SignUpComplete() {
       </div>
 
       <Button onClick={handleHome} className='w-full my-10'>
-        홈으로 가기
+        로그인하러 가기
       </Button>
     </div>
   );

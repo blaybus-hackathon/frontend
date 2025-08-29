@@ -1,84 +1,132 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
 import Layout from './components/ui/Layout';
 import NotFound from './pages/NotFound';
-
-import SignIn from './pages/SignIn';
-import CenterSignUp from './pages/center/SignUp';
-import HelperSignUp from './pages/helper/SignUp';
-import SearchCenter from './pages/SearchCenter';
-
-import KakaoCallback from './components/Auth/KakaoCallback';
-import Account from './pages/helper/Account/Account';
-import AccountEdit from './pages/helper/AccountEdit/AccountEdit';
-import HelperLocation from './pages/helper/AccountEdit/navigate/HelperLocation';
-import HelperAddress from './pages/helper/HelperAddress';
-import AccountSchedule from './pages/helper/AccountEdit/navigate/AccountSchedule';
-import AccountPay from './pages/helper/AccountEdit/navigate/AccountPay';
-import AccountCareType from './pages/helper/AccountEdit/navigate/AccountCareType';
+import Error from './pages/Error';
+import ErrorBoundary from './components/common/ErrorBoundary';
+import RequireAuth from './routes/RequireAuth';
 
 import Home from './pages/Home';
-import Matching from './pages/center/Matching';
-import RecriutDetail from './pages/center/RecriutDetail';
-import ModifyRecruit from './pages/center/ModifyRecruit';
-import CaregiverInfo from './pages/center/CaregiverInfo';
-import CenterRegister from './pages/center/CenterRegister';
-import ElderRegister from './pages/center/ElderRegister';
-import MyPage from './pages/center/MyPage';
-import ElderInfo from './pages/center/ElderInfo';
-import MatchingInfo from './pages/center/MatchingInfo';
-import ElderAddress from './pages/center/ElderAddress';
-import ChatRoomsPage from './pages/center/ChatRoomsPage';
-import PrivateChatRoom from './pages/center/PrivateChatRoom';
+import HelperHome from './pages/helper/HelperHome';
+import MatchingDetail from './pages/helper/MatchingDetail';
+import Spinner from './components/loading/Spinner';
+
+const SignIn = lazy(() => import('./pages/SignIn'));
+const CenterSignUp = lazy(() => import('./pages/center/SignUp'));
+const HelperSignUp = lazy(() => import('./pages/helper/SignUp'));
+const FindAccount = lazy(() => import('./pages/FindAccount'));
+const SearchCenter = lazy(() => import('./pages/SearchCenter'));
+const KakaoCallback = lazy(() => import('./components/Auth/KakaoCallback'));
+const Account = lazy(() => import('./pages/helper/Account/Account'));
+const AccountEdit = lazy(() => import('./pages/helper/AccountEdit/AccountEdit'));
+const HelperLocation = lazy(() => import('./pages/helper/AccountEdit/navigate/HelperLocation'));
+const HelperAddress = lazy(() => import('./pages/helper/HelperAddress'));
+const AccountSchedule = lazy(() => import('./pages/helper/AccountEdit/navigate/AccountSchedule'));
+const AccountPay = lazy(() => import('./pages/helper/AccountEdit/navigate/AccountPay'));
+const AccountCareType = lazy(() => import('./pages/helper/AccountEdit/navigate/AccountCareType'));
+const DashBoard = lazy(() => import('./pages/center/Dashboard'));
+const Matching = lazy(() => import('./pages/center/Matching'));
+const RecruitDetail = lazy(() => import('./pages/center/RecruitDetail'));
+const ModifyRecruit = lazy(() => import('./pages/center/ModifyRecruit'));
+const CaregiverInfo = lazy(() => import('./pages/center/CaregiverInfo'));
+const CenterRegister = lazy(() => import('./pages/center/CenterRegister'));
+const ElderRegister = lazy(() => import('./pages/center/ElderRegister'));
+const MyPage = lazy(() => import('./pages/center/MyPage'));
+const ElderInfo = lazy(() => import('./pages/center/ElderInfo'));
+// const ElderList = lazy(() => import('./pages/center/ElderList'));
+const MatchingInfo = lazy(() => import('./pages/center/MatchingInfo'));
+const Address = lazy(() => import('./pages/center/Address'));
+const ChatRoomsPage = lazy(() => import('./pages/center/ChatRoomsPage'));
+const PrivateChatRoom = lazy(() => import('./pages/center/PrivateChatRoom'));
 
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* 공통 */}
-        <Route index element={<Home />} />
-        <Route path='/oauth/kakao/callback' element={<KakaoCallback />} />
-        <Route path='/center/matching-info' element={<MatchingInfo />} />
-        <Route path='/*' element={<NotFound />} />
+      <ErrorBoundary>
+        <Suspense fallback={<Spinner />}>
+          <Routes>
+            {/* 공통 - Layout 밖에 위치 */}
+            <Route index element={<Home />} />
+            <Route
+              path='center'
+              element={
+                <RequireAuth role='center'>
+                  <DashBoard />
+                </RequireAuth>
+              }
+            />
+            <Route path='login/oauth2/code/kakao' element={<KakaoCallback />} />
+            <Route path='error' element={<Error />} />
+            <Route path='404' element={<NotFound />} />
+            <Route path='*' element={<NotFound />} />
 
-        {/* 레이아웃 */}
-        <Route path='/' element={<Layout />}>
-          <Route path='/signin' element={<SignIn />} />
-          <Route path='/search-center' element={<SearchCenter />} />
+            {/* 레이아웃 */}
+            <Route path='/' element={<Layout />}>
+              <Route path='signin' element={<SignIn />} />
+              <Route path='find-account' element={<FindAccount />} />
 
-          {/* Center */}
-          <Route path='center/signup' element={<CenterSignUp />} />
-          <Route path='center/register' element={<CenterRegister />} />
-          <Route path='center/elder-register' element={<ElderRegister />} />
-          <Route path='center/mypage' element={<MyPage />} />
-          <Route path='center/elder-info' element={<ElderInfo />} />
-          <Route path='center/matching' element={<Matching />} />
-          <Route path='center/recruit-detail' element={<RecriutDetail />} />
-          <Route path='center/caregiver-info' element={<CaregiverInfo />} />
-          <Route path='center/register/address' element={<ElderAddress />} />
+              <Route path='search-center' element={<SearchCenter />} />
+              <Route path='center/register' element={<CenterRegister />} />
 
-          <Route path='center/matching' element={<Matching />} />
-          <Route path='cneter/recruit/detail' element={<RecriutDetail />} />
-          <Route path='center/recruit/modify' element={<ModifyRecruit />} />
-          <Route path='center/care-info' element={<CaregiverInfo />} />
+              <Route path='center/signup' element={<CenterSignUp />} />
+              <Route path='helper/signup' element={<HelperSignUp />} />
 
-          {/* Helper */}
-          <Route path='helper/signup' element={<HelperSignUp />} />
-          <Route path='helper/account' element={<Account />} />
-          <Route path='helper/account/edit' element={<AccountEdit />} />
-          <Route path='helper/account/schedule' element={<AccountSchedule />} />
-          <Route path='helper/account/pay' element={<AccountPay />} />
-          <Route path='helper/account/care-type' element={<AccountCareType />} />
-          <Route path='helper/location' element={<HelperLocation />} />
-          <Route path='helper/address' element={<HelperAddress />} />
-          <Route path='helper/location/:city' element={<HelperLocationDetail />} />
+              {/* Center */}
+              <Route
+                path='center/*'
+                element={
+                  <RequireAuth role='center'>
+                    <Routes>
+                      <Route path='elder-register' element={<ElderRegister />} />
+                      <Route path='mypage' element={<MyPage />} />
+                      <Route path='elder-info' element={<ElderInfo />} />
+                      <Route path='matching' element={<Matching />} />
+                      <Route path='matching-info' element={<MatchingInfo />} />
+                      <Route path='address' element={<Address />} />
+                      <Route path='recruit/detail' element={<RecruitDetail />} />
+                      <Route path='recruit/modify' element={<ModifyRecruit />} />
+                      <Route path='care-info' element={<CaregiverInfo />} />
+                      <Route path='*' element={<Navigate to='/404' replace />} />
+                    </Routes>
+                  </RequireAuth>
+                }
+              />
 
-          {/* Chatting */}
-          <Route path='chatrooms' element={<ChatRoomsPage />} />
-          <Route path='chatroom/:roomid' element={<PrivateChatRoom />} />
+              {/* Helper */}
+              <Route
+                path='helper'
+                element={
+                  <RequireAuth role='helper'>
+                    <HelperHome />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path='helper/*'
+                element={
+                  <RequireAuth role='helper'>
+                    <Routes>
+                      <Route path='detail/:patientLogSeq' element={<MatchingDetail />} />
+                      <Route path='account' element={<Account />} />
+                      <Route path='account/edit' element={<AccountEdit />} />
+                      <Route path='account/schedule' element={<AccountSchedule />} />
+                      <Route path='account/pay' element={<AccountPay />} />
+                      <Route path='account/care-type' element={<AccountCareType />} />
+                      <Route path='location' element={<HelperLocation />} />
+                      <Route path='address' element={<HelperAddress />} />
+                      <Route path='*' element={<Navigate to='/404' replace />} />
+                    </Routes>
+                  </RequireAuth>
+                }
+              />
 
-          {/* <Route path="/center" element={} /> */}
-        </Route>
-      </Routes>
+              {/* Chatting */}
+              <Route path='chatrooms' element={<ChatRoomsPage />} />
+              <Route path='chatroom/:roomid' element={<PrivateChatRoom />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </Router>
   );
 }

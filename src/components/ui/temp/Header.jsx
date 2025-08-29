@@ -1,29 +1,42 @@
-import Logo from '@/assets/images/logo.svg';
-import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, Search } from 'lucide-react';
 import { Button } from '../custom/Button';
+import { navigateToHome } from '@/routes/homeNavigation';
 
-// TODO: 레이아웃 조정 필요
+import Logo from '@/assets/images/logo.svg';
+import ResetButton from '../resetButton';
+
 function LogoHeader({ hasBorder = true }) {
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
-    navigate('/');
+    navigateToHome(navigate);
   };
 
   return (
     <header
-      className={`flex items-center px-7 w-full h-[5.625rem] ${hasBorder ? 'border-b border-b-[#C8C8C8]' : ''}`}
+      className={`flex items-center px-7 w-full h-[5.625rem] ${
+        hasBorder ? 'border-b border-b-[#C8C8C8]' : ''
+      }`}
     >
       <img src={Logo} alt='logo' className='w-[12.625rem] h-auto' onClick={handleLogoClick} />
     </header>
   );
 }
 
-function HeaderBackOrProgress({ type, title, progress, onBack, hasBorder = true }) {
+function HeaderBackOrProgress({
+  type,
+  title,
+  progress,
+  onBack,
+  hasBorder = true,
+  resetFunc = null,
+}) {
   return (
     <header
-      className={`flex justify-between items-center px-6 h-[4.875rem] ${hasBorder ? 'border-b border-b-[#C8C8C8]' : ''}`}
+      className={`flex justify-between items-center px-6 h-[4.875rem] ${
+        hasBorder ? 'border-b border-b-[#C8C8C8]' : ''
+      }`}
     >
       <div className='flex items-center gap-[0.625rem]'>
         {(type === 'back' || type === 'back-progress') && (
@@ -31,14 +44,52 @@ function HeaderBackOrProgress({ type, title, progress, onBack, hasBorder = true 
             <ChevronLeft />
           </Button>
         )}
-        <p className='font-semibold text-[1.5rem] lg:text-[1.625rem]'>{title}</p>
+        <h1 className='font-semibold text-2xl lg:text-[1.625rem]'>{title}</h1>
       </div>
       <div className='flex items-center'>
         {type === 'back-progress' && (
-          <p className='text-[1.5rem] lg:text-[1.625rem] font-semibold text-[var(--main)]'>
+          <p className='text-2xl lg:text-[1.625rem] font-semibold text-[var(--main)]'>
             {progress.current}/{progress.total}
           </p>
         )}
+
+        {type === 'back' && resetFunc && <ResetButton resetFunc={resetFunc} />}
+      </div>
+    </header>
+  );
+}
+
+export function DesktopHeader() {
+  const getCurrentDate = () => {
+    return new Date().toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  return (
+    <header className='hidden lg:flex lg:items-center lg:justify-between lg:px-8 lg:py-4 bg-white border-b border-b-[#C8C8C8] h-[5.625rem]'>
+      <div className='flex items-center gap-6'>
+        <div className='relative'>
+          <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-[#b2b2b2] w-5 h-5' />
+          <input
+            type='text'
+            placeholder='검색하기'
+            className='pl-10 pr-4 py-2 w-120 border border-[#b2b2b2] rounded-full focus:outline-none focus:ring-2 focus:ring-[var(--main)] focus:border-transparent transition-all duration-200 text-lg text-[#2f2f2f] placeholder:text-[#767676]'
+          />
+        </div>
+      </div>
+
+      <div className='flex items-center gap-4'>
+        <span className='text-[#2f2f2f ] font-medium text-lg'>{getCurrentDate()}</span>
+
+        <button
+          className='flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded-lg transition-colors duration-200'
+          aria-label='사용자 메뉴'
+        >
+          <span className='text-[#2f2f2f] font-medium text-lg'>강동구청 어르신케어센터</span>
+        </button>
       </div>
     </header>
   );
@@ -51,6 +102,7 @@ export default function Header({
   onBack = null,
   hidden = false,
   hasBorder = true,
+  resetFunc = null,
 }) {
   if (hidden || type === 'none') return null;
 
@@ -65,6 +117,7 @@ export default function Header({
       progress={progress}
       onBack={onBack}
       hasBorder={hasBorder}
+      resetFunc={resetFunc}
     />
   );
 }

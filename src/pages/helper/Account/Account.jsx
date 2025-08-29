@@ -1,196 +1,181 @@
 // ✅ 1. 외부 라이브러리 (React 및 패키지)
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 // ✅ 2. 상태 관리 (스토어, 컨텍스트 등)
-import { CARE_TYPES } from "@/store/suho/useCareTypeStore";
-import useAccountStore from "@/store/suho/useAccountStore";
-import useScheduleStore from "@/store/suho/useScheduleStore";
+import useScheduleStore from '@/store/suho/useScheduleStore';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
+import useAuthStore from '@/store/useAuthStore';
+import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
 
 // ✅ 3. UI 컴포넌트 (공통 UI → 커스텀 컴포넌트 순)
-import { Button } from "@/components/ui/custom/Button";
+import { Button } from '@/components/ui/custom/Button';
+import { request } from '@/api';
 
-// ✅ 4. 레이아웃 컴포넌트 (Header, Footer 등)
-import Header from "@/components/ui/temp/Header";
-import Footer from "@/components/ui/temp/Footer";
-
-// ✅ 5. 이미지 및 정적 파일
-import location_icon from "@/assets/images/location.png";
-import overview from "@/assets/images/overview.png";
-import backarrow from "@/assets/images/back-arrow.png";
-import homecontrols from "@/assets/images/home-controls.png";
+// ✅ 4. 이미지 및 정적 파일
+import location_icon from '@/assets/images/location.png';
+import overview from '@/assets/images/overview.png';
+import backarrow from '@/assets/images/back-arrow.png';
+import homecontrols from '@/assets/images/home-controls.png';
 
 //temp
-import useProfileStore from "@/store/useProfileStore";
+import useProfileStore from '@/store/useProfileStore';
 
 export default function Account() {
-  //temp
-  const handleTest = () => {
-    console.log("profileEdit 상태:", profileEdit);
-  };
-  const { schedule, consult, optimizedSchedule } = useScheduleStore();
-  const PAY_TYPES = [
-    { id: "hourly", label: "시급" },
-    { id: "daily", label: "일급" },
-    { id: "weekly", label: "주급" },
-    { id: "monthly", label: "월급" },
-  ];
+  const { optimizedSchedule } = useScheduleStore();
+  // const PAY_TYPES = [
+  //   { id: 'hourly', label: '시급' },
+  //   { id: 'daily', label: '일급' },
+  //   { id: 'weekly', label: '주급' },
+  //   { id: 'monthly', label: '월급' },
+  // ];
+  const PAY_TYPES = ['시급', '일급', '주급'];
+  const { user } = useAuthStore();
+  const { helper, setHelper } = useHelperAccountStore();
 
   const navigate = useNavigate();
-  const profile = useAccountStore((state) => state.profile);
 
-  const { profileEdit, updateProfileField } = useProfileStore();
-  const getCareTypeLabel = (category) => {
-    if (category === "workTypes") {
-      return (
-        profile.careTypes?.workTypes
-          ?.map(
-            (type) => CARE_TYPES.workTypes.find((t) => t.id === type)?.label
-          )
-          .join(", ") || "미설정"
-      );
-    }
-    const selected = CARE_TYPES[category]?.find(
-      (item) => item.id === profile.careTypes?.[category]
-    );
-    return selected?.label || "미설정";
-  };
+  const { profileEdit } = useProfileStore();
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
+  const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+
+  useEffect(() => {
+    setHeaderProps({
+      type: 'back',
+      title: '나의 계정',
+      onBack: () => {
+        navigate(-1);
+      },
+    });
+    return () => {
+      clearHeaderProps();
+    };
+  }, []);
+
+  useEffect(() => {
+    const helperSeq = user.helperSeq;
+    request('post', '/detail/helper-info', { helperSeq })
+      .then((res) => {
+        setHelper(res);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }, [user, setHelper]);
 
   const handleEdit = () => {
-    navigate("/helper/account/edit", {
-      state: { from: "/helper/account" },
+    navigate('/helper/account/edit', {
+      state: { from: '/helper/account' },
     });
   };
 
   return (
     <>
-      <main className="max-w-md mx-auto flex flex-col ">
-        <Header title="나의 계정" />
-
+      <main className='max-w-md mx-auto flex flex-col '>
         {/* 기본 정보 */}
-        <section className="flex flex-col items-stretch gap-12 p-5 mt-6">
+        <section className='flex flex-col items-stretch gap-12 mt-6'>
           {/* 프로필 이미지 */}
-          <section className="flex items-center gap-12 ">
-            <div className="relative w-24 h-24">
+          <section className='flex items-center gap-12 '>
+            <div className='relative w-24 h-24'>
               <img
-                src="/defaultProfile.png"
-                alt="profile_image"
-                className="w-24 h-24 rounded-full bg-[#DCDCDC]"
+                src={profileEdit.profileImage || '/defaultProfile.png'}
+                alt='profile_image'
+                className='w-24 h-24 rounded-full bg-[#DCDCDC]'
               />
             </div>
-            <div className="flex flex-col gap-5 items-start">
-              {/* <span>{profileEdit.name || "홍길동"}</span> */}
-              <span className="text-[#191919] text-[23px] font-bold leading-none h-auto ">
-                홍길동
+            <div className='flex flex-col gap-5 items-start'>
+              <span className='text-[#191919] text-[23px] font-bold leading-none h-auto '>
+                {helper.name || '알수 없음'}
               </span>
-              {/* <span>{profileEdit.address || "서울특별시 용산구 거주"}</span> */}
-              <span className="text-[#191919] font-pretendard text-[20px] font-medium leading-none ">
-                서울특별시 용산구 거주
+              <span className='text-[#191919] font-pretendard text-[20px] font-medium leading-none '>
+                {helper.addressDetail || '주소 불명'}
               </span>
             </div>
           </section>
 
           {/* 자기 소개 섹션 */}
-          <section className="helper-section">
-            <span className="helper-title">자기소개</span>
+          <section className='helper-section'>
+            <span className='helper-title'>자기소개</span>
             <div
-              className="
+              className='
   text-left
     resize-none overflow-hidden min-h-[4rem] self-stretch
     p-[26px_17px]
     rounded-[10px] border border-[#C8C8C8] bg-white
-  "
+  '
             >
               <span
                 className={`
-      ${profileEdit.introduction ? "text-[#191919]" : "text-[#C8C8C8]"}
+      ${profileEdit.introduction ? 'text-[#191919]' : 'text-[#C8C8C8]'}
        profile-section__content-text 
     `}
               >
-                {profileEdit.introduction ||
-                  "한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다.한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다.한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다."}
+                {profileEdit.introduction || '소개 없음'}
               </span>
             </div>
           </section>
 
           {/* 간병 경력 섹션 */}
-          <section className="helper-section">
-            <span className="helper-title">간병경력이 있으신가요?</span>
-            <div className="profile-section__content-box justify-center">
-              <span className="profile-section__content-text">신입</span>
+          <section className='helper-section'>
+            <span className='helper-title'>간병경력이 있으신가요?</span>
+
+            <div className='profile-section__content-box justify-center'>
+              <span className='profile-section__content-text'>
+                {profileEdit.careExperience || '신입'}
+              </span>
             </div>
           </section>
 
           {/* 선호 지역 섹션 */}
-          <section className="helper-section">
-            <span className="helper-title">선호지역</span>
+          <section className='helper-section'>
+            <span className='helper-title'>선호지역</span>
 
-            <div className="profile-section__content-box">
-              <img
-                className="w-[24px] h-[24px]"
-                src={location_icon}
-                alt="location_icon"
-              />
-              {/* TODO : 긴 문장 처리시 overflow 처리 필요. */}
-              <div className="flex items-center gap-1 py-1">
+            <div className='profile-section__content-box'>
+              <img className='w-[24px] h-[24px]' src={location_icon} alt='location_icon' />
+              <div className='flex items-center gap-1 py-1'>
                 {Object.entries(profileEdit.location).length > 0 ? (
-                  <span className="flex flex-col  gap-2">
-                    {Object.entries(profileEdit.location).map(
-                      ([city, districts]) =>
-                        Object.entries(districts).map(
-                          ([district, subDistricts]) => (
-                            <div
-                              key={`${city}-${district}`}
-                              className="flex profile-section__content-text gap-4"
-                            >
-                              {city}
-                              <img
-                                src={backarrow}
-                                alt="backarrow"
-                                className="w-4 h-4 rotate-180 inline-block mx-1"
-                              />
-                              {district} ({subDistricts.join(", ")})
-                            </div>
-                          )
-                        )
+                  <span className='flex flex-col  gap-2'>
+                    {Object.entries(profileEdit.location).map(([city, districts]) =>
+                      Object.entries(districts).map(([district, subDistricts]) => (
+                        <div
+                          key={`${city}-${district}`}
+                          className='flex profile-section__content-text gap-4'
+                        >
+                          {city}
+                          <img
+                            src={backarrow}
+                            alt='backarrow'
+                            className='w-4 h-4 rotate-180 inline-block mx-1'
+                          />
+                          {district} ({subDistricts.join(', ')})
+                        </div>
+                      )),
                     )}
                   </span>
                 ) : (
-                  <span className="profile-section__content-text">미설정</span>
+                  <span className='profile-section__content-text'>미설정</span>
                 )}
               </div>
             </div>
           </section>
 
           {/* 나의 근무 가능 일정 섹션 */}
-          {/* TODO : 피그마 아이콘 변경 */}
-          <section className="helper-section">
-            <span className="helper-title">나의 근무 가능 일정</span>
-            <div className="profile-section__content-box">
-              <img
-                className="w-[24px] h-[24px] "
-                src={location_icon}
-                alt="location_icon"
-              />
+          <section className='helper-section'>
+            <span className='helper-title'>나의 근무 가능 일정</span>
+            <div className='profile-section__content-box'>
+              <img className='w-[24px] h-[24px] ' src={location_icon} alt='location_icon' />
 
               <div>
-                {optimizedSchedule.length > 0 ? (
-                  optimizedSchedule.map((item, index) => (
-                    <div key={index} className="flex items-center gap-4 py-1">
-                      <span className="profile-section__content-text">
-                        {item.days}
-                      </span>
-                      <img
-                        src={backarrow}
-                        alt="backarrow"
-                        className="w-4 h-4 rotate-180"
-                      />
-                      <span className="profile-section__content-text">
-                        {item.time}
-                      </span>
+                {optimizedSchedule().length > 0 ? (
+                  optimizedSchedule().map((item, index) => (
+                    <div key={index} className='flex items-center gap-4 py-1'>
+                      <span className='profile-section__content-text'>{item.days}</span>
+                      <img src={backarrow} alt='backarrow' className='w-4 h-4 rotate-180' />
+                      <span className='profile-section__content-text'>{item.time}</span>
                     </div>
                   ))
                 ) : (
-                  <span className="profile-section__content-text">
+                  <span className='profile-section__content-text'>
                     설정된 근무 가능 시간이 없습니다.
                   </span>
                 )}
@@ -199,80 +184,51 @@ export default function Account() {
           </section>
 
           {/* 급여 섹션 */}
-          <section className="helper-section">
-            <span className="helper-title">나의 희망급여</span>
-            <div className="profile-section__content-box">
-              <img
-                className="w-[24px] h-[24px]"
-                src={overview}
-                alt="overview_icon"
-              />
-              <span className="profile-section__content-text">
-                {PAY_TYPES.find((t) => t.id === profileEdit.pay.type)?.label ||
-                  ""}
+          <section className='helper-section'>
+            <span className='helper-title'>나의 희망급여</span>
+            <div className='profile-section__content-box'>
+              <img className='w-[24px] h-[24px]' src={overview} alt='overview_icon' />
+              <span className='profile-section__content-text'>
+                {PAY_TYPES[helper.wageState - 1]}
               </span>
-              <img
-                src={backarrow}
-                alt="backarrow"
-                className="w-4 h-4 rotate-180"
-              />
-              <span className="profile-section__content-text">
-                {profileEdit.pay.amount}원
-              </span>
+              <img src={backarrow} alt='backarrow' className='w-4 h-4 rotate-180' />
+              <span className='profile-section__content-text'>{helper.wage}원</span>
             </div>
           </section>
 
           {/* 돌봄 유형 섹션*/}
-          <section className="helper-section">
-            <span className="helper-title">나의 희망 돌봄유형</span>
+          <section className='helper-section'>
+            <span className='helper-title'>나의 희망 돌봄유형</span>
 
-            <div className="profile-section__content-box">
-              <img
-                className="w-[24px] h-[24px]"
-                src={homecontrols}
-                alt="homeControls_icon"
-              />
-              <span className="profile-section__content-text">
+            <div className='profile-section__content-box'>
+              <img className='w-[24px] h-[24px]' src={homecontrols} alt='homeControls_icon' />
+              <span className='profile-section__content-text'>
                 {profileEdit.careTypes.workTypes.length > 0
-                  ? profileEdit.careTypes.workTypes
-                      .map((item) => item.label)
-                      .join(", ")
-                  : "설정되지 않음"}
+                  ? profileEdit.careTypes.workTypes.map((item) => item.label).join(', ')
+                  : '설정되지 않음'}
               </span>
             </div>
           </section>
 
           {/* 자격증 등록 섹션*/}
-          <section className="helper-section">
-            <span className="helper-title">나의 소지 자격증</span>
+          <section className='helper-section'>
+            <span className='helper-title'>나의 소지 자격증</span>
 
-            <div className="profile-section__content-box">
-              <img
-                className="w-[24px] h-[24px]"
-                src={homecontrols}
-                alt="homeControls_icon"
-              />
-              <span className="profile-section__content-text">
+            <div className='profile-section__content-box'>
+              <img className='w-[24px] h-[24px]' src={homecontrols} alt='homeControls_icon' />
+              <span className='profile-section__content-text'>
                 {Object.entries(profileEdit.selectedOptions || {})
                   .filter(([_, value]) => value)
                   .map(([key]) => key)
-                  .join(", ") || "설정되지 않음"}
+                  .join(', ') || '설정되지 않음'}
               </span>
             </div>
           </section>
         </section>
-        <Button
-          variant="default"
-          onClick={handleEdit}
-          className="mt-6 mr-6 ml-6 "
-        >
+        <Button variant='white' onClick={handleEdit} className='m-6'>
           수정하기
         </Button>
-
-        <Button type="button" onClick={handleTest} />
       </main>
-
-      {/* <Footer /> */}
     </>
   );
 }

@@ -1,7 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
-import FormattedText from '@/components/ui/custom/FormattedText';
 import AddressStepFlow from '@/components/address/AddressStepFlow';
 
 export default function AddressRegister({ backPath, title, description, onComplete }) {
@@ -29,14 +28,11 @@ export default function AddressRegister({ backPath, title, description, onComple
     <>
       <div className='my-8 flex flex-col gap-[0.62rem] items-start'>
         <p className='text-[1.44rem] font-semibold text-[var(--text)]'>{title}</p>
-        <FormattedText
-          threshold={18}
-          splitIndex={18}
-          text={description}
-          className='text-[1rem] font-normal text-[var(--text)] text-start'
-        />
+        <p className='text-base font-normal text-[var(--text)] text-start whitespace-pre-line break-keep'>
+          {description}
+        </p>
       </div>
-      {/* TODO: 버튼 hover 동작 안함... */}
+
       <AddressStepFlow
         onComplete={(result) => {
           onComplete(result);

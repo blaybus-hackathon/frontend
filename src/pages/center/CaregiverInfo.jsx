@@ -1,19 +1,29 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
+import { useNavigate, useLocation } from 'react-router-dom';
 
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
+import { useHelperInfoStore } from '@/store/center/useHelperInfoStore';
 import { Button } from '@/components/ui/custom/Button';
-import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
+import { request } from '@/api';
 
 import map_pin from '@/assets/images/map-pin.png';
 import card from '@/assets/images/card.png';
 import sun from '@/assets/images/sun.png';
+import defaultProfile from '@/assets/images/elder-basic-profile.png';
+
+// 자격증 종류
+const CERT = ['요양보호사', '간병사', '병원동행매니저', ' 산후 관리사', '기타'];
 
 export default function CaregiverInfo() {
   const navigate = useNavigate();
+  const helperSeq = useLocation().state.helperSeq;
+  // const helperSeq = 1;
+
   const [censored, setCensored] = useState(true);
+
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+  const { helperInfo, setHelperInfo } = useHelperInfoStore();
 
   // 헤더 세팅
   useEffect(() => {
@@ -24,25 +34,44 @@ export default function CaregiverInfo() {
         navigate(-1);
       },
     });
-
     return () => {
       clearHeaderProps();
     };
   }, [clearHeaderProps, navigate, setHeaderProps]);
 
+  useEffect(() => {
+    request('post', '/detail/helper-info', { helperSeq })
+      .then((res) => {
+        setHelperInfo(res);
+      })
+      .catch(() => {});
+  }, [helperSeq, setHelperInfo]);
+
+  const renderCertification = () =>
+    CERT.map((c, idx) => (
+      <div
+        key={idx}
+        className={`h-16 w-full rounded-[10px] text-xl leading-16 text-center ${
+          helperInfo.cetificates?.include(c)
+            ? 'bg-[var(--main)] text-white'
+            : 'border border-[var(--outline)]'
+        }`}
+      >
+        {c}
+      </div>
+    ));
+
   return (
     <div>
-      <div className='max-w-2xl mx-auto px-6'>
+      <div className='max-w-2xl mx-auto'>
         <div className='flex mt-10 items-center mb-13'>
-          {/* <div className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7'>
-          </div> */}
-          <img className='bg-[var(--button-inactive)] rounded-[50%] size-25 flex items-center justify-center mr-7' />
+          <img src={defaultProfile} className='rounded-[50%] size-25 mr-7' />
           <div className='flex flex-col items-start gap-5'>
-            <p className='text-2xl font-bold'>김길동</p>
-            <p className='text-lg'>서울특별시 용산구 거주</p>
+            <p className='text-2xl font-bold'>{helperInfo.name}</p>
+            <p className='text-lg'>{helperInfo.addressDetail}</p>
           </div>
         </div>
-        <div className='flex gap-10 flex-col mb-40'>
+        <div className='flex gap-10 flex-col mb-5'>
           <div className='flex flex-col items-start w-full'>
             <label className='font-semibold text-xl mb-5'>자기소개</label>
             <div className='border border-[#C8C8C8] w-full rounded-md h-34 px-2 py-3 text-left relative'>
@@ -59,10 +88,14 @@ export default function CaregiverInfo() {
               간병경력
             </label>
             <div className='relative'>
-              <Radio cols={2} className={`${censored && 'blur-3xl'}`}>
-                <RadioItem>신입</RadioItem>
-                <RadioItem>경력</RadioItem>
-              </Radio>
+              <div className={`text-xl flex ${censored && 'blur-3xl'} gap-8`}>
+                <div className='flex-1 border h-16 bg-[var(--main)] flex justify-center items-center rounded-[10px] text-white'>
+                  신입
+                </div>
+                <div className='flex-1 border h-16 border-[var(--outline)] flex justify-center items-center rounded-[10px]'>
+                  경력
+                </div>
+              </div>
               {censored && (
                 <p
                   className='font-semibold absolute top-1/2 left-1/2 -translate-1/2'
@@ -99,7 +132,7 @@ export default function CaregiverInfo() {
             <div className='h-16 border border-[#C8C8C8] font-medium text-lg flex rounded-md w-full'>
               <div className='flex items-center ml-5 text-xl'>
                 <img src={card} className='size-6 mr-5' />
-                13900원
+                {helperInfo.wage}원
               </div>
             </div>
           </div>
@@ -117,22 +150,16 @@ export default function CaregiverInfo() {
             <div className='h-16 w-full rounded-md flex border border-[#C8C8C8] font-medium text-lg'>
               <div className='flex items-center ml-5 text-xl'>
                 <img src={map_pin} className='size-6 mr-5' />
-                서울 강남구 서초동
+                {helperInfo.addressDetail}
               </div>
             </div>
           </div>
           <div className='flex flex-col items-start'>
             <label className='font-semibold text-xl mb-4'>자격증</label>
-            <Radio multiple={true}>
-              <RadioItem>요양보호사</RadioItem>
-              <RadioItem>간병사</RadioItem>
-              <RadioItem>병원동행매니저</RadioItem>
-              <RadioItem>산후관리사</RadioItem>
-              <RadioItem>기타</RadioItem>
-            </Radio>
+            <div className='w-full flex flex-col gap-5'>{renderCertification()}</div>
           </div>
 
-          <Button className='h-16 w-4/5 bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 fixed bottom-8 left-1/2 -translate-x-1/2 font-bold'>
+          <Button className='h-16 w-full bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 font-bold'>
             매칭 요청하기
           </Button>
         </div>

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { centerRegister } from '@/services/center/centerRegiService';
+import { centerRegister } from '@/services/center';
+import { handleApiError } from '@/utils/handleApiError';
 
 const createCenterDataSlice = (set) => ({
   registerCenter: {
@@ -96,13 +97,22 @@ const createCenterSubmissionSlice = (set, get) => ({
       set({ isSubmitting: false });
       return result;
     } catch (error) {
-      const customError = {
-        code: error?.response?.data?.code || 'UNKNOWN_ERROR',
-        message: error?.response?.data?.message || '알 수 없는 오류가 발생했습니다.',
-        status: error?.response?.status || 500,
-      };
-      set({ isSubmitting: false, error: customError.message });
-      throw customError;
+      const errorResult = handleApiError(
+        error,
+        {
+          4004: '이미 같은 주소의 센터가 등록되어있습니다.',
+          403: '센터 등록에 필요한 정보가 누락되었습니다.',
+          400: '입력하신 정보를 다시 확인해주세요.',
+          401: '로그인이 필요합니다.',
+        },
+        '센터 등록 중 오류가 발생했습니다.',
+        false,
+        false,
+      );
+
+      set({ isSubmitting: false, error: errorResult });
+
+      throw errorResult;
     }
   },
 });

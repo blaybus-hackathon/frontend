@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 const Radio = ({ className, children, onValueChange, cols, multiple = false, ...props }) => {
   const [checkedItems, setCheckedItems] = useState(multiple ? [] : null);
@@ -42,8 +43,13 @@ const Radio = ({ className, children, onValueChange, cols, multiple = false, ...
 const RadioItem = ({ className, children, value, checked, ...props }) => {
   const radioValue = value || children;
   return (
-    <button type='button' role='radio' className={className} value={radioValue} {...props}>
-      <div className='flex border border-[var(--outline)] rounded-md py-4.5 px-4 gap-3.5 text-xl items-center'>
+    <button type='button' role='radio' value={radioValue} {...props}>
+      <div
+        className={cn(
+          'flex border border-[var(--outline)] rounded-md py-4.5 px-3.5 lg:px-4 gap-2 lg:gap-3.5 text-lg lg:text-xl items-center',
+          className,
+        )}
+      >
         <svg
           width='29'
           height='29'

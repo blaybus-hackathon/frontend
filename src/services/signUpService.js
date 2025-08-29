@@ -15,6 +15,11 @@ export const signUpCenter = async (data) => {
   return response;
 };
 
+export const uploadManagerImg = async (formData) => {
+  const response = await requestMultipart('POST', '/cmn/upload-img/MANAGER', formData);
+  return response;
+};
+
 export const getCenterList = async ({ pageNo, pageSize, searchName }) => {
   const response = await request('GET', '/sign-up/center-list', {
     pageNo,

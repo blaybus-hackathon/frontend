@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
-import Header from '@/components/ui/temp/Header';
 import ElderSelect from '@/components/Center/RecruitInfo/ElderSelect';
 import ElderInfoCheck from '@/components/Center/RecruitInfo/ElderInfoCheck';
 import RecruitSetting from '@/components/Center/RecruitInfo/RecruitSetting';
@@ -10,10 +9,27 @@ import MatchingComplete from '@/components/Center/RecruitInfo/MatchingComplete';
 
 export default function Matching() {
   const navigate = useNavigate();
-  const [curMatchingPage, setCurMatchingPage] = useState(1);
+  const location = useLocation();
 
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+
+  const getStep = () => {
+    const sp = new URLSearchParams(location.search);
+    const step = Number(sp.get('step'));
+    return step && step >= 1 && step <= 4 ? step : 1;
+  };
+
+  const [curMatchingPage, setCurMatchingPage] = useState(getStep());
+
+  useEffect(() => {
+    const sp = new URLSearchParams(location.search);
+    const prev = sp.get('step');
+    if (String(curMatchingPage) !== prev) {
+      sp.set('step', String(curMatchingPage));
+      navigate({ search: `?${sp.toString()}` }, { replace: true });
+    }
+  }, [curMatchingPage, location.search, navigate]);
 
   useEffect(() => {
     setHeaderProps({
@@ -27,7 +43,7 @@ export default function Matching() {
       },
       onBack: () => {
         if (curMatchingPage === 1) {
-          navigate('/');
+          navigate('/center');
         } else {
           setCurMatchingPage(curMatchingPage - 1);
         }
@@ -37,38 +53,14 @@ export default function Matching() {
     return () => {
       clearHeaderProps();
     };
-  }, [clearHeaderProps, curMatchingPage, setHeaderProps]);
+  }, [clearHeaderProps, curMatchingPage, setHeaderProps, navigate]);
 
   return (
     <>
-      {curMatchingPage === 1 && (
-        <ElderSelect
-          handleMatchingPage={(pg) => {
-            setCurMatchingPage(pg);
-          }}
-        />
-      )}
-      {curMatchingPage === 2 && (
-        <ElderInfoCheck
-          handleMatchingPage={(updatePn) => {
-            setCurMatchingPage(updatePn);
-          }}
-        />
-      )}
-      {curMatchingPage === 3 && (
-        <RecruitSetting
-          handleMatchingPage={(updatePn) => {
-            setCurMatchingPage(updatePn);
-          }}
-        />
-      )}
-      {curMatchingPage === 4 && (
-        <MatchingComplete
-          handleMatchingPage={(updatePn) => {
-            setCurMatchingPage(updatePn);
-          }}
-        />
-      )}
+      {curMatchingPage === 1 && <ElderSelect handleMatchingPage={setCurMatchingPage} />}
+      {curMatchingPage === 2 && <ElderInfoCheck handleMatchingPage={setCurMatchingPage} />}
+      {curMatchingPage === 3 && <RecruitSetting handleMatchingPage={setCurMatchingPage} />}
+      {curMatchingPage === 4 && <MatchingComplete />}
     </>
   );
 }

@@ -1,16 +1,9 @@
 import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { DAYS } from '@/constants/days';
-import { TIMES } from '@/constants/times';
 import { Alert } from '@/components/ui/custom/alert';
 import { FormField } from '@/components/ui/custom/FormField';
+import { TimeSelector } from '@/components/ui/custom/TimeSelector';
 import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/custom/select';
 import { ElderNextButton } from '@/components/Center/ElderRegistration/ElderNextButton';
 
 import { useElderRegiStore } from '@/store/center/useElderRegiStore';
@@ -18,21 +11,6 @@ import { useElderRegiStepStore } from '@/store/center/useElderRegiStepStore';
 
 import { useFormValidation } from '@/hooks/useFormValidation';
 import { elderCareInfoSchema } from '@/components/Center/ElderRegistration/validation';
-
-const TimeSelector = ({ value, onChange, placeholder }) => (
-  <Select onValueChange={onChange} value={value || ''}>
-    <SelectTrigger className='w-[45%] h-[4.06rem] text-xl font-normal text-[var(--text)]'>
-      <SelectValue placeholder={placeholder} />
-    </SelectTrigger>
-    <SelectContent>
-      {TIMES.map((time) => (
-        <SelectItem key={time} value={time}>
-          {time}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-);
 
 export default function ElderCareInfo({ formOptions }) {
   const inputRefs = useRef({});
@@ -150,12 +128,14 @@ export default function ElderCareInfo({ formOptions }) {
                         placeholder='시작시간'
                         value={timeData.ptStartTime}
                         onChange={(val) => handleTimeChange(dayIdx, 'ptStartTime', val)}
+                        useIndex={false}
                       />
                       <span className='mx-2'>~</span>
                       <TimeSelector
                         placeholder='종료시간'
                         value={timeData.ptEndTime}
                         onChange={(val) => handleTimeChange(dayIdx, 'ptEndTime', val)}
+                        useIndex={false}
                       />
                     </div>
                   </div>

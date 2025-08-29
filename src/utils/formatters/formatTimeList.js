@@ -1,8 +1,11 @@
 import { DAYS } from '@/constants/days';
 
+export const sortTimeListByDate = (timeList = []) =>
+  [...timeList].sort((a, b) => a.ptDate - b.ptDate);
+
 export const formatTimeList = (timeList = []) => {
-  return timeList.map(({ ptDate, ptStartTime, ptEndTime }) => {
-    const day = DAYS[ptDate - 1];
-    return `${day.slice(0, 1)} ${ptStartTime}~${ptEndTime}\n`;
+  return sortTimeListByDate(timeList).map(({ ptDate, ptStartTime, ptEndTime }) => {
+    const dayName = DAYS[ptDate - 1]?.slice(0, 1) ?? '';
+    return `${dayName} ${ptStartTime}~${ptEndTime}`;
   });
 };

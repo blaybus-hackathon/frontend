@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { omit } from '@/utils/omit';
-import { TIMES } from '@/constants/times';
+import { TIME_TO_INDEX } from '@/constants/times';
 import { createRecruitPost } from '@/services/center';
+import { useCareConstantsStore } from '@/store/useCareMappingStore';
 
 // -------- 상수 -------------
 const CATEGORY_BASE = {
@@ -15,7 +16,7 @@ const CATEGORY_BASE = {
   serviceDailyList: 60,
 };
 
-// 상세조회(careChoice.*List) ↔ 등록키 매핑
+// API 응답 키 ↔ patientData 키 매핑
 const CARE_CHOICE_KEYMAP = {
   workType: 'workTypeList',
   careLevel: 'careLevelList',
@@ -27,7 +28,8 @@ const CARE_CHOICE_KEYMAP = {
   serviceDaily: 'serviceDailyList',
 };
 
-const emptyIdToName = () => ({
+// -------- 초기값 -------------
+const createEmptyIdToName = () => ({
   workTypeList: [],
   careLevelList: [],
   dementiaSymptomList: [],
@@ -38,7 +40,7 @@ const emptyIdToName = () => ({
   serviceDailyList: [],
 });
 
-const emptyPatient = () => ({
+const createEmptyPatient = () => ({
   patientSeq: null,
   name: '',
   afSeq: null,
@@ -67,13 +69,16 @@ const emptyPatient = () => ({
   requestContents: '',
 });
 
-// -------- utils -------------
-const getCareVal = (ids = [], base) => ids.reduce((mask, id) => mask | (1 << (id - base)), 0);
+// ===== 유틸리티 함수 =====
+const calculateCareVal = (ids = [], base) => ids.reduce((mask, id) => mask | (1 << (id - base)), 0);
 
-// -------- store -------------
+const findPatientKey = (listKey) =>
+  Object.keys(CARE_CHOICE_KEYMAP).find((key) => CARE_CHOICE_KEYMAP[key] === listKey);
+
+// ===== 스토어 정의 =====
 export const usePatientStore = create((set, get) => ({
-  patientData: emptyPatient(),
-  idToName: emptyIdToName(),
+  patientData: createEmptyPatient(),
+  idToName: createEmptyIdToName(),
   isSubmitting: false,
   error: null,
 
@@ -81,44 +86,97 @@ export const usePatientStore = create((set, get) => ({
 
   setFields: (fields) => set((s) => ({ patientData: { ...s.patientData, ...fields } })),
 
-  // 동일한 날짜면 교체, 없으면 추가
-  setTime: (ptDate, ptStartTime, ptEndTime) =>
-    set((s) => {
-      if (!TIMES.includes(ptStartTime) || !TIMES.includes(ptEndTime)) return {};
-      const list = s.patientData.timeList.slice();
-      const i = list.findIndex((time) => time.ptDate === ptDate);
-      const next = { ptDate, ptStartTime, ptEndTime };
-      if (i >= 0) list[i] = next;
-      else list.push(next);
-      return { patientData: { ...s.patientData, timeList: list } };
+  getTimeIndex: (timeStr) => (timeStr == null ? -1 : (TIME_TO_INDEX.get(timeStr) ?? -1)),
+
+  // ===== 시간 관련 액션 =====
+  setTime: (ptDate, start, end) =>
+    set((state) => {
+      // 기존 배열에서 같은 ptDate가 있는지 확인
+      const existingIndex = state.patientData.timeList.findIndex((item) => item.ptDate === ptDate);
+
+      if (existingIndex !== -1) {
+        // 기존 항목 업데이트
+        const updatedTimeList = [...state.patientData.timeList];
+        updatedTimeList[existingIndex] = { ptDate, ptStartTime: start, ptEndTime: end };
+        return {
+          patientData: {
+            ...state.patientData,
+            timeList: updatedTimeList,
+          },
+        };
+      } else {
+        // 새 항목 추가
+        const newTimeList = [
+          ...state.patientData.timeList,
+          { ptDate, ptStartTime: start, ptEndTime: end },
+        ];
+        return {
+          patientData: {
+            ...state.patientData,
+            timeList: newTimeList,
+          },
+        };
+      }
     }),
 
   removeTime: (ptDate) =>
-    set((s) => ({
-      patientData: {
-        ...s.patientData,
-        timeList: s.patientData.timeList.filter((time) => time.ptDate !== ptDate),
-      },
-    })),
+    set((state) => {
+      // 배열에서 해당 ptDate를 가진 항목 제거
+      const filteredTimeList = state.patientData.timeList.filter((item) => item.ptDate !== ptDate);
 
-  getTimeByIndex: (index) => TIMES[index] || null,
-  getTimeIndex: (time) => TIMES.indexOf(time),
-  getITime: () => TIMES,
+      return {
+        patientData: {
+          ...state.patientData,
+          timeList: filteredTimeList,
+        },
+      };
+    }),
 
-  // 카테고리 일괄/단일 세팅
+  // 전송용 timeList 배열 생성
+  getTimeListArray: () => {
+    const timeList = get().patientData.timeList;
+    return [...timeList]
+      .sort((a, b) => a.ptDate - b.ptDate)
+      .map((item) => ({
+        ptDate: item.ptDate,
+        ptStartTime: item.ptStartTime,
+        ptEndTime: item.ptEndTime,
+      }));
+  },
+
+  // ===== Care 데이터 처리 =====
   setCareData: (careChoice, getCareNameByIds) => {
     if (!getCareNameByIds || !careChoice) return;
 
     const nextPatient = { ...get().patientData };
     const nextIdToName = { ...get().idToName };
 
-    Object.entries(CATEGORY_BASE).forEach(([postKey, base]) => {
-      const listKey = CARE_CHOICE_KEYMAP[postKey];
-      const ids = careChoice[listKey];
+    Object.entries(CATEGORY_BASE).forEach(([listKey, base]) => {
+      const data = careChoice[listKey];
 
-      if (Array.isArray(ids)) {
-        nextPatient[postKey] = getCareVal(ids, base);
-        nextIdToName[postKey] = getCareNameByIds(postKey, ids);
+      if (Array.isArray(data)) {
+        // ID 배열을 careVal로 변환
+        const careVal = calculateCareVal(data, base);
+        const patientKey = findPatientKey(listKey);
+
+        if (patientKey) {
+          nextPatient[patientKey] = careVal;
+          nextIdToName[listKey] = getCareNameByIds(listKey, data);
+        }
+      } else if (typeof data === 'number') {
+        // 이미 careVal인 경우
+        const patientKey = findPatientKey(listKey);
+
+        if (patientKey) {
+          nextPatient[patientKey] = data;
+
+          // careVal에서 id 리스트를 추출하여 careName 조회
+          const { careValToIndex, getList } = useCareConstantsStore.getState();
+          const indices = careValToIndex(listKey, data);
+          const list = getList(listKey);
+          const ids = indices.map((idx) => list[idx]?.id).filter((id) => id != null);
+          nextIdToName[listKey] = getCareNameByIds(listKey, ids);
+        }
       }
     });
 
@@ -130,10 +188,11 @@ export const usePatientStore = create((set, get) => ({
 
   setCareCategory: (postKey, ids, getCareNameByIds) => {
     if (!getCareNameByIds) return;
+
     const base = CATEGORY_BASE[postKey];
     if (base === null) return;
 
-    const careVal = getCareVal(ids, base);
+    const careVal = calculateCareVal(ids, base);
     const names = getCareNameByIds(postKey, ids);
 
     set((s) => ({
@@ -142,16 +201,15 @@ export const usePatientStore = create((set, get) => ({
     }));
   },
 
-  // 다음 버튼 활성화
   isNextEnabled: () => {
     const p = get().patientData;
-    return !!(p.welfare && p.wage && p.wageState && p.timeList.length > 0 && p.workType);
+    return !!(p.welfare && p.wage !== null && p.wageState && p.timeList.length > 0 && p.workType);
   },
 
   reset: () =>
     set({
-      patientData: emptyPatient(),
-      idToName: emptyIdToName(),
+      patientData: createEmptyPatient(),
+      idToName: createEmptyIdToName(),
       isSubmitting: false,
       error: null,
     }),
@@ -166,9 +224,9 @@ export const usePatientStore = create((set, get) => ({
 
     const payload = {
       ...clearData,
-      patientSeq: Number(patientData.patientSeq),
       weight: Number(patientData.weight),
       linkingYn: 'true',
+      timeList: get().getTimeListArray(),
     };
 
     try {

@@ -1,10 +1,25 @@
 import profInit from '@/assets/images/elder-basic-profile.png';
 
-export default function InfoCard({ isChecked, onClick, showCheck = true, user }) {
+export default function ElderInfoCard({ isChecked, onClick, showCheck = true, user }) {
+  const fields = [
+    {
+      label: '근무종류',
+      text: user && user.workType,
+    },
+    {
+      label: '주소지',
+      text: user && user.address,
+    },
+    {
+      label: '장기요양등급',
+      text: user && user.careLevelStr,
+    },
+  ];
+
   return (
-    <div className={`w-full mb-2.5`} onClick={onClick}>
+    <div className={`w-full mb-3 lg:mb-5`} onClick={onClick}>
       <div
-        className={`flex items-center max-w-2xl rounded-[1rem] flex-col px-4 mx-auto ${
+        className={`flex items-center rounded-[1rem] flex-col px-4 mx-auto ${
           isChecked
             ? 'border-2 border-[var(--company-primary)]'
             : 'border-2 border-[var(--outline)]'
@@ -45,19 +60,19 @@ export default function InfoCard({ isChecked, onClick, showCheck = true, user })
           </div>
         </div>
         <hr className='h-[2px] w-full bg-[var(--outline)]' />
-        <div className='bg-white mx-auto mt-7 mb-5 w-full rounded-[1rem] font-bold'>
-          <p className='text-start pl-2 flex'>
-            <span className='w-2/5 inline-block'>근무종류</span>
-            <span className='font-normal'>{user && user.workType}</span>
-          </p>
-          <p className='text-start pl-2 flex'>
-            <span className='w-2/5 inline-block'>주소지</span>
-            <span className='font-normal'>{user && user.address}</span>
-          </p>
-          <p className='text-start pl-2 flex'>
-            <span className='w-2/5 inline-block'>장기요양등급</span>
-            <span className='font-normal'>{user && user.careLevelStr}</span>
-          </p>
+        <div className='bg-white w-full rounded-[1rem] font-bold flex flex-col gap-y-3 px-3 py-5 lg:px-5 lg:py-7'>
+          {fields.map((field, idx) => (
+            <div key={idx} className={`grid grid-cols-[7rem_1fr] items-center gap-5 md:gap-16`}>
+              <h4 className='text-start text-[var(--black)] text-lg font-semibold'>
+                {field.label}
+              </h4>
+              <div className='flex justify-start rounded-[0.625rem]'>
+                <span className='text-start text-[var(--black)] text-lg font-normal break-keep whitespace-pre-wrap'>
+                  {field.text}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

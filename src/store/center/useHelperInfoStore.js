@@ -6,7 +6,7 @@ export const useHelperInfoStore = create((set) => ({
     userEmail: 'emailAddress@gmail.com',
     name: 'tempName',
     phone: '010-0000-0000',
-    addressDetail: '서울특별시 강남구',
+    addressDetail: '서울특별시 중랑구',
     certificates: [],
     carOwnYn: true,
     eduYn: false,

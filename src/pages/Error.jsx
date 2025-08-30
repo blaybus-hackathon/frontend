@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/custom/card';
 import { Home, AlertTriangle, ArrowLeft, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/custom/Button';
+import { getHomeLink } from '@/routes/homeNavigation';
 import Logo from '/blaybus_logo_icon_text.svg';
 
 export default function Error({ errorMessage, errorCode }) {
   const navigate = useNavigate();
+  const homeLink = getHomeLink();
   const [previousPath, setPreviousPath] = useState(null);
   const [errorInfo, setErrorInfo] = useState({
     code: errorCode,
@@ -111,7 +113,7 @@ export default function Error({ errorMessage, errorCode }) {
             )}
 
             <Button asChild variant='white' className='text-lg px-6 py-4 flex-1'>
-              <Link to='/'>
+              <Link to={homeLink}>
                 <Home className='mr-2 w-5 h-5' />
                 홈으로
               </Link>

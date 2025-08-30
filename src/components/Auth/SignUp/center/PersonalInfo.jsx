@@ -4,6 +4,7 @@ import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/custom/input';
 import { Alert } from '@/components/ui/custom/alert';
 import { FormField } from '@/components/ui/custom/FormField';
+import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
 import { SignUpButton } from '@/components/Auth/SignUp/center/SignUpButton';
 import { ProfileImageUploader } from '@/components/common/ProfileImageUploader';
 
@@ -144,17 +145,36 @@ export default function PersonalInfo() {
         {errors.position && touched.position && <Alert description={errors.position} />}
       </FormField>
 
-      <ProfileImageUploader
-        profileOption={formData.profileOption}
-        onOptionChange={handleProfileOptionChange}
-        selectedImage={formData.photoFile}
-        onImageSelect={(file) => {
-          updateField('photoFile', file);
-          updateField('imgChangeYn', true);
-        }}
-        error={errors.profileOption}
-        touched={touched.profileOption}
-      />
+      <FormField label='프로필 사진 등록'>
+        <Radio
+          value={formData.profileOption}
+          onValueChange={handleProfileOptionChange}
+          cols={2}
+          className='gap-2'
+        >
+          <RadioItem value='1'>
+            <p className='text-[1.1rem] lg:text-xl'>등록하기</p>
+          </RadioItem>
+          <RadioItem value='2'>
+            <p className='text-[1.1rem] lg:text-xl'>아이콘 대체</p>
+          </RadioItem>
+        </Radio>
+        {errors.profileOption && touched.profileOption && (
+          <Alert description={errors.profileOption} />
+        )}
+
+        {formData.profileOption === '1' && (
+          <ProfileImageUploader
+            profileOption={formData.profileOption}
+            selectedImage={formData.photoFile}
+            onImageSelect={(file) => {
+              updateField('photoFile', file);
+              updateField('imgChangeYn', true);
+            }}
+          />
+        )}
+      </FormField>
+
       <SignUpButton isValid={isValid} />
     </section>
   );

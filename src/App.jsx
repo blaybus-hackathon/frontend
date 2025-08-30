@@ -35,7 +35,7 @@ const MyPage = lazy(() => import('./pages/center/MyPage'));
 const ElderInfo = lazy(() => import('./pages/center/ElderInfo'));
 // const ElderList = lazy(() => import('./pages/center/ElderList'));
 const MatchingInfo = lazy(() => import('./pages/center/MatchingInfo'));
-const ElderAddress = lazy(() => import('./pages/center/ElderAddress'));
+const Address = lazy(() => import('./pages/center/Address'));
 const ChatRoomsPage = lazy(() => import('./pages/center/ChatRoomsPage'));
 const PrivateChatRoom = lazy(() => import('./pages/center/PrivateChatRoom'));
 
@@ -82,7 +82,7 @@ function App() {
                       <Route path='elder-info' element={<ElderInfo />} />
                       <Route path='matching' element={<Matching />} />
                       <Route path='matching-info' element={<MatchingInfo />} />
-                      <Route path='register/address' element={<ElderAddress />} />
+                      <Route path='address' element={<Address />} />
                       <Route path='recruit/detail' element={<RecruitDetail />} />
                       <Route path='recruit/modify' element={<ModifyRecruit />} />
                       <Route path='care-info' element={<CaregiverInfo />} />

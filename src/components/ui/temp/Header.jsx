@@ -1,14 +1,16 @@
-import Logo from '@/assets/images/logo.svg';
-import { ChevronLeft, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, Search } from 'lucide-react';
 import { Button } from '../custom/Button';
+import { navigateToHome } from '@/routes/homeNavigation';
+
+import Logo from '@/assets/images/logo.svg';
 import ResetButton from '../resetButton';
 
 function LogoHeader({ hasBorder = true }) {
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
-    navigate('/');
+    navigateToHome(navigate);
   };
 
   return (

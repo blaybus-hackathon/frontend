@@ -1,5 +1,6 @@
 import { useAddressFlow } from '@/hooks/useAddressFlow';
 import { AddressButtons } from './AddressButtons';
+import { formatAddress } from '@/utils/formatters/formatAddress';
 
 export default function AddressStepFlow({ onComplete }) {
   const { step, stepButtons } = useAddressFlow();
@@ -12,7 +13,7 @@ export default function AddressStepFlow({ onComplete }) {
     const asName = stepButtons[2]?.list.find((a) => a.id === asSeq)?.name;
     const atName = stepButtons[3]?.list.find((a) => a.id === atSeq)?.name;
 
-    const addressLabel = `${afName ?? ''} ${asName ?? ''} ${atName ?? ''}`.trim();
+    const addressLabel = formatAddress(afName, asName, atName);
 
     if (onComplete) {
       onComplete({
@@ -27,34 +28,38 @@ export default function AddressStepFlow({ onComplete }) {
   // format text by step
   const formatConfig = {
     1: {
-      threshold: 7,
-      splitIndex: 2,
-      longClass: 'text-[1.1rem]',
-      className: 'whitespace-pre-line',
+      threshold: 6,
+      shortClass: 'text-lg leading-tight break-keep',
+      longClass: 'text-[1.1rem] leading-snug',
+      className: 'whitespace-pre-line text-center',
     },
     2: {
-      threshold: 6,
-      splitIndex: 3,
-      longClass: 'text-[1.1rem]',
-      className: 'whitespace-pre-line',
+      threshold: 5,
+      shortClass: 'text-lg leading-tight break-keep',
+      longClass: 'text-base leading-snug',
+      className: 'whitespace-pre-line text-center',
     },
     3: {
-      threshold: 6,
-      splitIndex: 3,
-      longClass: 'text-[1rem]',
-      className: 'whitespace-pre-line',
+      threshold: 5,
+      shortClass: 'text-lg leading-tight break-keep',
+      longClass: 'text-base leading-snug',
+      className: 'whitespace-pre-line text-center',
     },
   };
 
   const handleClick = (id) => {
-    currentStep.onClick(id);
     if (step === 3) {
+      // For third step, handle selection and completion
+      currentStep.onClick(id);
       handleFinalSelect(id);
+    } else {
+      // For first and second steps, just handle selection
+      currentStep.onClick(id);
     }
   };
 
   return (
-    <div className='grid grid-cols-3 gap-4 mx-auto mb-8'>
+    <div className='grid grid-cols-3 gap-3 mx-auto mb-8'>
       <AddressButtons
         list={currentStep.list}
         onClick={handleClick}

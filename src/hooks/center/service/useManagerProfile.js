@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getManagerProfile, updateManagerProfile } from '@/services/center/myPageService';
+import { getManagerProfile, updateManagerProfile } from '@/services/center';
 
 export const useManagerProfile = () => {
   const queryClient = useQueryClient(); // manage query cache

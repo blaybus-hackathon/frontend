@@ -1,10 +1,12 @@
 import { useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { handleApiError } from '@/utils/handleApiError';
+import { useElderFormData } from '@/hooks/center/service/useElderFormData';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import { useElderRegiStepStore } from '@/store/center/useElderRegiStepStore.js';
 import { ELDER_REGISTRATION_STEPS } from '@/constants/registrationSteps';
-import { useElderFormData } from '@/hooks/center/service/useElderFormData';
-import { useNavigate } from 'react-router-dom';
-import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
+import Spinner from '@/components/loading/Spinner';
 import ElderBasicInfo from '@/components/Center/ElderRegistration/ElderBasicInfo';
 import ElderCareInfo from '@/components/Center/ElderRegistration/ElderCareInfo';
 import ElderAdditionalInfo from '@/components/Center/ElderRegistration/ElderAdditionalInfo';
@@ -38,7 +40,7 @@ export default function ElderRegister() {
 
   const handleBackClick = useCallback(() => {
     if (isFinalStep || currentIndex === 0) {
-      navigate('/');
+      navigate(-1);
     } else {
       prevStep();
     }
@@ -52,26 +54,30 @@ export default function ElderRegister() {
       onBack: handleBackClick,
     });
 
-    return () => {
-      clearHeaderProps();
-    };
+    return () => clearHeaderProps();
   }, [currentIndex, isFinalStep, clearHeaderProps, handleBackClick, setHeaderProps, totalSteps]);
 
-  // TODO: 로딩 UI 수정 필요
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (isError) {
-    alert('설문 데이터를 불러오는 중 오류가 발생했습니다.');
-    navigate('/');
+    const error = new Error('설문 데이터를 불러오는 중 오류가 발생했습니다.');
+    error.response = { status: 500 };
+
+    handleApiError(
+      error,
+      { 500: '설문 데이터를 불러오는 중 서버 오류가 발생했습니다.' },
+      '설문 데이터를 불러오는 중 오류가 발생했습니다.',
+      false,
+      true,
+    );
     return null;
   }
 
   return (
-    <>
-      <div className='mb-[2.7rem]'></div>
+    <div className='my-6 lg:my-8'>
       <CurrentStepComponent formOptions={formOptions} />
-    </>
+    </div>
   );
 }

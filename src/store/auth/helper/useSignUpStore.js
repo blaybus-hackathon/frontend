@@ -60,6 +60,7 @@ const createHelperDataSlice = (set) => ({
     licenseInfo: {},
     kakaoUser: null,
   },
+  isFirstCheck: true,
 
   setEmailAuth: (data) =>
     set((state) => ({
@@ -136,6 +137,7 @@ const createHelperDataSlice = (set) => ({
       },
     })),
 
+  setIsFirstCheck: (newBool) => set({ isFirstCheck: newBool }),
   reset: () =>
     set({
       signUpForm: {

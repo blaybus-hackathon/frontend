@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/custom/Button';
-import { request } from '@/api';
 import defaultProfile from '@/assets/images/elder-basic-profile.png';
+
+import { getCareItems, getRecruitDetail } from '@/services/center';
 
 import recruitStore from '@/store/jbStore/recruitStore';
 
@@ -22,7 +23,7 @@ export default function PatientInfo() {
 
   useEffect(() => {
     //temporary code
-    request('get', '/patient-recruit/1/detail')
+    getRecruitDetail(1)
       .then((res) => {
         //성별 변경
         const genderStr = res.careChoice.genderList[0] - 67 === 0 ? '남성' : '여성';
@@ -34,16 +35,14 @@ export default function PatientInfo() {
   }, []);
 
   useEffect(() => {
-    request('post', '/cmn/part-request-care-list', {
-      careTopEnumList: [
-        'DEMENTIA_SYMPTOM',
-        'WORK_TYPE',
-        'SERVICE_MEAL',
-        'SERVICE_TOILET',
-        'SERVICE_MOBILITY',
-        'SERVICE_DAILY',
-      ],
-    })
+    getCareItems([
+      'DEMENTIA_SYMPTOM',
+      'WORK_TYPE',
+      'SERVICE_MEAL',
+      'SERVICE_TOILET',
+      'SERVICE_MOBILITY',
+      'SERVICE_DAILY',
+    ])
       .then((res) => {
         //치매 증상 정보 가져오기
         setDementia(

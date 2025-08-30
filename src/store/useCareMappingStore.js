@@ -3,11 +3,23 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import { getFormConstants } from '@/services/center';
 import { FALLBACK_CARE_CONSTANTS } from '@/constants/fallbackCareConstants';
 
+// base category
+const CAREVAL_BASE = {
+  workTypeList: 2,
+  careLevelList: 21,
+  dementiaSymptomList: 29,
+  inmateStateList: 38,
+  serviceMealList: 45,
+  serviceToiletList: 50,
+  serviceMobilityList: 55,
+  serviceDailyList: 60,
+};
+
 // set range for each category
 const categoryRanges = [
-  { key: 'workType', range: [2, 8] },
+  { key: 'workTypeList', range: [2, 8] },
   { key: 'welfareList', range: [10, 19] },
-  { key: 'careLevel', range: [21, 27] },
+  { key: 'careLevelList', range: [21, 27] },
   { key: 'dementiaSymptomList', range: [29, 36] },
   { key: 'inmateStateList', range: [38, 42] },
   { key: 'serviceMealList', range: [45, 48] },
@@ -16,6 +28,14 @@ const categoryRanges = [
   { key: 'serviceDailyList', range: [60, 65] },
   { key: 'gender', range: [67, 68] },
 ];
+
+export const getCareVal = (ids = [], baseNum) => {
+  if (!Number.isFinite(baseNum)) return 0;
+  return ids.reduce((mask, id) => mask | (1 << (id - baseNum)), 0);
+};
+
+export const careValHas = (careVal, id, baseNum) =>
+  Number.isFinite(baseNum) && (careVal & (1 << (id - baseNum))) !== 0;
 
 // group fallback data by category
 const createFallbackMapping = () => {
@@ -33,6 +53,9 @@ const createFallbackMapping = () => {
 };
 
 // Map to serialize/deserialize
+/**
+ * Map을 세션 스토리지에 안전하게 저장/복원하기 위한 커스텀 스토리지 구현
+ */
 const mapStorage = {
   getItem: (name) => {
     const str = sessionStorage.getItem(name);
@@ -55,21 +78,19 @@ const mapStorage = {
   },
   setItem: (name, value) => {
     try {
-      // Zustand persist는 상태 객체를 직접 전달할 수 있음
       let stateToSave, versionToSave;
 
+      // {state, version} 형태로 저장
       if (value && typeof value === 'object' && 'state' in value && 'version' in value) {
-        // 래핑된 형태: { state, version }
         stateToSave = { ...value.state };
         versionToSave = value.version;
       } else {
-        // 직접 상태 객체가 전달된 경우
         stateToSave = { ...value };
         versionToSave = 1;
       }
 
       // convert Map to array for serialization
-      if (stateToSave && stateToSave.mapping) {
+      if (stateToSave?.mapping) {
         const serializedMapping = {};
         for (const [key, map] of Object.entries(stateToSave.mapping)) {
           if (map instanceof Map) {
@@ -95,7 +116,22 @@ const mapStorage = {
   removeItem: (name) => sessionStorage.removeItem(name),
 };
 
-export const useCareMapping = create(
+const mapToList = (m) => (m ? Array.from(m, ([id, careName]) => ({ id, careName })) : []);
+
+const careValToIndex = (list, careVal, baseNum) => {
+  if (!Number.isFinite(baseNum) || careVal == null) return [];
+  return list
+    .map((item, i) => (careValHas(careVal, item.id, baseNum) ? i : -1))
+    .filter((i) => i !== -1);
+};
+
+const indexToCareVal = (list, idxs, baseNum) => {
+  if (!Number.isFinite(baseNum) || !Array.isArray(idxs)) return 0;
+  const ids = idxs.map((i) => list[i]?.id).filter((v) => Number.isFinite(v));
+  return getCareVal(ids, baseNum);
+};
+
+export const useCareConstantsStore = create(
   persist(
     (set, get) => ({
       // state
@@ -107,7 +143,7 @@ export const useCareMapping = create(
       lastFetched: null,
 
       // actions
-      fetchMapping: async (force = false) => {
+      fetchConstants: async (force = false) => {
         const state = get();
         const now = Date.now();
         const oneHour = 60 * 60 * 1000;
@@ -118,84 +154,76 @@ export const useCareMapping = create(
         }
 
         set({ isLoading: true, error: null });
-
         const fallbackMapping = createFallbackMapping();
-        let retryCount = 0;
-        const maxRetries = 2;
 
-        const attemptFetch = async () => {
-          try {
-            const data = await getFormConstants();
-            const apiMapping = {};
-
-            // convert API data to Map
-            for (const key in data) {
-              apiMapping[key] = new Map();
-              data[key].forEach((item) => {
-                apiMapping[key].set(item.id, item.careName);
-              });
-            }
-
-            // merge API data with fallback (API first)
-            const mergedMapping = { ...fallbackMapping };
-            for (const key in apiMapping) {
-              if (apiMapping[key].size > 0) {
-                mergedMapping[key] = apiMapping[key];
-              }
-            }
-
-            set({
-              mapping: mergedMapping,
-              isReady: true,
-              isUsingFallback: false,
-              isLoading: false,
-              error: null,
-              lastFetched: now,
+        try {
+          const data = await getFormConstants();
+          const apiMapping = {};
+          for (const key in data) {
+            const m = new Map();
+            data[key]?.forEach((item) => {
+              m.set(item.id, item.careName);
             });
-          } catch (error) {
-            console.error(`API call failed (attempt ${retryCount + 1}/${maxRetries + 1}):`, error);
-
-            if (retryCount < maxRetries) {
-              retryCount++;
-              const delay = Math.pow(2, retryCount - 1) * 1000;
-              setTimeout(attemptFetch, delay);
-              return;
-            }
-
-            console.warn('API call failed, using fallback data');
-            set({
-              mapping: fallbackMapping,
-              isReady: true,
-              isUsingFallback: true,
-              isLoading: false,
-              error: error.message,
-              lastFetched: now,
-            });
+            apiMapping[key] = m;
           }
-        };
 
-        await attemptFetch();
+          // fallback 위에 api 덮어쓰기(api 우선)
+          const merged = { ...fallbackMapping };
+          for (const key in apiMapping) {
+            if (apiMapping[key]?.size > 0) merged[key] = apiMapping[key];
+          }
+
+          set({
+            mapping: merged,
+            isReady: true,
+            isUsingFallback: false,
+            isLoading: false,
+            error: null,
+            lastFetched: now,
+          });
+        } catch (error) {
+          console.warn('fetch constants failed:', error);
+          set({
+            mapping: fallbackMapping,
+            isReady: true,
+            isUsingFallback: true,
+            isLoading: false,
+            error: error.message || '상수 로딩 실패(fallback 사용)',
+            lastFetched: now,
+          });
+        }
       },
 
-      // get care name (memoized selector)
+      // get care name by index
+      getCareNameById: (categoryKey, id) => {
+        const map = get().mapping[categoryKey];
+        return map?.get(id) || FALLBACK_CARE_CONSTANTS[id] || '알 수 없음';
+      },
+
+      // get care name
       getCareNameByIds: (categoryKey, idList = []) => {
-        const state = get();
+        const map = get().mapping[categoryKey];
+        return idList.map((id) => map?.get(id) || FALLBACK_CARE_CONSTANTS[id] || '알 수 없음');
+      },
 
-        if (!state.isReady) return ['로딩 중...'];
+      // transform map to [{id, careName}]
+      getList: (categoryKey) => {
+        const map = get().mapping[categoryKey];
+        return mapToList(map);
+      },
 
-        const map = state.mapping[categoryKey];
-        if (!map) {
-          // if category is not found, find directly from fallback
-          return idList.map((id) => FALLBACK_CARE_CONSTANTS[id] || '알 수 없음');
-        }
+      // careVal -> index
+      careValToIndex: (categoryKey, careVal) => {
+        const list = get().getList(categoryKey);
+        const base = CAREVAL_BASE[categoryKey];
+        return careValToIndex(list, careVal, base);
+      },
 
-        return idList.map((id) => {
-          const name = map.get(id);
-          if (name) return name;
-
-          // if not found in mapping, find from fallback constants
-          return FALLBACK_CARE_CONSTANTS[id] || '알 수 없음';
-        });
+      // index -> careVal
+      indexToCareVal: (categoryKey, idxs) => {
+        const list = get().getList(categoryKey);
+        const base = CAREVAL_BASE[categoryKey];
+        return indexToCareVal(list, idxs, base);
       },
 
       // reset cache
@@ -211,10 +239,9 @@ export const useCareMapping = create(
       },
     }),
     {
-      name: 'care-mapping-storage',
+      name: 'care-constants-storage',
       storage: createJSONStorage(() => mapStorage),
       version: 1,
-      // 1 hour cache expiration
       partialize: (state) => ({
         mapping: state.mapping,
         isReady: state.isReady,
@@ -226,24 +253,9 @@ export const useCareMapping = create(
 );
 
 // initialize helper
-export const initializeCareMapping = () => {
-  const store = useCareMapping.getState();
+export const initializeCareConstants = () => {
+  const store = useCareConstantsStore.getState();
   if (!store.isReady && !store.isLoading) {
-    store.fetchMapping();
+    store.fetchConstants();
   }
-};
-
-export const useCareMappingHook = () => {
-  const { isReady, isUsingFallback, isLoading, error, fetchMapping, getCareNameByIds, reset } =
-    useCareMapping();
-
-  return {
-    isReady,
-    isUsingFallback,
-    isLoading,
-    error,
-    getCareNameByIds,
-    refreshMapping: () => fetchMapping(true),
-    reset,
-  };
 };

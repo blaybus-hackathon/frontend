@@ -155,7 +155,7 @@ export default memo(function MatchingInProgress({ data }) {
         <Button
           variant='link'
           className='w-fit text-[var(--text)] cursor-pointer font-medium text-base hover:text-[var(--main)]'
-          onClick={() => navigate('/center/recruit/detail')}
+          onClick={() => navigate(`/center/recruit/detail/${data.patientLogSeq}`)}
         >
           어르신 정보 수정하기
         </Button>

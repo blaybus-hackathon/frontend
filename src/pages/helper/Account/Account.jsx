@@ -1,12 +1,13 @@
 // ✅ 1. 외부 라이브러리 (React 및 패키지)
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // ✅ 2. 상태 관리 (스토어, 컨텍스트 등)
 import useScheduleStore from '@/store/suho/useScheduleStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import useAuthStore from '@/store/useAuthStore';
 import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
+// import { useAddressStore } from '@/store/useAddressStore';
 
 // ✅ 3. UI 컴포넌트 (공통 UI → 커스텀 컴포넌트 순)
 import { Button } from '@/components/ui/custom/Button';
@@ -17,27 +18,29 @@ import location_icon from '@/assets/images/location.png';
 import overview from '@/assets/images/overview.png';
 import backarrow from '@/assets/images/back-arrow.png';
 import homecontrols from '@/assets/images/home-controls.png';
+import { DAYS } from '@/constants/days';
 
 //temp
 import useProfileStore from '@/store/useProfileStore';
 
 export default function Account() {
   const { optimizedSchedule } = useScheduleStore();
-  // const PAY_TYPES = [
-  //   { id: 'hourly', label: '시급' },
-  //   { id: 'daily', label: '일급' },
-  //   { id: 'weekly', label: '주급' },
-  //   { id: 'monthly', label: '월급' },
-  // ];
   const PAY_TYPES = ['시급', '일급', '주급'];
+
   const { user } = useAuthStore();
   const { helper, setHelper } = useHelperAccountStore();
+  // const { getAddressNameById } = useAddressStore();
 
   const navigate = useNavigate();
 
   const { profileEdit } = useProfileStore();
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+
+  const [afss, setAfss] = useState([]);
+  const [asss, setAsss] = useState([]);
+  const [atss, setAtss] = useState([]);
+  const [workTypes, setWorkTypes] = useState([]);
 
   useEffect(() => {
     setHeaderProps({
@@ -53,20 +56,92 @@ export default function Account() {
   }, []);
 
   useEffect(() => {
-    const helperSeq = user.helperSeq;
-    request('post', '/detail/helper-info', { helperSeq })
-      .then((res) => {
-        setHelper(res);
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  }, [user, setHelper]);
+    getInitialInfo();
+  }, []);
 
   const handleEdit = () => {
     navigate('/helper/account/edit', {
       state: { from: '/helper/account' },
     });
+  };
+
+  const getInitialInfo = async () => {
+    const helperSeq = user.helperSeq;
+    try {
+      const helperInfo = await request('post', '/detail/helper-info', { helperSeq });
+      setHelper(helperInfo);
+
+      // const { afSeq, asSeq, atSeq } = helperInfo.helperWorkLocation[0];
+      // console.log(getAddressNameById({ afSeq, asSeq, atSeq }));
+
+      setAfss([]);
+      setAsss([]);
+      setAtss([]);
+      const fetchedafss = await request('get', '/get-first-addr');
+      for (let location of helperInfo.helperWorkLocation) {
+        let first = fetchedafss.find((item) => item.id === location.afSeq);
+        setAfss((prev) => [...prev, first.name]);
+        const fetchedasss = await request('get', `/second/${location.afSeq}`);
+        let second = fetchedasss.find((item) => item.id === location.asSeq);
+        setAsss((prev) => [...prev, second.name]);
+        const fetchedatss = await request('get', `/third/${location.asSeq}`);
+        let third = fetchedatss.find((item) => item.id === location.atSeq);
+        setAtss((prev) => [...prev, third.name]);
+      }
+
+      const wtype = await request('post', '/cmn/part-request-care-list', {
+        careTopEnumList: ['WORK_TYPE'],
+      });
+      setWorkTypes(wtype.workTypeList);
+    } catch (e) {
+      console.error('나의 정보를 가져오는데 실패했습니다 : ' + e);
+    }
+  };
+
+  const renderLocation = () =>
+    afss.map((loc, idx) => {
+      return (
+        <div key={idx} className='flex items-center'>
+          <span className='mr-2'>{loc.length === 4 ? loc[0] + loc[2] : loc.slice(0, 2)}</span>
+          <img src={backarrow} className='size-4 rotate-180' />
+          <span>{`${asss[idx]}(${atss[idx]})`}</span>
+        </div>
+      );
+    });
+
+  const renderWorkTime = () => {
+    const grouped = {};
+    helper.helperWorkTime.forEach(({ startTime, endTime, date }) => {
+      const time = `${startTime} ~ ${endTime}`;
+      if (!grouped[time]) grouped[time] = [];
+      grouped[time].push(DAYS[date - 1][0]);
+    });
+
+    return Object.entries(grouped).map(([t, d], idx) => (
+      <div key={idx} className='flex items-center'>
+        <span className='mr-2'>{d.join(',')}</span>
+        <img src={backarrow} className='size-4 rotate-180' />
+        <span>{t}</span>
+      </div>
+    ));
+  };
+
+  const getWorkType = () => {
+    if (workTypes.length === 0) return;
+    const workTypeBit = helper.workType;
+    const res = [];
+
+    for (let i = 0; i < 7; i++) {
+      const mask = 1 << i;
+      if (workTypeBit & mask) {
+        res.push(mask);
+      }
+    }
+
+    return workTypes
+      .filter((x) => res.includes(x.careVal))
+      .map((y) => y.careName)
+      .join(', ');
   };
 
   return (
@@ -78,7 +153,7 @@ export default function Account() {
           <section className='flex items-center gap-12 '>
             <div className='relative w-24 h-24'>
               <img
-                src={profileEdit.profileImage || '/defaultProfile.png'}
+                src={helper.img || '/defaultProfile.png'}
                 alt='profile_image'
                 className='w-24 h-24 rounded-full bg-[#DCDCDC]'
               />
@@ -110,7 +185,7 @@ export default function Account() {
        profile-section__content-text 
     `}
               >
-                {profileEdit.introduction || '소개 없음'}
+                {helper.introduce || '소개 없음'}
               </span>
             </div>
           </section>
@@ -121,7 +196,7 @@ export default function Account() {
 
             <div className='profile-section__content-box justify-center'>
               <span className='profile-section__content-text'>
-                {profileEdit.careExperience || '신입'}
+                {helper.careExperience ? '경력' : '신입'}
               </span>
             </div>
           </section>
@@ -132,29 +207,8 @@ export default function Account() {
 
             <div className='profile-section__content-box'>
               <img className='w-[24px] h-[24px]' src={location_icon} alt='location_icon' />
-              <div className='flex items-center gap-1 py-1'>
-                {Object.entries(profileEdit.location).length > 0 ? (
-                  <span className='flex flex-col  gap-2'>
-                    {Object.entries(profileEdit.location).map(([city, districts]) =>
-                      Object.entries(districts).map(([district, subDistricts]) => (
-                        <div
-                          key={`${city}-${district}`}
-                          className='flex profile-section__content-text gap-4'
-                        >
-                          {city}
-                          <img
-                            src={backarrow}
-                            alt='backarrow'
-                            className='w-4 h-4 rotate-180 inline-block mx-1'
-                          />
-                          {district} ({subDistricts.join(', ')})
-                        </div>
-                      )),
-                    )}
-                  </span>
-                ) : (
-                  <span className='profile-section__content-text'>미설정</span>
-                )}
+              <div className='flex flex-col items-center gap-1 py-1'>
+                {helper.helperWorkLocation.length > 0 ? renderLocation() : <p>근무선호지역 없음</p>}
               </div>
             </div>
           </section>
@@ -166,19 +220,7 @@ export default function Account() {
               <img className='w-[24px] h-[24px] ' src={location_icon} alt='location_icon' />
 
               <div>
-                {optimizedSchedule().length > 0 ? (
-                  optimizedSchedule().map((item, index) => (
-                    <div key={index} className='flex items-center gap-4 py-1'>
-                      <span className='profile-section__content-text'>{item.days}</span>
-                      <img src={backarrow} alt='backarrow' className='w-4 h-4 rotate-180' />
-                      <span className='profile-section__content-text'>{item.time}</span>
-                    </div>
-                  ))
-                ) : (
-                  <span className='profile-section__content-text'>
-                    설정된 근무 가능 시간이 없습니다.
-                  </span>
-                )}
+                {helper.helperWorkTime.length > 0 ? renderWorkTime() : <p>근무 가능 시간 없음</p>}
               </div>
             </div>
           </section>
@@ -203,9 +245,10 @@ export default function Account() {
             <div className='profile-section__content-box'>
               <img className='w-[24px] h-[24px]' src={homecontrols} alt='homeControls_icon' />
               <span className='profile-section__content-text'>
-                {profileEdit.careTypes.workTypes.length > 0
+                {getWorkType()}
+                {/* {profileEdit.careTypes.workTypes.length > 0
                   ? profileEdit.careTypes.workTypes.map((item) => item.label).join(', ')
-                  : '설정되지 않음'}
+                  : '설정되지 않음'} */}
               </span>
             </div>
           </section>
@@ -217,10 +260,7 @@ export default function Account() {
             <div className='profile-section__content-box'>
               <img className='w-[24px] h-[24px]' src={homecontrols} alt='homeControls_icon' />
               <span className='profile-section__content-text'>
-                {Object.entries(profileEdit.selectedOptions || {})
-                  .filter(([_, value]) => value)
-                  .map(([key]) => key)
-                  .join(', ') || '설정되지 않음'}
+                {helper.certificates.map((cert) => cert.certName).join(', ')}
               </span>
             </div>
           </section>

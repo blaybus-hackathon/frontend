@@ -4,8 +4,15 @@ import {
   getMatchingInProgressList,
   getMatchingCompletedList,
   changeMatchingStatus,
-} from '@/services/center/matchingService';
+} from '@/services/center';
 import { MATCH_STATE } from '@/constants/matching';
+
+const QUERY_KEY = {
+  ROOT: ['patients'],
+  WAITING: ['patients', 'waiting'],
+  IN_PROGRESS: ['patients', 'in-progress'],
+  COMPLETED: ['patients', 'completed'],
+};
 
 /**
  *  create common query option
@@ -25,16 +32,14 @@ export const useWaitingPatients = () => {
   const queryClient = useQueryClient();
 
   return useQuery({
-    ...createQueryOptions('waiting', getMatchingWaitingList),
+    ...createQueryOptions(QUERY_KEY.WAITING, getMatchingWaitingList),
 
     // prefetch in-progress tab if waiting data exists
     onSuccess: (data) => {
-      if (data?.length > 0) {
-        setTimeout(() => {
-          queryClient.prefetchQuery({
-            ...createQueryOptions('in-progress', getMatchingInProgressList),
-          });
-        }, 100);
+      if (Array.isArray(data) && data.length > 0) {
+        queryClient.prefetchQuery(
+          createQueryOptions(QUERY_KEY.IN_PROGRESS, getMatchingInProgressList),
+        );
       }
     },
   });
@@ -44,13 +49,13 @@ export const useWaitingPatients = () => {
  * 매칭 진행중 리스트 조회
  */
 export const useInProgressPatients = () =>
-  useQuery(createQueryOptions('in-progress', getMatchingInProgressList, 1000 * 60 * 2));
+  useQuery(createQueryOptions(QUERY_KEY.IN_PROGRESS, getMatchingInProgressList, 1000 * 60 * 2));
 
 /**
  * 매칭 완료 리스트 조회
  */
 export const useCompletedPatients = () =>
-  useQuery(createQueryOptions('completed', getMatchingCompletedList, 1000 * 60 * 10));
+  useQuery(createQueryOptions(QUERY_KEY.COMPLETED, getMatchingCompletedList, 1000 * 60 * 10));
 
 /**
  * Custom mutation hook for updating match status
@@ -58,70 +63,74 @@ export const useCompletedPatients = () =>
  */
 export const useMatchStatusMutation = (options = {}) => {
   const queryClient = useQueryClient();
-  const { optimisticUpdate = false, onLocalUpdate } = options;
+  const { optimisticUpdate = true, onLocalUpdate } = options;
 
   return useMutation({
     mutationFn: ({ patientLogSeq, helperSeq, matchState }) =>
       changeMatchingStatus(patientLogSeq, helperSeq, matchState),
 
     // Optimistically update UI before server response
-    onMutate: async ({ patientLogSeq, helperSeq, matchState }) => {
+    onMutate: async (vars) => {
+      const { patientLogSeq, helperSeq, matchState } = vars;
+
       // cancel all ongoing queries to prevent conflict
-      await queryClient.cancelQueries({ queryKey: ['patients'] });
+      await queryClient.cancelQueries({ queryKey: QUERY_KEY.ROOT });
 
       // local uI update
-      if (onLocalUpdate) {
-        onLocalUpdate({ patientLogSeq, helperSeq, matchState });
-      }
+      if (onLocalUpdate) onLocalUpdate(vars);
 
       // apply optimistic update only if enabled and MATCH_REQUEST
       if (optimisticUpdate && matchState === MATCH_STATE.MATCH_REQUEST) {
-        const previousWaiting = queryClient.getQueryData(['patients', 'waiting']);
+        const prevWaiting = queryClient.getQueryData(QUERY_KEY.WAITING);
 
-        queryClient.setQueryData(['patients', 'waiting'], (oldData) => {
-          if (!oldData) return oldData;
+        queryClient.setQueryData(QUERY_KEY.WAITING, (oldData) => {
+          if (!Array.isArray(oldData)) return oldData;
 
           return oldData.map((patient) => {
-            if (patient.patientLogSeq === patientLogSeq) {
-              return {
-                ...patient,
-                requestedHelpers: [...(patient.requestedHelpers || []), helperSeq],
-              };
-            }
-            return patient;
+            if (patient.patientLogSeq === patientLogSeq) return patient;
+            const before = Array.isArray(patient.requestedHelpers) ? patient.requestedHelpers : [];
+            if (before.includes(helperSeq)) return patient;
+
+            return {
+              ...patient,
+              requestedHelpers: [...before, helperSeq],
+            };
           });
         });
 
         // return context for roll back if error occurs
-        return { previousWaiting };
+        return { prevWaiting };
       }
+
+      return {};
     },
 
     // Rollback if error occurs
-    onError: (err, _variables, context) => {
-      console.error('매칭 상태 변경 실패: ', err);
-
+    onError: (_err, _vars, context) => {
       // rollback to previous state if optimistic update failed
-      if (context?.previousWaiting) {
-        queryClient.setQueryData(['patients', 'waiting'], context.previousWaiting);
-      }
-
-      throw err;
+      if (context?.prevWaiting) queryClient.setQueryData(QUERY_KEY.WAITING, context.prevWaiting);
     },
 
-    // if mutation success, invalidate relevant queries
-    onSuccess: (data, { matchState }) => {
+    // if mutation is settled, invalidate relevant queries
+    onSettled: (_data, _error, { matchState }) => {
       switch (matchState) {
-        case MATCH_STATE.MATCH_REQUEST:
+        case MATCH_STATE.MATCH_REQUEST: {
           // refetch when user moves to other tab
           queryClient.invalidateQueries({
-            queryKey: ['patients', 'waiting'],
-            refetchType: 'none',
+            queryKey: QUERY_KEY.WAITING,
+            refetchType: 'active',
           });
+          queryClient.invalidateQueries({
+            queryKey: QUERY_KEY.IN_PROGRESS,
+            refetchType: 'inactive',
+          });
+          break;
+        }
 
+        case MATCH_STATE.MATCH_CANCEL:
           // 'in-progress' refreshed in background
           queryClient.invalidateQueries({
-            queryKey: ['patients', 'in-progress'],
+            queryKey: QUERY_KEY.IN_PROGRESS,
             refetchType: 'background',
           });
           break;
@@ -129,11 +138,11 @@ export const useMatchStatusMutation = (options = {}) => {
         case MATCH_STATE.MATCH_FIN:
           // invalidate in-progress and complted tabs immediately
           queryClient.invalidateQueries({
-            queryKey: ['patients', 'in-progress'],
+            queryKey: QUERY_KEY.IN_PROGRESS,
             refetchType: 'active',
           });
           queryClient.invalidateQueries({
-            queryKey: ['patients', 'completed'],
+            queryKey: QUERY_KEY.COMPLETED,
             refetchType: 'active',
           });
           break;
@@ -141,7 +150,7 @@ export const useMatchStatusMutation = (options = {}) => {
         default:
           // refresh in in-progress only
           queryClient.invalidateQueries({
-            queryKey: ['patients', 'in-progress'],
+            queryKey: QUERY_KEY.IN_PROGRESS,
             refetchType: 'active',
           });
       }
@@ -156,9 +165,9 @@ export const useRefetchQueries = () => {
   const queryClient = useQueryClient();
 
   return {
-    refetchWaiting: () => queryClient.refetchQueries(['patients', 'waiting']),
-    refetchInProgress: () => queryClient.refetchQueries(['patients', 'in-progress']),
-    refetchCompleted: () => queryClient.refetchQueries(['patients', 'completed']),
-    refetchAll: () => queryClient.refetchQueries(['patients']),
+    refetchWaiting: () => queryClient.refetchQueries({ queryKey: QUERY_KEY.WAITING }),
+    refetchInProgress: () => queryClient.refetchQueries({ queryKey: QUERY_KEY.IN_PROGRESS }),
+    refetchCompleted: () => queryClient.refetchQueries({ queryKey: QUERY_KEY.COMPLETED }),
+    refetchAll: () => queryClient.refetchQueries({ queryKey: QUERY_KEY.ROOT }),
   };
 };

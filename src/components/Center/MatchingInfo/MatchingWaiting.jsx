@@ -1,13 +1,16 @@
 import { memo, useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useMatchStatusMutation } from '@/hooks/center/service/useMatchList';
 import { Button } from '@/components/ui/custom/Button';
 import { formatAddress } from '@/utils/formatters/formatAddress';
 import { MATCH_STATE } from '@/constants/matching';
+import { handleApiError } from '@/utils/handleApiError';
 import InfoCard from '@/components/ui/InfoCard/InfoCard';
 import ElderProfile from '@/components/ui/InfoCard/ElderProfile';
 import HelperProfile from '@/components/ui/InfoCard/HelperProfile';
 
 export default memo(function MatchingWaiting({ data, isLoading: parentLoading }) {
+  const navigate = useNavigate();
   const fullAddress = formatAddress(data.addressFirst, data.addressSecond, data.addressThird);
   const helperList = data.initHelperInfoList || [];
   const hasHelpers = helperList.length > 0;
@@ -50,17 +53,23 @@ export default memo(function MatchingWaiting({ data, isLoading: parentLoading })
           newSet.delete(helper.helperSeq);
           return newSet;
         });
-        console.error('매칭 요청 실패: ', error);
+
+        handleApiError(
+          error,
+          {
+            7000: '데이터 조회 권한이 없습니다.',
+          },
+          '매칭 요청 중 오류가 발생했습니다.',
+          true,
+          true,
+        );
       }
     },
     [requestedHelpers, matchStatusMutation, data.patientLogSeq],
   );
 
   // check if helper has already been requested
-  const isHelperRequested = useCallback(
-    (helperSeq) => requestedHelpers.has(helperSeq),
-    [requestedHelpers],
-  );
+  const isHelperRequested = (helperSeq) => requestedHelpers.has(helperSeq);
 
   // overall loading state
   const isLoading = parentLoading || matchStatusMutation.isPending;
@@ -123,10 +132,10 @@ export default memo(function MatchingWaiting({ data, isLoading: parentLoading })
       </section>
 
       <section className='flex justify-end -mb-2 lg:-mb-4'>
-        {/* TODO: 어르신 정보 수정하기   */}
         <Button
           variant='link'
           className='w-fit text-[var(--text)] cursor-pointer font-medium text-base hover:text-[var(--main)]'
+          onClick={() => navigate('/center/recruit/detail')}
         >
           어르신 정보 수정하기
         </Button>

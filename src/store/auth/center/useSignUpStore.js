@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { omit } from '@/utils/omit';
-import { signUpCenter, uploadManagerImg } from '@/services/signUpService';
+import { signUpCenter } from '@/services/signUpService';
 
 const createCenterDataSlice = (set) => ({
   signUpForm: {

@@ -18,7 +18,7 @@ export default defineConfig({
       '/api': {
         target: 'https://dolbom-work.co.kr:8080',
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
     },
   },

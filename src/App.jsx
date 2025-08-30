@@ -83,8 +83,8 @@ function App() {
                       <Route path='matching' element={<Matching />} />
                       <Route path='matching-info' element={<MatchingInfo />} />
                       <Route path='address' element={<Address />} />
-                      <Route path='recruit/detail' element={<RecruitDetail />} />
-                      <Route path='recruit/modify' element={<ModifyRecruit />} />
+                      <Route path='recruit/detail/:patientLogSeq' element={<RecruitDetail />} />
+                      <Route path='recruit/modify/:patientLogSeq' element={<ModifyRecruit />} />
                       <Route path='care-info' element={<CaregiverInfo />} />
                       <Route path='*' element={<Navigate to='/404' replace />} />
                     </Routes>

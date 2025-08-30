@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { omit } from '@/utils/omit';
-import { signUpCenter, uploadManagerImg } from '@/services/signUpService';
+import { signUpCenter } from '@/services/signUpService';
 
 const createCenterDataSlice = (set) => ({
   signUpForm: {
@@ -77,55 +77,6 @@ const createCenterDataSlice = (set) => ({
         },
       },
     })),
-
-  setProfileOption: (option) =>
-    set((state) => ({
-      signUpForm: {
-        ...state.signUpForm,
-        profileOption: option,
-      },
-    })),
-
-  setManagerImage: (imageId) =>
-    set((state) => ({
-      signUpForm: {
-        ...state.signUpForm,
-        managerImage: imageId,
-      },
-    })),
-
-  setManagerSeq: (seq) =>
-    set((state) => ({
-      signUpForm: {
-        ...state.signUpForm,
-        managerSeq: seq,
-      },
-    })),
-
-  //  for image save
-  selectedImg: null,
-  setSelectedImg: (file) => set({ selectedImg: file }),
-
-  // state for image upload
-  isUploading: false,
-  uploadError: null,
-
-  // function for image upload
-  uploadProfileImage: async (file, managerSeq) => {
-    set({ isUploading: true, uploadError: null });
-    try {
-      const formData = new FormData();
-      formData.append('photoFile', file);
-      formData.append('managerSeq', String(managerSeq));
-
-      const res = await uploadManagerImg(formData);
-      set({ isUploading: false });
-      return res;
-    } catch (error) {
-      set({ isUploading: false, uploadError: error });
-      throw error;
-    }
-  },
 
   reset: () =>
     set({

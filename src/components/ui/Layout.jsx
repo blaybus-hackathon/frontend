@@ -27,9 +27,9 @@ export default function Layout() {
   ];
 
   // 특정 prefix로 시작하는 모든 하위 경로에서 footer 숨김
-  const hideFooterPrefixRoutes = ['/helper/detail', '/chatroom'];
+  const hideFooterPrefixRoutes = ['/helper/detail', '/chatroom', '/center/recruit/modify'];
   const hidePaddingRoutes = ['/center/matching-info', '/helper'];
-  const hidePaddingPrefixRoutes = ['/helper/detail'];
+  const hidePaddingPrefixRoutes = ['/helper/detail', '/center/recruit/detail'];
 
   const isHeaderVisible = !hideHeaderRoutes.some((route) => location.pathname.startsWith(route));
   const isFooterVisible =

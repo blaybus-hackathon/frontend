@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/custom/Button';
 import { formatAddress } from '@/utils/formatters/formatAddress';
 import InfoCard from '@/components/ui/InfoCard/InfoCard';
@@ -5,6 +6,7 @@ import ElderProfile from '@/components/ui/InfoCard/ElderProfile';
 import HelperProfile from '@/components/ui/InfoCard/HelperProfile';
 
 export default (function MatchingCompleted({ data }) {
+  const navigate = useNavigate();
   const fullAddress = formatAddress(data.addressFirst, data.addressSecond, data.addressThird);
   const helperList = data.matchFinHelperInfoList || [];
   const hasHelpers = helperList.length > 0;
@@ -52,10 +54,10 @@ export default (function MatchingCompleted({ data }) {
       </section>
 
       <section className='flex justify-end -mb-2 lg:-mb-4'>
-        {/* TODO: 어르신 정보 수정하기   */}
         <Button
           variant='link'
           className='w-fit text-[var(--text)] cursor-pointer font-medium text-base hover:text-[var(--main)]'
+          onClick={() => navigate('/center/recruit/detail')}
         >
           어르신 정보 수정하기
         </Button>

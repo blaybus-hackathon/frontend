@@ -1,191 +1,129 @@
-import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/custom/Button';
+import { formatBirthToAge } from '@/utils/formatters/formatBirthToAge';
+import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
+import { useRecruitStore } from '@/store/center/useRecruitStore';
+
+import Spinner from '@/components/loading/Spinner';
 import defaultProfile from '@/assets/images/elder-basic-profile.png';
 
-import { getCareItems, getRecruitDetail } from '@/services/center';
+const BasicInfoRow = ({ label, value, className = '' }) => (
+  <div className='flex'>
+    <p className={`${className} text-start font-semibold text-lg lg:text-xl break-keep`}>{label}</p>
+    <p className='text-lg lg:text-xl font-normal pl-4 break-keep whitespace-pre-wrap text-start'>
+      {value}
+    </p>
+  </div>
+);
 
-import recruitStore from '@/store/jbStore/recruitStore';
+const InfoBox = ({ label, value }) => (
+  <div className='w-full grid grid-cols-[1fr_3fr] gap-4 lg:gap-6'>
+    <p className='flex flex-1 text-start font-semibold whitespace-nowrap text-xl lg:text-2xl h-full items-center '>
+      {label}
+    </p>
+    <p className='flex text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5 break-keep whitespace-pre-wrap py-3'>
+      {value}
+    </p>
+  </div>
+);
 
 export default function PatientInfo() {
   const WAGESTATE = ['시급', '일급', '주급'];
   const navigate = useNavigate();
+  const { patientLogSeq } = useParams();
+  const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
 
-  const { recruitInfo, setRecruit } = recruitStore();
+  const { recruitData, idToName, isLoading, fetchRecruitDetail } = useRecruitStore();
 
-  const [workType, setWorkType] = useState([]);
-  const [meal, setMeal] = useState([]);
-  const [toilet, setToilet] = useState([]);
-  const [mobile, setMobile] = useState([]);
-  const [daily, setDaily] = useState([]);
-  const [dementia, setDementia] = useState([]);
+  const getMainInfoData = () => [
+    { label: WAGESTATE[recruitData.wageState - 1], value: `${recruitData.wage}원` },
+    { label: '근무종류', value: idToName.workTypeList.join('\n') },
+    { label: '주소지', value: recruitData.addressLabel },
+    { label: '장기요양등급', value: idToName.careLevelList.join('\n') },
+    { label: '몸무게', value: `${recruitData.weight}kg` },
+    { label: '치매증상', value: idToName.dementiaSymptomList.join('\n') },
+    { label: '동거인여부', value: idToName.inmateStateList.join('\n') },
+  ];
+
+  const getBoxInfoData = () => [
+    { label: '보유질병', value: recruitData.diseases },
+    { label: '식사 보조', value: idToName.serviceMealList.join('\n') },
+    { label: '배변 보조', value: idToName.serviceToiletList.join('\n') },
+    { label: '이동 보조', value: idToName.serviceMobilityList.join('\n') },
+    { label: '일상생활', value: idToName.serviceDailyList.join('\n') },
+  ];
 
   useEffect(() => {
-    //temporary code
-    getRecruitDetail(1)
-      .then((res) => {
-        //성별 변경
-        const genderStr = res.careChoice.genderList[0] - 67 === 0 ? '남성' : '여성';
-        //나이이 변경
-        const age = new Date().getFullYear() - res.birthDate.slice(0, 4) + 1;
-        setRecruit({ ...res, age, genderStr });
-      })
-      .catch((e) => console.error(e));
-  }, []);
+    setHeaderProps({
+      hasBorder: false,
+    });
+  }, [setHeaderProps]);
 
   useEffect(() => {
-    getCareItems([
-      'DEMENTIA_SYMPTOM',
-      'WORK_TYPE',
-      'SERVICE_MEAL',
-      'SERVICE_TOILET',
-      'SERVICE_MOBILITY',
-      'SERVICE_DAILY',
-    ])
-      .then((res) => {
-        //치매 증상 정보 가져오기
-        setDementia(
-          res.dementiaSymptomList
-            .filter((x) => {
-              return recruitInfo.careChoice.dementiaSymptomList.includes(x.id);
-            })
-            .map((d) => d.careName),
-        );
-        //근무형태 가져오기
-        setWorkType(
-          res.workTypeList
-            .filter((x) => recruitInfo.careChoice.workTypeList.includes(x.id))
-            .map((w) => w.careName),
-        );
-        //식사 보조 정보 가져오기
-        setMeal(
-          res.serviceMealList
-            .filter((x) => recruitInfo.careChoice.serviceMealList.includes(x.id))
-            .map((m) => m.careName),
-        );
-        //배변 보조 정보 가져오기
-        setToilet(
-          res.serviceToiletList
-            .filter((x) => recruitInfo.careChoice.serviceToiletList.includes(x.id))
-            .map((t) => t.careName),
-        );
-        //이동 보조 정보 가져오기
-        setMobile(
-          res.serviceMobilityList
-            .filter((x) => recruitInfo.careChoice.serviceMobilityList.includes(x.id))
-            .map((m) => m.careName),
-        );
-        //일상생활 정보 가져오기
-        setDaily(
-          res.serviceDailyList
-            .filter((x) => recruitInfo.careChoice.serviceDailyList.includes(x.id))
-            .map((d) => d.careName),
-        );
-      })
-      .catch((e) => console.error(e));
-  }, [recruitInfo]);
+    if (patientLogSeq) {
+      fetchRecruitDetail(patientLogSeq);
+    }
+  }, [patientLogSeq, fetchRecruitDetail]);
 
   const gotoModify = () => {
     window.scrollTo(0, 0);
-    navigate('/center/recruit/modify');
+    navigate(`/center/recruit/modify/${patientLogSeq}`);
   };
+
+  // 로딩 상태 처리
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  // 데이터가 없는 경우
+  if (!recruitData.name) {
+    return (
+      <div className='flex flex-col items-center justify-center min-h-[400px]'>
+        <p className='text-gray-600'>공고 정보를 찾을 수 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <div>
-        <p className='mt-10 font-semibold max-[412px]:text-base text-xl mb-10'>{`${recruitInfo.name} 어르신 - 요양보호사 구인합니다.`}</p>
-        <div className='border-2 border-[var(--outline)] flex items-start px-9 py-4 rounded-2xl mb-7'>
+    <>
+      <div className='bg-[#f6f6f6] h-5 w-full' />
+      <section className='w-[88%] mx-auto'>
+        <p className='mt-8 lg:mt-10 font-semibold max-[412px]:text-lg text-xl mb-10 text-start'>{`${recruitData.name} 어르신 - 요양보호사 구인합니다.`}</p>
+        <div className='border-2 border-[var(--outline)] flex items-start px-5 lg:px-9 py-4 rounded-2xl mb-7'>
           <img
-            src={recruitInfo.imgAddress ? recruitInfo.imgAddress : defaultProfile}
+            src={recruitData.imgAddress ? recruitData.imgAddress : defaultProfile}
             className='bg-[var(--button-inactive)] size-19 rounded-[50%] mr-8'
           />
           <div className='flex flex-col items-start gap-1 py-2'>
-            <p className='font-semibold text-xl'>{recruitInfo.name} 어르신</p>
-            <p className='font-normal'>{`${recruitInfo.genderStr} / ${recruitInfo.age}세`}</p>
+            <p className='font-semibold text-lg lg:text-xl text-start whitespace-pre'>
+              {recruitData.name} 어르신
+            </p>
+            <p className='font-normal text-lg lg:text-xl text-start'>{`${recruitData.gender === 1 ? '남성' : '여성'} / ${formatBirthToAge(recruitData.birthDate)}세`}</p>
           </div>
         </div>
-      </div>
 
-      <div className='pt-5 pb-13 font-bold flex flex-col gap-6 items-start text-lg'>
-        <p>
-          {WAGESTATE[recruitInfo.wageState - 1]}
-          <span className='font-normal pl-4'> {recruitInfo.wage}원</span>
-        </p>
-        <p>
-          근무종류
-          <span className='font-normal pl-4'> {workType.join(', ')}</span>
-        </p>
-        <p>
-          주소지
-          <span className='font-normal pl-4'> {recruitInfo.address}</span>
-        </p>
-        <p>
-          장기요양등급
-          <span className='font-normal pl-4'> {recruitInfo.careLevelStr}</span>
-        </p>
-        <p>
-          몸무게
-          <span className='font-normal pl-4'> {recruitInfo.weight}kg</span>
-        </p>
-        <div className='flex gap-2'>
-          <p className='text-left'>치매증상</p>
-          <p className='text-left flex-1 font-normal pl-4'>{dementia.join(', ')}</p>
+        <div className='pt-3 lg:pt-5 pb-7 lg:pb-10 flex flex-col gap-6 items-start text-lg lg:text-xl'>
+          {getMainInfoData().map((info, index) => (
+            <BasicInfoRow key={index} label={info.label} value={info.value} />
+          ))}
         </div>
-        <div className='flex gap-2'>
-          <p className='text-left'>동거인여부</p>
-          <p className='text-left flex-1 font-normal pl-4'>{recruitInfo.inmateStateStr}</p>
-        </div>
-      </div>
+      </section>
 
-      <div className='px-5 pt-8 flex flex-col gap-7.5 items-start mb-3'>
-        <div className='w-full flex h-16'>
-          <p className='flex flex-1 text-start font-semibold text-xl h-full items-center'>
-            보유질병
-          </p>
-          <p className='flex flex-1 text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5'>
-            {recruitInfo.diseases}
-          </p>
-        </div>
-        <div className='w-full flex h-16'>
-          <p className='flex flex-1 text-start font-semibold text-xl h-full items-center'>
-            식사 보조
-          </p>
-          <p className='flex flex-1 text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5'>
-            {meal}
-          </p>
-        </div>
-        <div className='w-full flex h-16'>
-          <p className='flex flex-1 text-start font-semibold text-xl h-full items-center'>
-            배변 보조
-          </p>
-          <p className='flex flex-1 text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5'>
-            {toilet.join(', ')}
-          </p>
-        </div>
-        <div className='w-full flex h-16'>
-          <p className='flex flex-1 text-start font-semibold text-xl h-full items-center'>
-            이동 보조
-          </p>
-          <p className='flex flex-1 text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5'>
-            {mobile.join(', ')}
-          </p>
-        </div>
-        <div className='w-full flex h-16'>
-          <p className='flex flex-1 text-start font-semibold text-xl h-full items-center'>
-            일상생활
-          </p>
-          <p className='flex flex-1 text-start bg-[var(--button-inactive)] h-full items-center rounded-md text-xl px-5'>
-            {daily.join(', ')}
-          </p>
-        </div>
+      <div className='bg-[#f6f6f6] h-8 w-full' />
 
-        <Button
-          className='h-16 w-full bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 font-bold'
-          onClick={gotoModify}
-        >
-          수정하기
-        </Button>
-      </div>
-    </div>
+      <section className='w-[83%] mx-auto pt-8 flex flex-col gap-7.5 items-start'>
+        {getBoxInfoData().map((info, index) => (
+          <InfoBox key={index} label={info.label} value={info.value} />
+        ))}
+      </section>
+
+      <Button
+        className='h-16 w-[88%] mx-auto bg-[var(--company-primary)] text-xl hover:bg-[var(--company-primary)]/90 font-bold my-6 lg:my-8'
+        onClick={gotoModify}
+      >
+        수정하기
+      </Button>
+    </>
   );
 }

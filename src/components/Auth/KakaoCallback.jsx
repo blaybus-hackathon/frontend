@@ -15,8 +15,11 @@ const ALERT_MESSAGES = {
 };
 
 const KakaoCallback = () => {
+  console.log('[KAKAO CALLBACK] 컴포넌트 시작됨');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  console.log('[KAKAO CALLBACK] 현재 URL:', window.location.href);
+  console.log('[KAKAO CALLBACK] 검색 파라미터:', searchParams.toString());
 
   // URL 파라미터 추출
   const code = searchParams.get('code');

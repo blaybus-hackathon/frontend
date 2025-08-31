@@ -2,7 +2,8 @@ import axios from 'axios';
 import { handleApiError } from '@/utils/handleApiError';
 import useAuthStore from '@/store/useAuthStore';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '' : 'http://localhost:5173');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -49,7 +50,7 @@ export const request = async (method, endpoint, data = {}) => {
   try {
     const response = await api({
       method,
-      url: `/api${endpoint}`,
+      url: `${endpoint}`,
       ...(method === 'GET' ? { params: data } : { data }),
     });
 
@@ -68,7 +69,7 @@ export const requestMultipart = async (method, endpoint, formData) => {
   try {
     const response = await api({
       method,
-      url: `/api${endpoint}`,
+      url: `${endpoint}`,
       data: formData,
       headers: {
         ...api.defaults.headers.common,

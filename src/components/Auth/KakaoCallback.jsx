@@ -42,15 +42,29 @@ const KakaoCallback = () => {
 
   const handleKakaoLogin = async () => {
     try {
+      console.log('[KAKAO CALLBACK] 카카오 로그인 처리 시작:', { code, roleType });
       setLoadingMessage('서버와 통신 중입니다...');
 
       // login api 호출
       const response = await kakaoApi.login(code, roleType);
+      console.log('[KAKAO CALLBACK] 서버 응답:', response);
+
       const { caseType, email, nickName, roleType: resRole } = response || {};
 
       // 필수 응답 검증
-      if (!caseType || !email) throw new Error('서버 응답이 올바르지 않습니다.');
+      if (!caseType || !email) {
+        console.error('[KAKAO CALLBACK] 서버 응답 검증 실패:', response);
+        throw new Error('서버 응답이 올바르지 않습니다.');
+      }
 
+      console.log(
+        '[KAKAO CALLBACK] 케이스 타입:',
+        caseType,
+        '이메일:',
+        email,
+        '응답 역할:',
+        resRole,
+      );
       setLoadingMessage('로그인 정보를 처리하고 있습니다...');
 
       const message = ALERT_MESSAGES[caseType] || ALERT_MESSAGES.DEFAULT;
@@ -89,6 +103,12 @@ const KakaoCallback = () => {
         throw new Error('알 수 없는 인증 케이스입니다.');
       }
     } catch (e) {
+      console.error('[KAKAO CALLBACK] 에러 발생:', {
+        message: e.message,
+        status: e.response?.status,
+        data: e.response?.data,
+        stack: e.stack,
+      });
       setError(e.message);
       setIsLoading(false);
       redirectToHome();
@@ -120,6 +140,7 @@ const KakaoCallback = () => {
     }
 
     handleKakaoLogin();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) {

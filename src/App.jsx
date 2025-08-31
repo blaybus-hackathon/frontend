@@ -16,7 +16,7 @@ const CenterSignUp = lazy(() => import('./pages/center/SignUp'));
 const HelperSignUp = lazy(() => import('./pages/helper/SignUp'));
 const FindAccount = lazy(() => import('./pages/FindAccount'));
 const SearchCenter = lazy(() => import('./pages/SearchCenter'));
-const KakaoCallback = lazy(() => import('./components/Auth/KakaoCallback'));
+// const KakaoCallback = lazy(() => import('./components/Auth/KakaoCallback'));
 const Account = lazy(() => import('./pages/helper/Account/Account'));
 const AccountEdit = lazy(() => import('./pages/helper/AccountEdit/AccountEdit'));
 const HelperLocation = lazy(() => import('./pages/helper/AccountEdit/navigate/HelperLocation'));
@@ -55,7 +55,7 @@ function App() {
                 </RequireAuth>
               }
             />
-            <Route path='login/oauth2/code/kakao' element={<KakaoCallback />} />
+            {/* <Route path='login/oauth2/code/kakao' element={<KakaoCallback />} /> */}
             <Route path='error' element={<Error />} />
             <Route path='404' element={<NotFound />} />
             <Route path='*' element={<NotFound />} />

@@ -37,12 +37,12 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
   }
 
   function handleKakaoLogin() {
-    const serverRole = ROLE_MAP.toServer[type];
-    const redirectUri = `${KAKAO_AUTH_URL}&state=${serverRole}`;
-
-    window.location.href = redirectUri;
+    const serverRole = ROLE_MAP.toServer[type]; // MANAGER | MEMBER
+    const redirectUri = encodeURIComponent(
+      "https://dolbom-work.co.kr/login/oauth2/code/kakao"
+    );
+    window.location.href = `${KAKAO_AUTH_URL}&redirect_uri=${redirectUri}&state=${serverRole}`;
   }
-
   function handleFindAccount(e) {
     e.preventDefault();
     navigate("/find-account");

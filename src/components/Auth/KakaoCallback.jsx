@@ -4,6 +4,7 @@ import { kakaoApi } from '@/services/kakaoService';
 import useAuthStore from '@/store/useAuthStore';
 import { useSignUpStore as useCenterSignUpStore } from '@/store/auth/center/useSignUpStore';
 import { useSignUpStore as useHelperSignUpStore } from '@/store/auth/helper/useSignUpStore';
+import { navigateToHome } from '@/routes/homeNavigation';
 
 const ALERT_MESSAGES = {
   CASE1: '카카오 계정이 연동되었습니다. 자동 로그인됩니다.',
@@ -69,7 +70,7 @@ const KakaoCallback = () => {
         // 기존 회원 로그인 처리
         await login({ email, userAuth: resRole, nickname: nickName });
         alert(message);
-        navigate('/', { replace: true });
+        navigateToHome(navigate);
       } else if (['CASE2', 'CASE3'].includes(caseType)) {
         // 회원가입이 필요한 경우 처리
         const kakaoUser = { email, nickName, userAuth: resRole };

@@ -5,7 +5,7 @@ export const kakaoApi = {
     try {
       console.log('[KAKAO API] 요청 시작:', { code, roleType });
 
-      const response = await request('POST', '/api/oauth/kakao-signup', {
+      const response = await request('POST', '/oauth/kakao-signup', {
         code,
         roleType,
       });

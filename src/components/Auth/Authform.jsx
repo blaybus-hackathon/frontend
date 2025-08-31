@@ -15,7 +15,7 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
 
   // const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
   // const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
-  const KAKAO_AUTH_URL = import.meta.env.KAKAO_AUTH_URL;
+  const KAKAO_AUTH_URL = import.meta.env.VITE_KAKAO_AUTH_URL;
 
   function handleSubmit(e) {
     e.preventDefault();

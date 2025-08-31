@@ -47,16 +47,16 @@ const useAuthStore = create(
           helperSeq: serverRole === SERVER_ROLE.MEMBER ? helperSeq : undefined,
         };
 
-        // valid seq
-        if (serverRole === SERVER_ROLE.MANAGER && !cmSeq) {
-          console.error('cmSeq is required for MANAGER role');
-          return;
-        }
+        // // valid seq
+        // if (serverRole === SERVER_ROLE.MANAGER && !cmSeq) {
+        //   console.error('cmSeq is required for MANAGER role');
+        //   return;
+        // }
 
-        if (serverRole === SERVER_ROLE.MEMBER && !helperSeq) {
-          console.error('helperSeq is required for MEMBER role');
-          return;
-        }
+        // if (serverRole === SERVER_ROLE.MEMBER && !helperSeq) {
+        //   console.error('helperSeq is required for MEMBER role');
+        //   return;
+        // }
 
         set({ user: mappedUser });
       },

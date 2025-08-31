@@ -13,7 +13,7 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
   const navigate = useNavigate();
   const [alertMessage, setAlertMessage] = useState('');
 
-  const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
+  // const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
   // const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=bf075c0ef5f97b46c4f60fe71e1efbb4&redirect_uri=https://dolbom-work.co.kr/login/oauth2/code/kakao&response_type=code`;
 
@@ -37,12 +37,10 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
   }
 
   function handleKakaoLogin() {
-    const serverRole = ROLE_MAP.toServer[type];
-    const redirectUri = `${KAKAO_AUTH_URL}&state=${serverRole}`;
-
-    window.location.href = redirectUri;
+    const serverRole = ROLE_MAP.toServer[type]; // MANAGER | MEMBER
+    const redirectUri = encodeURIComponent('https://dolbom-work.co.kr/login/oauth2/code/kakao');
+    window.location.href = `${KAKAO_AUTH_URL}&redirect_uri=${redirectUri}&state=${serverRole}`;
   }
-
   function handleFindAccount(e) {
     e.preventDefault();
     navigate('/find-account');

@@ -40,6 +40,9 @@ const ChatRoomsPage = lazy(() => import('./pages/center/ChatRoomsPage'));
 const PrivateChatRoom = lazy(() => import('./pages/center/PrivateChatRoom'));
 
 function App() {
+  console.log('[APP] 현재 URL:', window.location.href);
+  console.log('[APP] pathname:', window.location.pathname);
+
   return (
     <Router>
       <ErrorBoundary>
@@ -55,7 +58,15 @@ function App() {
                 </RequireAuth>
               }
             />
-            <Route path='login/oauth2/code/kakao' element={<KakaoCallback />} />
+            <Route
+              path='login/oauth2/code/kakao'
+              element={
+                <div>
+                  {console.log('[ROUTER] 카카오 콜백 라우트 매칭됨')}
+                  <KakaoCallback />
+                </div>
+              }
+            />
             <Route path='error' element={<Error />} />
             <Route path='404' element={<NotFound />} />
             <Route path='*' element={<NotFound />} />

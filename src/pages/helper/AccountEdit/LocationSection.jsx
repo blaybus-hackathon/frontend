@@ -17,14 +17,14 @@ function LocationSection({ selectedDistricts }) {
 
       <div className='profile-section__content-box'>
         <img className='w-[24px] h-[24px]' src={location_icon} alt='location_icon' />
-        <div className='flex items-center gap-1 py-1'>
+        <div className='flex items-center gap-1 py-1 w-full'>
           {Object.entries(selectedDistricts).length > 0 ? (
-            <span className='flex flex-col gap-3'>
+            <span className='flex flex-col gap-3 w-full'>
               {Object.entries(selectedDistricts).map(([city, districts]) =>
                 Object.entries(districts).map(([district, subDistricts]) => (
                   <div
                     key={`${city}-${district}`}
-                    className='flex gap-1 profile-section__content-text'
+                    className='flex gap-1 profile-section__content-text w-full items-center'
                   >
                     <span className='flex-1'>{city.length > 4 ? city.slice(0, 2) : city}</span>
                     <img

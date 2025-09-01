@@ -1,12 +1,13 @@
 import { useRef } from 'react';
-import useProfileStore from '@/store/useProfileStore';
+import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
 const IntroductionInput = () => {
   const INTRODUCTIONMAX = 75; // 소개 최대 글자 수
-  const { profileEdit, updateProfileField } = useProfileStore();
+  const { helper, setPart } = useHelperAccountStore();
   const textareaRef = useRef(null);
 
   const handleInput = (e) => {
-    updateProfileField('introduction', e.target.value);
+    // updateProfileField('introduction', e.target.value);
+    setPart({ introduce: e.target.value });
 
     const el = textareaRef.current;
     if (el) {
@@ -25,7 +26,7 @@ const IntroductionInput = () => {
       </p>
       <textarea
         ref={textareaRef}
-        value={profileEdit.introduction}
+        value={helper.introduce}
         onInput={handleInput}
         placeholder='예) 한 사람, 한 사람의 필요에 맞춰 따뜻하고 세심한 돌봄을 제공하는 요양사입니다.'
         className='

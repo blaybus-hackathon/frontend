@@ -1,14 +1,12 @@
-import useProfileStore from '@/store/useProfileStore';
 import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
 
 function BaseSection() {
-  const { profileEdit, updateProfileField } = useProfileStore();
-  const { helper } = useHelperAccountStore();
+  const { helper, setPart } = useHelperAccountStore();
   return (
     <section className='flex items-center gap-12 '>
       <div className='relative w-24 h-24'>
         <img
-          src={profileEdit?.profileImage || '/defaultProfile.png'} // Zustand 상태 사용
+          src={helper?.img || '/defaultProfile.png'} // Zustand 상태 사용
           alt='profile_image'
           className='w-24 h-24 rounded-full bg-[#DCDCDC]'
         />
@@ -21,7 +19,7 @@ function BaseSection() {
             const file = e.target.files?.[0];
             if (file) {
               const imageUrl = URL.createObjectURL(file);
-              updateProfileField('profileImage', imageUrl);
+              setPart({ img: imageUrl });
             }
           }}
         />
@@ -41,10 +39,10 @@ function BaseSection() {
       </div>
       <div className='flex flex-col gap-5 items-start'>
         <span className='text-[#191919] text-[23px] font-bold leading-none h-auto '>
-          {helper.name || '홍길동'}
+          {helper.name}
         </span>
         <span className='text-[#191919] font-pretendard text-[20px] font-medium leading-none '>
-          {helper.addressDetail || '서울특별시 광진구'} 거주
+          {helper.addressDetail} 거주
         </span>
       </div>
     </section>

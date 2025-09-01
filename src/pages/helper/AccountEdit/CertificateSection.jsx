@@ -5,20 +5,19 @@ import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
 
 const CertificationSection = () => {
   const { profileEdit, updateProfileField } = useProfileStore();
-  const { helper } = useHelperAccountStore();
+  const { helper, addCertificate, deleteCertificate } = useHelperAccountStore();
   const certificates = ['요양보호사', '간병사', '병원동행매니저', '산후관리사'];
 
   const handleRadioChange = (certificate, isChecked) => {
-    updateProfileField('selectedOptions', {
-      ...profileEdit.selectedOptions,
-      [certificate]: isChecked,
-    });
-    // 체크가 해제되면 해당 자격증 정보 입력 필드도 초기화 (선택 사항)
-    if (!isChecked && profileEdit.inputs[certificate]) {
-      updateProfileField('inputs', {
-        ...profileEdit.inputs,
-        [certificate]: '',
+    if (isChecked) {
+      addCertificate({
+        certName: certificate,
+        certNum: '',
+        certDateIssue: null,
+        certSerialNum: null,
       });
+    } else {
+      deleteCertificate(certificate);
     }
   };
 
@@ -38,7 +37,15 @@ const CertificationSection = () => {
 
       <Radio cols={1} multiple className='gap-4'>
         {certificates.map((certificate) => {
-          const isChecked = helper.certificates.includes(certificate);
+          let certNum = '';
+          const isChecked = helper.certificates.some(
+            (item) => item.certName.split(' ')[0] === certificate,
+          );
+          if (isChecked) {
+            certNum = helper.certificates.find(
+              (x) => x.certName.split(' ')[0] === certificate,
+            ).certNum;
+          }
           return (
             <div key={certificate} className='flex flex-col gap-2'>
               <RadioItem
@@ -52,7 +59,7 @@ const CertificationSection = () => {
                 <Input
                   type='text'
                   name={certificate}
-                  value={profileEdit.inputs[certificate] || ''}
+                  value={certNum}
                   onChange={handleInputChange} // event 객체 전달
                   placeholder={`${certificate} 자격증 정보를 입력하세요`}
                   className=''

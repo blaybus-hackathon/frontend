@@ -23,9 +23,6 @@ export default function SignUpButton() {
   const { setIsFirstCheck } = useSignUpStore();
 
   const handleNext = async () => {
-    goNextStep();
-    return;
-
     setIsFirstCheck(false);
     if (currentStep === 2) {
       // 만약 선택된 자격증이 있다면, 그 항목 하위의 모든 필드가 입력되었는지 체크
@@ -72,8 +69,7 @@ export default function SignUpButton() {
 
   return (
     <div className='flex flex-col items-center gap-4'>
-      {/* <NextButton disabled={!validateCurrentStep()} className='mb-[2rem]' onClick={handleNext} /> */}
-      <NextButton className='mb-[2rem]' onClick={handleNext} />
+      <NextButton disabled={!validateCurrentStep()} className='mb-[2rem]' onClick={handleNext} />
     </div>
   );
 }

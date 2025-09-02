@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { HELPER_SIGNUP_STEPS } from '@/constants/registrationSteps';
 
 const initialState = {
-  currentIndex: 0,
+  currentIndex: 1,
   totalSteps: HELPER_SIGNUP_STEPS.length,
   isCompleted: false,
 };

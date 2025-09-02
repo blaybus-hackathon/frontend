@@ -65,8 +65,12 @@ export default function HelperInfo() {
 
       <FormField label='성별' required className='mb-5'>
         <Radio cols={2} onValueChange={(value) => setHelperInfoField('gender', value)}>
-          <RadioItem value={false}>남성</RadioItem>
-          <RadioItem value={true}>여성</RadioItem>
+          <RadioItem value={false} checked={signUpForm.helperInfo.gender === false}>
+            남성
+          </RadioItem>
+          <RadioItem value={true} checked={signUpForm.helperInfo.gender === true}>
+            여성
+          </RadioItem>
         </Radio>
         {!isFirstCheck && !gender && (
           <p className='text-start text-sm text-[var(--required-red)] font-medium'>
@@ -117,8 +121,12 @@ export default function HelperInfo() {
 
       <FormField label='차량소유여부' required className='mb-5'>
         <Radio cols={2} onValueChange={(value) => setHelperInfoField('carOwnYn', value)}>
-          <RadioItem value={true}>예</RadioItem>
-          <RadioItem value={false}>아니오</RadioItem>
+          <RadioItem value={true} checked={signUpForm.helperInfo.carOwnYn === true}>
+            예
+          </RadioItem>
+          <RadioItem value={false} checked={signUpForm.helperInfo.carOwnYn === false}>
+            아니오
+          </RadioItem>
         </Radio>
         {!isFirstCheck && !carOwnYn && (
           <p className='text-start text-sm text-[var(--required-red)] font-medium'>
@@ -129,8 +137,12 @@ export default function HelperInfo() {
 
       <FormField label='치매교육 이수 여부' required className='mb-5'>
         <Radio cols={2} onValueChange={(value) => setHelperInfoField('eduYn', value)}>
-          <RadioItem value={true}>예</RadioItem>
-          <RadioItem value={false}>아니오</RadioItem>
+          <RadioItem value={true} checked={signUpForm.helperInfo.eduYn === true}>
+            예
+          </RadioItem>
+          <RadioItem value={false} checked={signUpForm.helperInfo.eduYn === false}>
+            아니오
+          </RadioItem>
         </Radio>
         {!isFirstCheck && !eduYn && (
           <p className='text-start text-sm text-[var(--required-red)] font-medium'>

@@ -24,7 +24,7 @@ const Radio = ({ className, children, onValueChange, cols, multiple = false, ...
       {...props}
     >
       {children.map((child, idx) => {
-        let value = child.props.value || child.props.children;
+        let value = child.props.value ?? child.props.children;
 
         return child
           ? React.cloneElement(child, {
@@ -32,7 +32,7 @@ const Radio = ({ className, children, onValueChange, cols, multiple = false, ...
               onClick: () => {
                 handleChecked(value);
               },
-              checked: multiple ? checkedItems.includes(value) : checkedItems === value,
+              // checked: multiple ? checkedItems.includes(value) : checkedItems === value,
             })
           : null;
       })}
@@ -41,7 +41,7 @@ const Radio = ({ className, children, onValueChange, cols, multiple = false, ...
 };
 
 const RadioItem = ({ className, children, value, checked, ...props }) => {
-  const radioValue = value || children;
+  const radioValue = value ?? children;
   return (
     <button type='button' role='radio' value={radioValue} {...props}>
       <div

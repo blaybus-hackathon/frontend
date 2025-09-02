@@ -14,6 +14,7 @@ const COMPONENTS = [EmailAuth, HelperInfo, LicenseInfo, SignUpComplete];
 
 function CurrentStepComponent({ formOptions }) {
   const currentIndex = useSignUpStepStore((state) => state.currentIndex);
+  // const currentIndex = 1;
   const StepComponent = COMPONENTS[currentIndex];
 
   return <StepComponent formOptions={formOptions} />;

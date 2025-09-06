@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { omit } from '@/utils/omit';
 import { signUpHelper, uploadHelperImg } from '@/services/signUpService';
+import { devtools } from 'zustand/middleware';
 
 // 선택 해제 시 key 삭제
 function removeLicenseField(licenseInfo, key) {
@@ -61,6 +62,7 @@ const createHelperDataSlice = (set) => ({
     kakaoUser: null,
   },
   isFirstCheck: true,
+  isEmailFirstCheck: true,
 
   setEmailAuth: (data) =>
     set((state) => ({
@@ -138,6 +140,8 @@ const createHelperDataSlice = (set) => ({
     })),
 
   setIsFirstCheck: (newBool) => set({ isFirstCheck: newBool }),
+  setIsEmailFirstCheck: (newBool) => set({ isEmailFirstCheck: newBool }),
+
   reset: () =>
     set({
       signUpForm: {
@@ -258,9 +262,11 @@ const createHelperSubmissionSlice = (set, get) => ({
   },
 });
 
-export const useSignUpStore = create((set, get) => ({
-  ...createHelperDataSlice(set),
-  ...createHelperSubmissionSlice(set, get),
-}));
+export const useSignUpStore = create(
+  devtools((set, get) => ({
+    ...createHelperDataSlice(set),
+    ...createHelperSubmissionSlice(set, get),
+  })),
+);
 
 export default useSignUpStore;

@@ -6,7 +6,7 @@ export default function HelperAddress() {
 
   return (
     <AddressRegister
-      backPath='helper/signup'
+      backPath='/helper/signup'
       title='나의 주소지를 등록해 주세요!'
       description='요양보호사 등록을 위해 주소지를 등록해 주세요.'
       onComplete={({ addressLabel }) => {

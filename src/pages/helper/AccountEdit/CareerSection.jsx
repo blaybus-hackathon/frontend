@@ -17,10 +17,18 @@ const CareExperienceSelector = () => {
         className='flex items-center gap-8'
         value={helper.careExperience} // Zustand에서 직접 가져옴
       >
-        <RadioItem className='hover:cursor-pointer' value={false}>
+        <RadioItem
+          className='hover:cursor-pointer'
+          value={false}
+          checked={helper.careExperience === false}
+        >
           신입
         </RadioItem>
-        <RadioItem className='hover:cursor-pointer' value={true}>
+        <RadioItem
+          className='hover:cursor-pointer'
+          value={true}
+          checked={helper.careExperience === true}
+        >
           경력
         </RadioItem>
       </Radio>

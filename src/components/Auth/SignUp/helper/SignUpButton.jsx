@@ -20,10 +20,15 @@ export default function SignUpButton() {
 
   const signUpForm = useSignUpStore((state) => state.signUpForm);
   const submitSignUp = useSignUpStore((state) => state.submitHelper);
-  const { setIsFirstCheck } = useSignUpStore();
+  const setIsFirstCheck = useSignUpStore((state) => state.setIsFirstCheck);
+  const setIsEmailFirstCheck = useSignUpStore((state) => state.setIsEmailFirstCheck);
+  // const { setIsFirstCheck, setIsEmailFirstCheck } = useSignUpStore();
 
   const handleNext = async () => {
-    setIsFirstCheck(false);
+    if (currentStep === 0) {
+      setIsEmailFirstCheck(false);
+    } else if (currentStep === 1) setIsFirstCheck(false);
+
     if (currentStep === 2) {
       // 만약 선택된 자격증이 있다면, 그 항목 하위의 모든 필드가 입력되었는지 체크
       const incomplete = Object.entries(signUpForm.licenseInfo).find(([key, certData]) => {

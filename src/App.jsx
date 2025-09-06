@@ -82,6 +82,8 @@ function App() {
               <Route path='center/signup' element={<CenterSignUp />} />
               <Route path='helper/signup' element={<HelperSignUp />} />
 
+              <Route path='helper/address' element={<HelperAddress />} />
+
               {/* Center */}
               <Route
                 path='center/*'
@@ -124,7 +126,6 @@ function App() {
                       <Route path='account/pay' element={<AccountPay />} />
                       <Route path='account/care-type' element={<AccountCareType />} />
                       <Route path='location' element={<HelperLocation />} />
-                      <Route path='address' element={<HelperAddress />} />
                       <Route path='*' element={<Navigate to='/404' replace />} />
                     </Routes>
                   </RequireAuth>

@@ -36,7 +36,7 @@ export default function AccountEdit() {
   const { helper } = useHelperAccountStore();
 
   useEffect(() => {
-    setHeaderProps({ type: 'back', title: '나의 계정' });
+    setHeaderProps({ type: 'back', title: '나의 계정', onBack: () => navigate('/helper/account') });
     return () => {
       clearHeaderProps();
     };
@@ -48,18 +48,6 @@ export default function AccountEdit() {
 
   const handleSave = async () => {
     try {
-      // 모든 Store의 현재 상태로 새 프로필 생성
-      const newProfile = {
-        // ...editedProfile,
-        // pay: {
-        //   amount: selectedPay,
-        //   type: payType,
-        // },
-        // careTypes: selectedTypes,
-        // locations: selectedDistricts,
-        // schedules: schedules,
-      };
-
       await request('put', '/helper/complete-profile', {
         introduce: helper.introduce,
         careExperience: helper.careExperience,

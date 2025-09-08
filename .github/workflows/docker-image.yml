@@ -10,57 +10,37 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Create .env.production
-        run: echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" > .env.production
-        
-      - name: Build frontend
-        run: npm run build
-
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKOPHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Build Docker image
-        run: docker build --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} -t ${{ secrets.DOCKERHUB_USERNAME }}/blaybus-frontend:latest .
+      - name: Build and push Docker image
+        run: |
+          docker build \
+            --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
+            --build-arg VITE_REST_API_KEY=${{ secrets.VITE_REST_API_KEY }} \
+            --build-arg VITE_REDIRECT_URI=${{ secrets.VITE_REDIRECT_URI }} \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/blaybus-frontend:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/blaybus-frontend:latest
 
-      - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/blaybus-frontend:latest
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ubuntu
           key: ${{ secrets.KEY }}
-          envs: GITHUB_SHA
           script: |
             cd /home/ubuntu/galaxyDev
-
-            echo "🛑 Stopping and removing existing backend-container"
-            docker-compose down frontend-container
-  
-            echo "🚀 Updating to the backend-container:latest image"
+            echo "🛑 Stopping and removing existing frontend-container"
+            docker-compose down frontend-container || true
+            echo "🚀 Pulling the latest frontend-container image"
             docker-compose pull frontend-container
-  
             echo "✅ Starting the new container"
             docker-compose up -d frontend-container
+

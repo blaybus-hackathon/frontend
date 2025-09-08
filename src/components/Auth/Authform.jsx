@@ -13,9 +13,9 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
   const navigate = useNavigate();
   const [alertMessage, setAlertMessage] = useState('');
 
-  // const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
-  // const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
-  const KAKAO_AUTH_URL = import.meta.env.VITE_KAKAO_AUTH_URL;
+  const REST_API_KEY = import.meta.env.VITE_REST_API_KEY;
+  const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
   function handleSubmit(e) {
     e.preventDefault();

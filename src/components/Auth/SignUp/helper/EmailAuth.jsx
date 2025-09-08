@@ -8,7 +8,7 @@ import SignUpButton from '@/components/Auth/SignUp/helper/SignUpButton';
 
 export default function EmailAuth() {
   const emailCodeRef = useRef(null);
-  const { signUpForm, setEmailAuthField } = useSignUpStore();
+  const { signUpForm, setEmailAuthField, isEmailFirstCheck } = useSignUpStore();
   const { sendEmail, verifyEmail, sendEmailStatus, verifyEmailStatus } = useEmailAuthMutation();
   const { email, emailCode, isVerified, mailSeq, password, passwordConfirm } = signUpForm.emailAuth;
 
@@ -28,7 +28,7 @@ export default function EmailAuth() {
 
   return (
     <div className='flex flex-col mb-[0.56rem]'>
-      <FormField label='이메일 입력' required>
+      <FormField label='이메일 입력' required className='mb-5'>
         <div className='flex justify-between items-center gap-2'>
           <Input
             placeholder='이메일을 입력해주세요.'
@@ -64,9 +64,15 @@ export default function EmailAuth() {
             {verifyEmailStatus.isPending ? '인증중...' : isVerified ? '인증완료' : '인증하기'}
           </Button>
         </div>
+
+        {!isEmailFirstCheck && !email && (
+          <p className='text-start text-sm text-[var(--required-red)] font-medium'>
+            이메일을 입력해주세요
+          </p>
+        )}
       </FormField>
 
-      <FormField label='비밀번호 입력' required>
+      <FormField label='비밀번호 입력' required className='mb-5'>
         <Input
           placeholder='비밀번호를 입력해주세요.'
           type='password'
@@ -74,9 +80,14 @@ export default function EmailAuth() {
           onChange={(e) => setEmailAuthField('password', e.target.value)}
           className='rounded-lg h-[4.0625rem] text-base font-normal text-[var(--button-black)] border border-[var(--outline)] placeholder:text-[var(--placeholder-gray)] w-[100%]'
         />
+        {!isEmailFirstCheck && !password && (
+          <p className='text-start text-sm text-[var(--required-red)] font-medium'>
+            비밀번호를 입력해주세요
+          </p>
+        )}
       </FormField>
 
-      <FormField label='비밀번호 확인' required>
+      <FormField label='비밀번호 확인' required className='mb-5'>
         <Input
           placeholder='비밀번호를 다시 한 번 입력해주세요.'
           type='password'
@@ -85,6 +96,12 @@ export default function EmailAuth() {
           onBlur={() => setEmailAuthField('passwordCheck', true)}
           className='rounded-lg h-[4.0625rem] text-base font-normal text-[var(--button-black)] border border-[var(--outline)] placeholder:text-[var(--placeholder-gray)] w-[100%]'
         />
+
+        {!isEmailFirstCheck && !passwordConfirm && (
+          <p className='text-start text-sm text-[var(--required-red)] font-medium'>
+            비밀번호를 확인해주세요
+          </p>
+        )}
       </FormField>
 
       <SignUpButton />

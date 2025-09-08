@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 const useHelperLocationStore = create((set, get) => ({
   selectedDistricts: {},
@@ -8,18 +8,24 @@ const useHelperLocationStore = create((set, get) => ({
 
   // 특정 도시의 구/군 추가
   addDistrict: (city, district, subDistrict) =>
-    set((state) => ({
-      selectedDistricts: {
-        ...state.selectedDistricts,
-        [city]: {
-          ...state.selectedDistricts[city],
-          [district]: [
-            ...(state.selectedDistricts[city]?.[district] || []),
-            subDistrict,
-          ],
+    set((state) => {
+      if (
+        city in state.selectedDistricts &&
+        district in state.selectedDistricts[city] &&
+        subDistrict in state.selectedDistricts[city][district]
+      ) {
+        return state;
+      }
+      return {
+        selectedDistricts: {
+          ...state.selectedDistricts,
+          [city]: {
+            ...state.selectedDistricts[city],
+            [district]: [...(state.selectedDistricts[city]?.[district] || []), subDistrict],
+          },
         },
-      },
-    })),
+      };
+    }),
 
   // 특정 도시의 구/군 제거
   removeDistrict: (city, district, subDistrict) =>
@@ -29,9 +35,7 @@ const useHelperLocationStore = create((set, get) => ({
         [city]: {
           ...state.selectedDistricts[city],
           [district]:
-            state.selectedDistricts[city]?.[district]?.filter(
-              (d) => d !== subDistrict
-            ) || [],
+            state.selectedDistricts[city]?.[district]?.filter((d) => d !== subDistrict) || [],
         },
       };
 
@@ -55,9 +59,9 @@ const useHelperLocationStore = create((set, get) => ({
         total +
         Object.values(districts).reduce(
           (subTotal, subDistricts) => subTotal + subDistricts.length,
-          0
+          0,
         ),
-      0
+      0,
     );
   },
 

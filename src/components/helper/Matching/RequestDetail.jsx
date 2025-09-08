@@ -42,6 +42,7 @@ export default function RequestDetail({ patientLogSeq, returnPath }) {
   const getHelperSeq = useAuthStore((state) => state.getHelperSeq);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     setHeaderProps({
       type: 'back',
       title: '어르신 상세정보',
@@ -163,7 +164,10 @@ export default function RequestDetail({ patientLogSeq, returnPath }) {
         <section className='grid gap-y-5 px-0'>
           <InfoField label='근무종류' text={data.careChoiceFormatted?.workType || '정보 없음'} />
           <InfoField label='주소지' text={data.fullAddress || '주소 정보 없음'} />
-          <InfoField label='희망요일/시간' text={data.formattedTimeList || '시간 정보 없음'} />
+          <InfoField
+            label='희망요일/시간'
+            text={data.formattedTimeList.join('\n') || '시간 정보 없음'}
+          />
           <InfoField label='보유질병' text={data.diseases || '정보 없음'} />
           <InfoField label='돌봄필요' text={getCareNeedItems(data.careChoice)} />
           <InfoField label='희망시급' text={data.formattedWage || '시급 정보 없음'} />

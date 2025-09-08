@@ -16,6 +16,12 @@ export default function HelperInfo() {
     setHelperInfoField('profilePic', value);
   };
 
+  const handleBirthday = (e) => {
+    let str = e.target.value.replace(/\D/g, '');
+    if (str.length > 8) str = str.slice(0, 8);
+    setHelperInfoField('birthday', str);
+  };
+
   return (
     <div>
       <h1 className='text-[var(--text)] text-[1.44rem] font-semibold leading-normal text-start mb-5'>
@@ -25,13 +31,12 @@ export default function HelperInfo() {
       </h1>
 
       <FormField label='이름' required className='mb-5'>
-        {console.log(isFirstCheck)}
         <Input
           placeholder='예) 홍길동'
           value={name}
           maxLength={10}
           onChange={(e) => setHelperInfoField('name', e.target.value)}
-          className={`rounded-lg h-[4.0625rem] text-base font-normal text-[var(--button-black)] border  placeholder:text-[var(--placeholder-gray)] w-[100%] ${
+          className={`rounded-lg h-[4.0625rem] text-base font-normal text-[var(--button-black)] border placeholder:text-[var(--placeholder-gray)] w-[100%] ${
             !isFirstCheck && !name ? 'border-[var(--required-red)]' : 'border-[var(--outline)]'
           }`}
         />
@@ -65,10 +70,14 @@ export default function HelperInfo() {
 
       <FormField label='성별' required className='mb-5'>
         <Radio cols={2} onValueChange={(value) => setHelperInfoField('gender', value)}>
-          <RadioItem value={false}>남성</RadioItem>
-          <RadioItem value={true}>여성</RadioItem>
+          <RadioItem value={false} checked={signUpForm.helperInfo.gender === false}>
+            남성
+          </RadioItem>
+          <RadioItem value={true} checked={signUpForm.helperInfo.gender === true}>
+            여성
+          </RadioItem>
         </Radio>
-        {!isFirstCheck && !gender && (
+        {!isFirstCheck && gender === null && (
           <p className='text-start text-sm text-[var(--required-red)] font-medium'>
             성별을 입력해주세요
           </p>
@@ -81,7 +90,8 @@ export default function HelperInfo() {
           inputMode='numeric'
           maxLength={8}
           value={birthday}
-          onChange={(e) => setHelperInfoField('birthday', e.target.value)}
+          // onChange={(e) => setHelperInfoField('birthday', e.target.value)}
+          onChange={handleBirthday}
           className={`rounded-lg h-[4.0625rem] text-base font-normal text-[var(--button-black)] border placeholder:text-[var(--placeholder-gray)] w-[100%] ${
             !isFirstCheck && !birthday ? 'border-[var(--required-red)]' : 'border-[var(--outline)]'
           }`}
@@ -117,10 +127,14 @@ export default function HelperInfo() {
 
       <FormField label='차량소유여부' required className='mb-5'>
         <Radio cols={2} onValueChange={(value) => setHelperInfoField('carOwnYn', value)}>
-          <RadioItem value={true}>예</RadioItem>
-          <RadioItem value={false}>아니오</RadioItem>
+          <RadioItem value={true} checked={signUpForm.helperInfo.carOwnYn === true}>
+            예
+          </RadioItem>
+          <RadioItem value={false} checked={signUpForm.helperInfo.carOwnYn === false}>
+            아니오
+          </RadioItem>
         </Radio>
-        {!isFirstCheck && !carOwnYn && (
+        {!isFirstCheck && carOwnYn === null && (
           <p className='text-start text-sm text-[var(--required-red)] font-medium'>
             차량소유여부를 입력해주세요
           </p>
@@ -129,10 +143,14 @@ export default function HelperInfo() {
 
       <FormField label='치매교육 이수 여부' required className='mb-5'>
         <Radio cols={2} onValueChange={(value) => setHelperInfoField('eduYn', value)}>
-          <RadioItem value={true}>예</RadioItem>
-          <RadioItem value={false}>아니오</RadioItem>
+          <RadioItem value={true} checked={signUpForm.helperInfo.eduYn === true}>
+            예
+          </RadioItem>
+          <RadioItem value={false} checked={signUpForm.helperInfo.eduYn === false}>
+            아니오
+          </RadioItem>
         </Radio>
-        {!isFirstCheck && !eduYn && (
+        {!isFirstCheck && eduYn === null && (
           <p className='text-start text-sm text-[var(--required-red)] font-medium'>
             치매교육 이수 여부를 입력해주세요
           </p>

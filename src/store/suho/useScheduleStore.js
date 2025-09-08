@@ -1,12 +1,13 @@
 import { create } from 'zustand';
+
 const useScheduleStore = create((set, get) => ({
   consult: false,
 
   setConsult: (value) => set({ consult: value }),
 
   schedule: {
-    월: { start: '10:00', end: '23:00' },
-    화: { start: '07:00', end: '09:00' },
+    월: { start: '', end: '' },
+    화: { start: '', end: '' },
     수: { start: '', end: '' },
     목: { start: '', end: '' },
     금: { start: '', end: '' },

@@ -9,8 +9,8 @@ export default function SignUpComplete() {
     navigate('/signin');
   };
 
-  const handleInfo = () => {
-    navigate('/helper/account');
+  const handleHome = () => {
+    navigate('/');
   };
 
   return (
@@ -33,8 +33,8 @@ export default function SignUpComplete() {
           <Button onClick={handleLogin} className='w-full'>
             로그인하기
           </Button>
-          <Button onClick={handleInfo} variant='white' className='w-full'>
-            내 정보 설정하기
+          <Button onClick={handleHome} variant='white' className='w-full'>
+            홈으로 이동
           </Button>
         </div>
       </div>

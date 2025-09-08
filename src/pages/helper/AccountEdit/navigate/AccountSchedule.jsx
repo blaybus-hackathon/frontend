@@ -47,12 +47,21 @@ export default function AccountSchedule() {
   };
 
   const handleTimeChange = (day, type, value) => {
-    const anotherTime =
-      type === 'start' ? +schedule[day].end.slice(0, 2) : +schedule[day].start.slice(0, 2);
-    if ((type === 'start' && +value >= anotherTime) || (type === 'end' && +value <= anotherTime)) {
-      alert('시간을 다시 한번 확인해주세요');
-      return;
+    if (
+      (type === 'start' && schedule[day].end !== '') ||
+      (type === 'end' && schedule[day].start !== '')
+    ) {
+      const anotherTime =
+        type === 'start' ? +schedule[day].end.slice(0, 2) : +schedule[day].start.slice(0, 2);
+      if (
+        (type === 'start' && +value >= anotherTime) ||
+        (type === 'end' && +value <= anotherTime)
+      ) {
+        alert('시간을 다시 한번 확인해주세요');
+        return;
+      }
     }
+
     const strVal = numberStringToTimeString(value);
     updateSchedule(day, type, strVal);
   };

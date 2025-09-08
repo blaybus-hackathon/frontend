@@ -7,6 +7,7 @@ import useScheduleStore from '@/store/suho/useScheduleStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import useAuthStore from '@/store/useAuthStore';
 import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
+import useHelperLocationStore from '@/store/suho/useHelperLocationStore';
 // import { useAddressStore } from '@/store/useAddressStore';
 
 // ✅ 3. UI 컴포넌트 (공통 UI → 커스텀 컴포넌트 순)
@@ -20,27 +21,23 @@ import backarrow from '@/assets/images/back-arrow.png';
 import homecontrols from '@/assets/images/home-controls.png';
 import { DAYS } from '@/constants/days';
 
-//temp
-import useProfileStore from '@/store/useProfileStore';
-
 export default function Account() {
-  const { optimizedSchedule } = useScheduleStore();
+  const { updateSchedule } = useScheduleStore();
   const PAY_TYPES = ['시급', '일급', '주급'];
 
   const { user } = useAuthStore();
-  const { helper, setHelper } = useHelperAccountStore();
+  const { helper, setHelper, workTypeNames, setWorkTypeNames } = useHelperAccountStore();
+  const { addDistrict } = useHelperLocationStore();
   // const { getAddressNameById } = useAddressStore();
 
   const navigate = useNavigate();
 
-  const { profileEdit } = useProfileStore();
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
   const [afss, setAfss] = useState([]);
   const [asss, setAsss] = useState([]);
   const [atss, setAtss] = useState([]);
-  const [workTypes, setWorkTypes] = useState([]);
 
   useEffect(() => {
     setHeaderProps({
@@ -87,12 +84,19 @@ export default function Account() {
         const fetchedatss = await request('get', `/third/${location.asSeq}`);
         let third = fetchedatss.find((item) => item.id === location.atSeq);
         setAtss((prev) => [...prev, third.name]);
+
+        addDistrict(first.name, second.name, third.name);
+
+        for (let sch of helperInfo.helperWorkTime) {
+          updateSchedule(DAYS[sch.date - 1][0], 'start', sch.startTime);
+          updateSchedule(DAYS[sch.date - 1][0], 'end', sch.endTime);
+        }
       }
 
       const wtype = await request('post', '/cmn/part-request-care-list', {
         careTopEnumList: ['WORK_TYPE'],
       });
-      setWorkTypes(wtype.workTypeList);
+      setWorkTypeNames(getWorkType(wtype.workTypeList, helperInfo.workType).split(', '));
     } catch (e) {
       console.error('나의 정보를 가져오는데 실패했습니다 : ' + e);
     }
@@ -126,22 +130,20 @@ export default function Account() {
     ));
   };
 
-  const getWorkType = () => {
-    if (workTypes.length === 0) return;
-    const workTypeBit = helper.workType;
+  const getWorkType = (wtps, wtb) => {
+    if (!wtps) return;
     const res = [];
 
     for (let i = 0; i < 7; i++) {
       const mask = 1 << i;
-      if (workTypeBit & mask) {
+      if (wtb & mask) {
         res.push(mask);
       }
     }
 
-    return workTypes
-      .filter((x) => res.includes(x.careVal))
-      .map((y) => y.careName)
-      .join(', ');
+    const data = wtps.filter((x) => res.includes(x.careVal)).map((y) => y.careName);
+
+    return data.join(', ');
   };
 
   return (
@@ -181,7 +183,7 @@ export default function Account() {
             >
               <span
                 className={`
-      ${profileEdit.introduction ? 'text-[#191919]' : 'text-[#C8C8C8]'}
+      ${helper.introduce ? 'text-[#191919]' : 'text-[#C8C8C8]'}
        profile-section__content-text 
     `}
               >
@@ -244,12 +246,7 @@ export default function Account() {
 
             <div className='profile-section__content-box'>
               <img className='w-[24px] h-[24px]' src={homecontrols} alt='homeControls_icon' />
-              <span className='profile-section__content-text'>
-                {getWorkType()}
-                {/* {profileEdit.careTypes.workTypes.length > 0
-                  ? profileEdit.careTypes.workTypes.map((item) => item.label).join(', ')
-                  : '설정되지 않음'} */}
-              </span>
+              <span className='profile-section__content-text'>{workTypeNames.join(', ')}</span>
             </div>
           </section>
 

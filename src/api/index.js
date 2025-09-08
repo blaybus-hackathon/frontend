@@ -3,7 +3,8 @@ import { handleApiError } from '@/utils/handleApiError';
 import useAuthStore from '@/store/useAuthStore';
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '' : 'http://localhost:5173');
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.PROD ? 'https://dolbom-work.co.kr:8080' : '');
 
 const api = axios.create({
   baseURL: API_BASE_URL,

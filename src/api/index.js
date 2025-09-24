@@ -57,11 +57,7 @@ export const request = async (method, endpoint, data = {}) => {
 
     return response.data;
   } catch (error) {
-    console.error('API 요청 오류: ', {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-    });
+    console.error(error);
     throw error;
   }
 };
@@ -80,11 +76,7 @@ export const requestMultipart = async (method, endpoint, formData) => {
 
     return response.data;
   } catch (error) {
-    console.error('API 요청 오류: ', {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-    });
+    console.error(error);
     throw error;
   }
 };

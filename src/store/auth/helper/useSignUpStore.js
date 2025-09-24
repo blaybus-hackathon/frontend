@@ -230,7 +230,6 @@ const createHelperSubmissionSlice = (set, get) => ({
 
       // request signUp
       const helperRes = await signUpHelper(payload);
-      console.log('Helper signup response:', helperRes);
 
       // get helperSeq
       const helperSeq = helperRes.data?.helperSeq;
@@ -240,13 +239,11 @@ const createHelperSubmissionSlice = (set, get) => ({
 
       // if profilePic is true, upload img
       if (helperInfo.profilePic && helperInfo.imgFile) {
-        console.log('Uploading profile image for helperSeq:', helperSeq);
         const formData = new FormData();
         formData.append('helperSeq', helperSeq);
         formData.append('photoFile', helperInfo.imgFile);
 
         await uploadHelperImg(formData);
-        console.log('Profile image upload completed');
       }
 
       set({ isSubmitting: false });

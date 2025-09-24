@@ -15,11 +15,8 @@ const ALERT_MESSAGES = {
 };
 
 const KakaoCallback = () => {
-  console.log('[KAKAO CALLBACK] 컴포넌트 시작됨');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  console.log('[KAKAO CALLBACK] 현재 URL:', window.location.href);
-  console.log('[KAKAO CALLBACK] 검색 파라미터:', searchParams.toString());
 
   // URL 파라미터 추출
   const code = searchParams.get('code');
@@ -45,29 +42,18 @@ const KakaoCallback = () => {
 
   const handleKakaoLogin = async () => {
     try {
-      console.log('[KAKAO CALLBACK] 카카오 로그인 처리 시작:', { code, roleType });
       setLoadingMessage('서버와 통신 중입니다...');
 
       // login api 호출
       const response = await kakaoApi.login(code, roleType);
-      console.log('[KAKAO CALLBACK] 서버 응답:', response);
 
       const { caseType, email, nickName, roleType: resRole } = response || {};
 
       // 필수 응답 검증
       if (!caseType || !email) {
-        console.error('[KAKAO CALLBACK] 서버 응답 검증 실패:', response);
+        console.error(response);
         throw new Error('서버 응답이 올바르지 않습니다.');
       }
-
-      console.log(
-        '[KAKAO CALLBACK] 케이스 타입:',
-        caseType,
-        '이메일:',
-        email,
-        '응답 역할:',
-        resRole,
-      );
       setLoadingMessage('로그인 정보를 처리하고 있습니다...');
 
       const message = ALERT_MESSAGES[caseType] || ALERT_MESSAGES.DEFAULT;

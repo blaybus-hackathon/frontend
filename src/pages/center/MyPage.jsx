@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/custom/Button';
 import Spinner from '@/components/loading/Spinner';
@@ -16,6 +16,9 @@ import DefaultProfile from '@/assets/images/elder-basic-profile.png';
 export default function MyPage() {
   const navigate = useNavigate();
   const [profileSrc, setProfileSrc] = useState(DefaultProfile);
+  const didLogMountRef = useRef(false);
+  const didLogDataRef = useRef(false);
+  const didLogImageRef = useRef(false);
   const [performanceMetrics, setPerformanceMetrics] = useState({
     componentMountTime: null,
     dataLoadStartTime: null,
@@ -29,8 +32,10 @@ export default function MyPage() {
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
 
-  // 컴포넌트 마운트 시간 측정
+  // 컴포넌트 마운트 시간 측정 (초기 1회)
   useEffect(() => {
+    if (didLogMountRef.current) return;
+    didLogMountRef.current = true;
     const mountTime = performance.now();
     setPerformanceMetrics((prev) => ({ ...prev, componentMountTime: mountTime }));
     console.log('🚀 MyPage 컴포넌트 마운트 시작');
@@ -39,9 +44,11 @@ export default function MyPage() {
     return () => clearHeaderProps();
   }, [clearHeaderProps, setHeaderProps]);
 
-  // React Query 데이터 로딩 상태 추적
+  // React Query 데이터 로딩 상태 추적 (초기 1회)
   useEffect(() => {
+    if (didLogDataRef.current) return;
     if (!isLoading && managerProfile) {
+      didLogDataRef.current = true;
       const dataLoadEndTime = performance.now();
       setPerformanceMetrics((prev) => ({
         ...prev,
@@ -63,8 +70,9 @@ export default function MyPage() {
     }
   }, [isLoading, managerProfile, performanceMetrics]);
 
-  // 프로필 이미지 로딩 및 성능 측정
+  // 프로필 이미지 로딩 및 성능 측정 (초기 1회)
   useEffect(() => {
+    if (didLogImageRef.current) return;
     if (!managerProfile) return;
 
     const imageLoadStartTime = performance.now();
@@ -83,6 +91,7 @@ export default function MyPage() {
 
       // 전체 성능 메트릭 출력
       logPerformanceMetrics();
+      didLogImageRef.current = true;
     } else {
       // if profile image doesn't exist, set default profile image
       console.log('🔄 기본 프로필 이미지 로딩 중...');
@@ -98,6 +107,7 @@ export default function MyPage() {
 
           // 전체 성능 메트릭 출력
           logPerformanceMetrics();
+          didLogImageRef.current = true;
         })
         .catch(() => {
           setProfileSrc(DefaultProfile);
@@ -110,6 +120,7 @@ export default function MyPage() {
 
           // 전체 성능 메트릭 출력
           logPerformanceMetrics();
+          didLogImageRef.current = true;
         });
     }
   }, [managerProfile]);
@@ -254,22 +265,6 @@ export default function MyPage() {
   };
 
   if (isLoading || !managerProfile) return <Spinner />;
-
-  console.log('📊 현재 프로필 사진 상태:', {
-    profileSrc,
-    hasManagerProfile: !!managerProfile,
-    hasImgAddress: !!managerProfile?.imgAddress,
-    imgSeq: managerProfile?.imgSeq,
-    reactQueryStatus: {
-      isLoading,
-      isFetching: false, // react-query의 isFetching 상태도 확인 가능
-      dataSource: 'cache', // 캐시에서 가져온 데이터인지 확인
-    },
-    zustandState: {
-      isEditMode,
-      hasFormData: !!useManagerProfileStore.getState().formData,
-    },
-  });
 
   return (
     <article className='flex flex-col'>

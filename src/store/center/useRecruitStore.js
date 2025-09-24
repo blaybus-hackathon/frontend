@@ -310,8 +310,6 @@ export const useRecruitStore = create((set, get) => ({
       timeList: get().getTimeListArray(),
     };
 
-    console.log('공고 수정 요청 데이터:', payload);
-
     try {
       const res = await updateRecruitPost(payload);
       set({

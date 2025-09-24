@@ -24,6 +24,9 @@ import {
 
 export default function Home() {
   const navigate = useNavigate();
+  const blockAlert = () => {
+    alert('준비 중입니다.');
+  };
 
   return (
     <>
@@ -50,11 +53,14 @@ export default function Home() {
             </div>
 
             <div className='flex flex-col sm:flex-row gap-3 justify-center items-center lg:w-[55%] mx-auto'>
-              <Button className='text-xl hover:bg-white hover:text-[var(--main)] hover:border-[var(--main)]'>
+              <Button
+                className='text-xl hover:bg-white hover:text-[var(--main)] hover:border-[var(--main)]'
+                onClick={blockAlert}
+              >
                 <Search className='w-5 h-5 mr-3' />
                 돌봄 서비스 찾기
               </Button>
-              <Button variant='white' className='text-xl'>
+              <Button variant='white' className='text-xl' onClick={blockAlert}>
                 <Phone className='w-5 h-5 mr-3' />
                 전화 상담하기
               </Button>
@@ -116,8 +122,7 @@ export default function Home() {
                   <CheckCircle className='w-6 h-6 text-green-500 mt-1 flex-shrink-0' />
                   <span>합리적인 비용, 투명한 요금제</span>
                 </div>
-                {/* TODO: 링크 연결 */}
-                <Button className='w-full mt-6 text-lg py-6'>
+                <Button className='w-full mt-6 text-lg py-6' onClick={blockAlert}>
                   요양보호사 찾기
                   <ChevronRight className='ml-2 w-5 h-5' />
                 </Button>
@@ -151,8 +156,7 @@ export default function Home() {
                   <CheckCircle className='w-6 h-6 text-green-500 mt-1 flex-shrink-0' />
                   <span>실제 이용자 리뷰 제공</span>
                 </div>
-                {/* TODO: 링크 연결 */}
-                <Button className='w-full mt-6 text-lg py-6'>
+                <Button className='w-full mt-6 text-lg py-6' onClick={blockAlert}>
                   복지센터 찾기
                   <ChevronRight className='ml-2 w-5 h-5' />
                 </Button>
@@ -299,10 +303,10 @@ export default function Home() {
                 <Phone className='mr-3 w-6 h-6' />
                 1588-1234 전화상담
               </Button>
-              {/* TODO: 링크 연결 */}
               <Button
                 variant='white'
                 className='text-xl px-10 py-6 hover:bg-gray-100 hover:text-[var(--main)]'
+                onClick={() => navigate('/signin')}
               >
                 매칭하러 가기
                 <ChevronRight className='ml-2 w-6 h-6' />

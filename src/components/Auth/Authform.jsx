@@ -40,14 +40,14 @@ const AuthForm = ({ type, onSubmit, setLoginType }) => {
     const serverRole = ROLE_MAP.toServer[type]; // MANAGER | MEMBER
     window.location.href = `${KAKAO_AUTH_URL}&state=${serverRole}`;
   }
-  
+
   function handleFindAccount(e) {
     e.preventDefault();
     navigate('/find-account');
   }
 
   return (
-    <div className='bg-white rounded-lg mx-auto'>
+    <div className='mx-auto'>
       <button
         onClick={() => navigateToHome(navigate)}
         className='w-1/2 mx-auto py-8 cursor-pointer'

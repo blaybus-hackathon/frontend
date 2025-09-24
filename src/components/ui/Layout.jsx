@@ -4,6 +4,23 @@ import Footer from './temp/Footer';
 import useAuthStore from '@/store/useAuthStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 
+function SafeAreaView({ children }) {
+  return (
+    <div
+      style={{
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        paddingLeft: 'env(safe-area-inset-left, 0px)',
+        paddingRight: 'env(safe-area-inset-right, 0px)',
+        minHeight: '100dvh',
+        boxSizing: 'border-box',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function Layout() {
   const location = useLocation();
   const headerProps = useHeaderPropsStore((state) => state.headerProps);
@@ -40,12 +57,14 @@ export default function Layout() {
     hidePaddingPrefixRoutes.some((route) => location.pathname.startsWith(route));
 
   return (
-    <div className='min-h-screen flex flex-col max-w-2xl mx-auto'>
-      {isHeaderVisible && <Header {...headerProps} />}
-      <main className={isFullWidth ? 'flex-grow' : 'w-[88%] mx-auto flex-grow'}>
-        <Outlet />
-      </main>
-      {isFooterVisible && <Footer isManager={isManager} />}
-    </div>
+    <SafeAreaView>
+      <div className='min-h-[100dvh] flex flex-col max-w-2xl mx-auto'>
+        {isHeaderVisible && <Header {...headerProps} />}
+        <main className={isFullWidth ? 'flex-grow' : 'w-[88%] mx-auto flex-grow'}>
+          <Outlet />
+        </main>
+        {isFooterVisible && <Footer isManager={isManager} />}
+      </div>
+    </SafeAreaView>
   );
 }

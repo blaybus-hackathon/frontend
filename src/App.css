@@ -9,6 +9,20 @@
   text-align: center;
 }
 
+/* Stable viewport height to avoid address-bar induced jumps */
+html,
+body {
+  height: 100%;
+}
+body {
+  min-height: 100dvh;
+}
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
 .card {
   padding: 2em;
 }

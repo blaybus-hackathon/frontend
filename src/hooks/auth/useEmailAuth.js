@@ -26,6 +26,7 @@ export const useEmailAuthMutation = () => {
       handleApiError(error, {
         4000: '이미 가입된 이메일입니다.',
         4009: '10분 이내에 재발송 불가능합니다.',
+        403: '이메일이 올바르지 않습니다',
       });
       throw error;
     }
@@ -44,6 +45,7 @@ export const useEmailAuthMutation = () => {
       }
     } catch (error) {
       console.error(error);
+      alert('인증번호가 일치하지 않습니다');
       throw error;
     }
   };

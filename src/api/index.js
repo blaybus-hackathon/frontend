@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { handleApiError } from '@/utils/handleApiError';
+import useAuthStore from '@/store/useAuthStore';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.PROD ? 'https://dolbom-work.co.kr:8080' : '');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -31,6 +34,13 @@ api.interceptors.response.use(
     const status = error?.response?.status;
     if (status >= 500) {
       handleApiError(error, {}, '서버에 문제가 발생했습니다.', false, true);
+    } else if (status === 403) {
+      const { logout, user } = useAuthStore.getState();
+      if (user) {
+        logout();
+        alert('로그인 세션이 만료되었습니다. 다시 로그인해주세요.');
+        window.location.href = '/signin';
+      }
     }
 
     return Promise.reject(error);
@@ -41,17 +51,13 @@ export const request = async (method, endpoint, data = {}) => {
   try {
     const response = await api({
       method,
-      url: `/api${endpoint}`,
+      url: `${endpoint}`,
       ...(method === 'GET' ? { params: data } : { data }),
     });
 
     return response.data;
   } catch (error) {
-    console.error('API 요청 오류: ', {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-    });
+    console.error(error);
     throw error;
   }
 };
@@ -60,7 +66,7 @@ export const requestMultipart = async (method, endpoint, formData) => {
   try {
     const response = await api({
       method,
-      url: `/api${endpoint}`,
+      url: `${endpoint}`,
       data: formData,
       headers: {
         ...api.defaults.headers.common,
@@ -70,11 +76,7 @@ export const requestMultipart = async (method, endpoint, formData) => {
 
     return response.data;
   } catch (error) {
-    console.error('API 요청 오류: ', {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-    });
+    console.error(error);
     throw error;
   }
 };

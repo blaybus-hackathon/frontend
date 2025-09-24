@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { omit } from '@/utils/omit';
 import { signUpHelper, uploadHelperImg } from '@/services/signUpService';
+import { devtools } from 'zustand/middleware';
 
 // 선택 해제 시 key 삭제
 function removeLicenseField(licenseInfo, key) {
@@ -60,6 +61,8 @@ const createHelperDataSlice = (set) => ({
     licenseInfo: {},
     kakaoUser: null,
   },
+  isFirstCheck: true,
+  isEmailFirstCheck: true,
 
   setEmailAuth: (data) =>
     set((state) => ({
@@ -135,6 +138,9 @@ const createHelperDataSlice = (set) => ({
         },
       },
     })),
+
+  setIsFirstCheck: (newBool) => set({ isFirstCheck: newBool }),
+  setIsEmailFirstCheck: (newBool) => set({ isEmailFirstCheck: newBool }),
 
   reset: () =>
     set({
@@ -224,7 +230,6 @@ const createHelperSubmissionSlice = (set, get) => ({
 
       // request signUp
       const helperRes = await signUpHelper(payload);
-      console.log('Helper signup response:', helperRes);
 
       // get helperSeq
       const helperSeq = helperRes.data?.helperSeq;
@@ -234,13 +239,11 @@ const createHelperSubmissionSlice = (set, get) => ({
 
       // if profilePic is true, upload img
       if (helperInfo.profilePic && helperInfo.imgFile) {
-        console.log('Uploading profile image for helperSeq:', helperSeq);
         const formData = new FormData();
         formData.append('helperSeq', helperSeq);
         formData.append('photoFile', helperInfo.imgFile);
 
         await uploadHelperImg(formData);
-        console.log('Profile image upload completed');
       }
 
       set({ isSubmitting: false });
@@ -256,9 +259,11 @@ const createHelperSubmissionSlice = (set, get) => ({
   },
 });
 
-export const useSignUpStore = create((set, get) => ({
-  ...createHelperDataSlice(set),
-  ...createHelperSubmissionSlice(set, get),
-}));
+export const useSignUpStore = create(
+  devtools((set, get) => ({
+    ...createHelperDataSlice(set),
+    ...createHelperSubmissionSlice(set, get),
+  })),
+);
 
 export default useSignUpStore;

@@ -32,18 +32,18 @@ export default function SignIn() {
         return;
       }
 
-      // validate require data
-      if (userAuth === 'MANAGER' && !cmSeq) {
-        console.error('Manager role requires cmSeq');
-        alert('관리자 정보가 올바르지 않습니다.');
-        return;
-      }
+      // // validate require data
+      // if (userAuth === 'MANAGER' && !cmSeq) {
+      //   console.error('Manager role requires cmSeq');
+      //   alert('관리자 정보가 올바르지 않습니다.');
+      //   return;
+      // }
 
-      if (userAuth === 'MEMBER' && !helperSeq) {
-        console.error('Member role requires helperSeq');
-        alert('요양보호사 정보가 올바르지 않습니다.');
-        return;
-      }
+      // if (userAuth === 'MEMBER' && !helperSeq) {
+      //   console.error('Member role requires helperSeq');
+      //   alert('요양보호사 정보가 올바르지 않습니다.');
+      //   return;
+      // }
 
       login({
         chatSenderId,

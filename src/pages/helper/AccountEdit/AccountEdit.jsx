@@ -8,6 +8,7 @@ import useHelperLocationStore from '@/store/suho/useHelperLocationStore';
 import useScheduleStore from '@/store/suho/useScheduleStore';
 import usePayStore from '@/store/suho/usePayStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
+import useHelperAccountStore from '@/store/helper/useHelperAccoutStore';
 
 // ✅ 3. UI 컴포넌트 (공통 UI → 커스텀 컴포넌트 순)
 import { Button } from '@/components/ui/custom/Button';
@@ -21,6 +22,7 @@ import BaseSection from '@/pages/helper/AccountEdit/BaseSection';
 import CertificateSection from '@/pages/helper/AccountEdit/CertificateSection';
 import PaySection from '@/pages/helper/AccountEdit/PaySection';
 import ScheduleSection from './ScheduleSection';
+import { request } from '@/api';
 
 export default function AccountEdit() {
   const navigate = useNavigate();
@@ -31,9 +33,10 @@ export default function AccountEdit() {
   const { pay } = usePayStore();
   const setHeaderProps = useHeaderPropsStore((state) => state.setHeaderProps);
   const clearHeaderProps = useHeaderPropsStore((state) => state.clearHeaderProps);
+  const { helper } = useHelperAccountStore();
 
   useEffect(() => {
-    setHeaderProps({ type: 'back', title: '나의 계정' });
+    setHeaderProps({ type: 'back', title: '나의 계정', onBack: () => navigate('/helper/account') });
     return () => {
       clearHeaderProps();
     };
@@ -45,20 +48,33 @@ export default function AccountEdit() {
 
   const handleSave = async () => {
     try {
-      // 모든 Store의 현재 상태로 새 프로필 생성
-      const newProfile = {
-        // ...editedProfile,
-        // pay: {
-        //   amount: selectedPay,
-        //   type: payType,
-        // },
-        // careTypes: selectedTypes,
-        // locations: selectedDistricts,
-        // schedules: schedules,
-      };
+      await request('put', '/helper/complete-profile', {
+        introduce: helper.introduce,
+        careExperience: helper.careExperience,
+        certificates: helper.certificates,
+        wage: helper.wage,
+        wageState: helper.wageState,
+        wageNegotiation: helper.wageNegotiation,
+        addressFirstIds: helper.helperWorkLocation.map((x) => x.afSeq),
+        addressSecondIds: helper.helperWorkLocation.map((x) => x.asSeq),
+        addressThirdIds: helper.helperWorkLocation.map((x) => x.atSeq),
+        workTimes: helper.helperWorkTime.map(({ date, startTime, endTime }) => ({
+          day: date,
+          startTime,
+          endTime,
+        })),
+        negotiation: helper.helperWorkTime[0].negotiation,
+        workTerm: +helper.helperWorkTime[0].workTerm[0],
+        careLevel: helper.careLevel,
+        inmateState: helper.inmateState,
+        workType: helper.workType,
+        careGender: helper.careGender,
+        serviceMeal: helper.serviceMeal,
+        serviceMobility: helper.serviceMobility,
+        serviceDaily: helper.serviceDaily,
+        verifyQnet: true,
+      });
 
-      // 한 번에 저장
-      updateProfile(newProfile);
       navigate('/helper/account');
     } catch (error) {
       console.error('프로필 저장 실패:', error);

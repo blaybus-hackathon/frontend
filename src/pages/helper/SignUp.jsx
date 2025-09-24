@@ -2,7 +2,6 @@ import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 import { useSignUpStepStore } from '@/store/auth/helper/useSignUpStepStore';
-import { useSignUpStore } from '@/store/auth/helper/useSignUpStore';
 import { HELPER_SIGNUP_STEPS } from '@/constants/registrationSteps';
 
 import EmailAuth from '@/components/Auth/SignUp/helper/EmailAuth';
@@ -59,7 +58,6 @@ export default function SignUp() {
 
   return (
     <>
-      {console.log(useSignUpStore.getState().signUpForm)}
       <div className='mt-8'>
         <CurrentStepComponent />
       </div>

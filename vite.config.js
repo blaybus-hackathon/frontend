@@ -5,7 +5,7 @@ import path from 'path';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -16,9 +16,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'https://dolbom-work.co.kr:8080',
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
     },
   },

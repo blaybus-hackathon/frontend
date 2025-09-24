@@ -4,6 +4,7 @@ import { kakaoApi } from '@/services/kakaoService';
 import useAuthStore from '@/store/useAuthStore';
 import { useSignUpStore as useCenterSignUpStore } from '@/store/auth/center/useSignUpStore';
 import { useSignUpStore as useHelperSignUpStore } from '@/store/auth/helper/useSignUpStore';
+import { navigateToHome } from '@/routes/homeNavigation';
 
 const ALERT_MESSAGES = {
   CASE1: '카카오 계정이 연동되었습니다. 자동 로그인됩니다.',
@@ -14,8 +15,11 @@ const ALERT_MESSAGES = {
 };
 
 const KakaoCallback = () => {
+  console.log('[KAKAO CALLBACK] 컴포넌트 시작됨');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  console.log('[KAKAO CALLBACK] 현재 URL:', window.location.href);
+  console.log('[KAKAO CALLBACK] 검색 파라미터:', searchParams.toString());
 
   // URL 파라미터 추출
   const code = searchParams.get('code');
@@ -41,15 +45,19 @@ const KakaoCallback = () => {
 
   const handleKakaoLogin = async () => {
     try {
+      console.log('[KAKAO CALLBACK] 카카오 로그인 처리 시작:', { code, roleType });
       setLoadingMessage('서버와 통신 중입니다...');
 
       // login api 호출
       const response = await kakaoApi.login(code, roleType);
+
       const { caseType, email, nickName, roleType: resRole } = response || {};
 
       // 필수 응답 검증
-      if (!caseType || !email) throw new Error('서버 응답이 올바르지 않습니다.');
-
+      if (!caseType || !email) {
+        console.error(response);
+        throw new Error('서버 응답이 올바르지 않습니다.');
+      }
       setLoadingMessage('로그인 정보를 처리하고 있습니다...');
 
       const message = ALERT_MESSAGES[caseType] || ALERT_MESSAGES.DEFAULT;
@@ -69,7 +77,7 @@ const KakaoCallback = () => {
         // 기존 회원 로그인 처리
         await login({ email, userAuth: resRole, nickname: nickName });
         alert(message);
-        navigate('/', { replace: true });
+        navigateToHome(navigate);
       } else if (['CASE2', 'CASE3'].includes(caseType)) {
         // 회원가입이 필요한 경우 처리
         const kakaoUser = { email, nickName, userAuth: resRole };
@@ -88,6 +96,12 @@ const KakaoCallback = () => {
         throw new Error('알 수 없는 인증 케이스입니다.');
       }
     } catch (e) {
+      console.error('[KAKAO CALLBACK] 에러 발생:', {
+        message: e.message,
+        status: e.response?.status,
+        data: e.response?.data,
+        stack: e.stack,
+      });
       setError(e.message);
       setIsLoading(false);
       redirectToHome();
@@ -119,6 +133,7 @@ const KakaoCallback = () => {
     }
 
     handleKakaoLogin();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) {

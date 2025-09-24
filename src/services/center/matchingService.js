@@ -1,31 +1,29 @@
 import { request } from '@/api';
 
 // 어르신 매칭 대기 리스트 조회
-export const getMatchingWaitingList = () => {
-  return request('GET', '/patient-match-status/waiting-patient-list').then(
-    (response) => response?.list || [],
-  );
+export const getMatchingWaitingList = async () => {
+  const response = await request('GET', '/patient-match-status/waiting-patient-list');
+  return response?.list || [];
 };
 
 // 어르신 매칭 진행중 리스트
-export const getMatchingInProgressList = () => {
-  return request('GET', '/patient-match-status/matching-patient-list').then(
-    (response) => response?.list || [],
-  );
+export const getMatchingInProgressList = async () => {
+  const response = await request('GET', '/patient-match-status/matching-patient-list');
+  return response?.list || [];
 };
 
 // 어르신 매칭 완료 리스트
-export const getMatchingCompletedList = () => {
-  return request('GET', '/patient-match-status/matched-patient-list').then(
-    (response) => response?.list || [],
-  );
+export const getMatchingCompletedList = async () => {
+  const response = await request('GET', '/patient-match-status/matched-patient-list');
+  return response?.list || [];
 };
 
 // 매칭 상태 변경
-export const changeMatchingStatus = (patientLogSeq, helperSeq, matchState) => {
-  return request('POST', '/patient-match-status', {
+export const changeMatchingStatus = async (patientLogSeq, helperSeq, matchState) => {
+  const response = await request('POST', '/patient-match-status', {
     patientLogSeq,
     helperSeq,
     matchState,
   });
+  return response;
 };

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMatchStatusMutation } from '@/hooks/center/service/useMatchList';
 import { formatAddress } from '@/utils/formatters/formatAddress';
 import { MATCH_STATE } from '@/constants/matching';
+import { handleApiError } from '@/utils/handleApiError';
 import { Button } from '@/components/ui/custom/Button';
 import InfoCard from '@/components/ui/InfoCard/InfoCard';
 import ElderProfile from '@/components/ui/InfoCard/ElderProfile';
@@ -34,7 +35,7 @@ export default memo(function MatchingInProgress({ data }) {
           matchState: MATCH_STATE.REJECT,
         });
       } catch (error) {
-        console.error('매칭 취소 실패: ', error);
+        handleApiError(error, '매칭 취소 중 오류가 발생했습니다. 다시 시도해주세요.', true, false);
       }
     },
     [matchStatusMutation, data.patientLogSeq],
@@ -151,10 +152,10 @@ export default memo(function MatchingInProgress({ data }) {
       </section>
 
       <section className='flex justify-end -mb-2 lg:-mb-4'>
-        {/* TODO: 어르신 정보 수정하기   */}
         <Button
           variant='link'
           className='w-fit text-[var(--text)] cursor-pointer font-medium text-base hover:text-[var(--main)]'
+          onClick={() => navigate(`/center/recruit/detail/${data.patientLogSeq}`)}
         >
           어르신 정보 수정하기
         </Button>

@@ -7,7 +7,6 @@ export const kakaoApi = {
         code,
         roleType,
       });
-
       return response;
     } catch (error) {
       console.error('[KAKAO API] 로그인 요청 실패:', {

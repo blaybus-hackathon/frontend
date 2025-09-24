@@ -15,8 +15,11 @@ const ALERT_MESSAGES = {
 };
 
 const KakaoCallback = () => {
+  console.log('[KAKAO CALLBACK] 컴포넌트 시작됨');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  console.log('[KAKAO CALLBACK] 현재 URL:', window.location.href);
+  console.log('[KAKAO CALLBACK] 검색 파라미터:', searchParams.toString());
 
   // URL 파라미터 추출
   const code = searchParams.get('code');
@@ -42,6 +45,7 @@ const KakaoCallback = () => {
 
   const handleKakaoLogin = async () => {
     try {
+      console.log('[KAKAO CALLBACK] 카카오 로그인 처리 시작:', { code, roleType });
       setLoadingMessage('서버와 통신 중입니다...');
 
       // login api 호출

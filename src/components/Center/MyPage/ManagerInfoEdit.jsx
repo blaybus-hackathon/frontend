@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/custom/input';
 import { FormField } from '@/components/ui/custom/FormField';
-import { Radio, RadioItem } from '@/components/ui/custom/multiRadio';
+import { RadioItem } from '@/components/ui/custom/multiRadio';
 import { ProfileImageUploader } from '@/components/common/ProfileImageUploader';
 import { useManagerProfileStore } from '@/store/center/useManagerProfileStore';
 
@@ -46,6 +46,8 @@ export default function ManagerInfoEdit({ managerProfile }) {
     }
   };
 
+  const profileOptionValue = formData?.profileOption ?? (managerProfile.imgSeq ? '1' : '2');
+
   return (
     <>
       <FormField label='소속 센터'>
@@ -71,23 +73,28 @@ export default function ManagerInfoEdit({ managerProfile }) {
       </FormField>
 
       <FormField label='프로필 사진 등록'>
-        <Radio
-          value={formData?.profileOption ?? (managerProfile.imgSeq ? '1' : '2')}
-          onValueChange={handleProfileOptionChange}
-          cols={2}
-          className='gap-2'
-        >
-          <RadioItem value='1'>
+        <div className='grid grid-cols-2 gap-2'>
+          <RadioItem
+            value='1'
+            checked={profileOptionValue === '1'}
+            onClick={() => handleProfileOptionChange('1')}
+            aria-checked={profileOptionValue === '1'}
+          >
             <p className='text-[1.1rem] lg:text-xl'>등록하기</p>
           </RadioItem>
-          <RadioItem value='2'>
+          <RadioItem
+            value='2'
+            checked={profileOptionValue === '2'}
+            onClick={() => handleProfileOptionChange('2')}
+            aria-checked={profileOptionValue === '2'}
+          >
             <p className='text-[1.1rem] lg:text-xl'>아이콘 대체</p>
           </RadioItem>
-        </Radio>
+        </div>
 
-        {(formData?.profileOption ?? (managerProfile.imgSeq ? '1' : '2')) === '1' && (
+        {profileOptionValue === '1' && (
           <ProfileImageUploader
-            profileOption={formData?.profileOption ?? (managerProfile.imgSeq ? '1' : '2')}
+            profileOption={profileOptionValue}
             selectedImage={formData?.photoFile ?? null}
             onImageSelect={(file) => updateField('photoFile', file, true)}
             initialImage={managerProfile.imgSeq ? managerProfile.imgAddress : null}

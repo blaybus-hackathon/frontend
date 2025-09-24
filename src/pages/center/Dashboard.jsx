@@ -1,5 +1,5 @@
-import Header, { DesktopHeader } from '@/components/ui/temp/Header';
-import Footer from '@/components/ui/temp/Footer';
+import Header, { DesktopHeader } from '@/components/ui/custom/Header';
+import Footer from '@/components/ui/custom/Footer';
 import StatsCards from '@/components/Center/Dashboard/StatsCards';
 import { Sidebar } from '@/components/ui/custom/Sidebar';
 import { useDashboardStats } from '@/hooks/center/service/useDashboardStats';

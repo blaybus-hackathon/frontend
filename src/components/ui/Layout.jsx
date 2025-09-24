@@ -1,6 +1,6 @@
 import { Outlet, useLocation } from 'react-router-dom';
-import Header from './temp/Header';
-import Footer from './temp/Footer';
+import Header from './custom/Header';
+import Footer from './custom/Footer';
 import useAuthStore from '@/store/useAuthStore';
 import { useHeaderPropsStore } from '@/store/useHeaderPropsStore';
 

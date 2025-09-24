@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/custom/Button';
 import { useNavigate } from 'react-router-dom';
-import { Phone, Menu } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import useAuthStore from '@/store/useAuthStore';
 import Logo from '/blaybus_logo_icon_text.svg';
 
@@ -8,12 +8,15 @@ export default function Navbar() {
   const navigate = useNavigate();
   const logout = useAuthStore((s) => s.logout);
   const isLoggedIn = useAuthStore((s) => s.isLoggedIn());
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <header className='bg-white shadow-sm border-b sticky top-0 z-50'>
       <div className='container mx-auto px-4 sm:px-6 lg:px-10 flex justify-between items-center py-4'>
         <div className='flex justify-between items-center py-2 lg:py-4 cursor-pointer'>
-          <div className='flex items-center space-x-3'>
+          <div className='flex items-center space-x-3' onClick={scrollToTop}>
             <img src={Logo} alt='logo' className='h-10 lg:h-12 w-auto' />
           </div>
         </div>
@@ -62,10 +65,6 @@ export default function Navbar() {
               </Button>
             )}
           </div>
-
-          <Button variant='ghost' size='icon' className='md:hidden'>
-            <Menu className='w-6 h-6' />
-          </Button>
         </div>
       </div>
     </header>
